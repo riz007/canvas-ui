@@ -27,13 +27,13 @@ Most "design skills" are a long style guide. canvas-ui is a **workflow plus tool
 **Any agent that supports skills:**
 
 ```bash
-npx skills add <your-github-user>/canvas-ui
+npx skills add riz007/canvas-ui
 ```
 
 **Or from a clone:**
 
 ```bash
-git clone https://github.com/<your-github-user>/canvas-ui && cd canvas-ui
+git clone https://github.com/riz007/canvas-ui && cd canvas-ui
 ./install.sh claude            # ~/.claude/skills/canvas-ui
 ./install.sh codex gemini      # ~/.codex/skills, ~/.gemini/extensions
 ./install.sh cursor --project ~/code/my-app

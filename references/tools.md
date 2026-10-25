@@ -1,6 +1,6 @@
 # Tools
 
-All tools are plain Node scripts with **no npm dependencies**. Requirements: Node 20+ (22+ recommended; on 20 add `--experimental-websocket` for `shoot.mjs`) and Chrome, Chromium, Edge or Brave (or set `CHROME_PATH`). `<skill>` is this skill's folder. Every script has `--help`; you don't need to read their source.
+All tools are plain Node scripts with **no npm dependencies**. Requirements: Node 20+ (22+ recommended; on 20 add `--experimental-websocket` for `shoot.mjs`) and Chrome, Chromium, Edge or Brave (or set `CHROME_PATH`). In containers where Chrome can't create its sandbox, set `CANVAS_UI_NO_SANDBOX=1` (it's set automatically when `CI` is). `<skill>` is this skill's folder. Every script has `--help`; you don't need to read their source.
 
 If the host has its own browser tools, use them for looking around and walking flows. Use `shoot.mjs` for evidence: it runs an isolated temporary browser profile, never touches the user's browser data, and adds the lint. If Node or Chrome is missing, fall back to host tools and produce the same evidence.
 

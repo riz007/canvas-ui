@@ -37,7 +37,10 @@ export async function launch({ timeout = 20000 } = {}) {
     "--headless=new", "--remote-debugging-port=0", `--user-data-dir=${profile}`,
     "--no-first-run", "--no-default-browser-check", "--disable-extensions", "--disable-background-networking",
     "--disable-component-update", "--disable-sync", "--hide-scrollbars", "--mute-audio",
-    "--force-color-profile=srgb", "--font-render-hinting=none", "--allow-file-access-from-files", "about:blank",
+    "--force-color-profile=srgb", "--font-render-hinting=none", "--allow-file-access-from-files",
+    // CI containers often can't create Chrome's sandbox; never disabled on a developer machine unless asked.
+    ...(process.env.CI || process.env.CANVAS_UI_NO_SANDBOX ? ["--no-sandbox"] : []),
+    "about:blank",
   ], { stdio: "ignore" });
 
   const portFile = join(profile, "DevToolsActivePort");
