@@ -1,0 +1,7 @@
+---
+description: UI design workflow — use when designing, redesigning, exploring visual directions for, recreating from a screenshot, or reviewing a user interface (website, app, dashboard, component).
+alwaysApply: false
+---
+
+Read `{{SKILL_DIR}}/SKILL.md` and follow it. Relative links and `<skill>` in it refer to `{{SKILL_DIR}}`.
+Not for pure logic, API work, refactors without visual change, or fully specified micro-edits.

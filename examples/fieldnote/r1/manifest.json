@@ -1,0 +1,17 @@
+{
+  "title": "Fieldnote \u2014 sound library",
+  "round": "r1",
+  "question": "Three first screens for the library. Which should we build out? Note what to keep from the others.",
+  "viewport": "desktop",
+  "candidates": [
+    {
+      "source": "a.html"
+    },
+    {
+      "source": "b.html"
+    },
+    {
+      "source": "c.html"
+    }
+  ]
+}

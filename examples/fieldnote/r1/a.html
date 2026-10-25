@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Archive Log</title>
+<link rel="stylesheet" href="a.tokens.css">
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); display: grid; grid-template-rows: auto auto 1fr auto; height: 100vh; overflow: hidden; }
+.mono { font-family: var(--font-mono); }
+
+header { display: grid; grid-template-columns: 180px minmax(0, 1fr) auto; align-items: center; gap: var(--space-6); padding: var(--space-3) var(--space-6); border-bottom: var(--border) solid var(--line-strong); }
+.mark { font: var(--weight-display) var(--step-2)/1 var(--font-display); letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
+.mark i { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.search { display: flex; align-items: center; gap: var(--space-3); height: 40px; padding: 0 var(--space-4); background: var(--surface); border: var(--border) solid var(--line-strong); border-radius: var(--radius-sm); }
+.search input { flex: 1; border: 0; background: none; font: inherit; color: var(--ink); outline: none; }
+.search .count { font: var(--step-n1) var(--font-mono); color: var(--ink-2); white-space: nowrap; }
+.search kbd { font: var(--step-n2) var(--font-mono); color: var(--ink-2); border: var(--border) solid var(--line-strong); border-radius: 3px; padding: 1px 5px; }
+nav { display: flex; gap: var(--space-5); font-size: var(--step-n1); }
+nav a { color: var(--ink-2); text-decoration: none; }
+nav a[aria-current] { color: var(--ink); font-weight: 600; }
+
+.filters { display: flex; gap: var(--space-2); align-items: center; padding: var(--space-3) var(--space-6); border-bottom: var(--border) solid var(--line); font: var(--step-n1) var(--font-mono); }
+.chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: var(--border) solid var(--line-strong); border-radius: var(--radius-sm); color: var(--ink-2); background: transparent; font: inherit; }
+.chip b { color: var(--ink); font-weight: 500; }
+.chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip.on b { color: var(--bg); }
+.filters .sort { margin-left: auto; color: var(--ink-2); }
+
+.list { overflow: hidden; }
+table { width: 100%; border-collapse: collapse; }
+th { font: 500 var(--step-n2)/1 var(--font-mono); color: var(--ink-2); text-align: left; padding: var(--space-3) var(--space-3); border-bottom: var(--border) solid var(--line); letter-spacing: 0.02em; }
+td { padding: 0 var(--space-3); height: 58px; border-bottom: var(--border) solid var(--line); vertical-align: middle; }
+td:first-child, th:first-child { padding-left: var(--space-6); width: 56px; }
+td:last-child, th:last-child { padding-right: var(--space-6); }
+tr.playing { background: var(--accent-soft); }
+.play { width: 28px; height: 28px; border-radius: 50%; border: var(--border) solid var(--line-strong); display: grid; place-items: center; background: var(--bg); }
+.play svg { width: 10px; height: 10px; fill: var(--ink); margin-left: 2px; }
+tr.playing .play { background: var(--accent); border-color: var(--accent); }
+tr.playing .play svg { fill: var(--on-accent); margin: 0; }
+.name { font-weight: 500; line-height: 1.25; }
+.where { font: var(--step-n1) var(--font-mono); color: var(--ink-2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 380px; }
+.wave { width: 100%; height: 30px; display: block; }
+.m { font: var(--step-n1) var(--font-mono); color: var(--ink-2); white-space: nowrap; }
+.m.len { color: var(--ink); }
+.dl { color: var(--ink-2); }
+
+.dock { border-top: var(--border) solid var(--ink); background: var(--surface); display: grid; grid-template-columns: 360px minmax(0, 1fr) auto; align-items: center; gap: var(--space-6); padding: var(--space-4) var(--space-6); }
+.dock .title { font: var(--weight-display) var(--step-1)/1.15 var(--font-display); }
+.dock .sub { font: var(--step-n1) var(--font-mono); color: var(--ink-2); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.big { position: relative; height: 64px; }
+.big canvas { width: 100%; height: 100%; display: block; }
+.times { display: flex; justify-content: space-between; font: var(--step-n2) var(--font-mono); color: var(--ink-2); margin-top: 4px; }
+.transport { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3); }
+.btn { height: 40px; padding: 0 var(--space-4); border-radius: var(--radius-sm); border: var(--border) solid var(--line-strong); background: var(--bg); font: 500 var(--step-n1) var(--font-body); color: var(--ink); display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+</style>
+</head>
+<body>
+<header>
+  <div class="mark"><i></i>Fieldnote</div>
+  <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input aria-label="Search recordings" value="rain, forest, pre-dawn"><span class="count">218 of 41,280</span><kbd>/</kbd></label>
+  <nav><a href="#" aria-current="page">Library</a><a href="#">Collections</a><a href="#">Downloads</a><a href="#">Account</a></nav>
+</header>
+<div class="filters">
+  <button class="chip">Place <b>Any</b></button>
+  <button class="chip on">Weather <b>Rain ×</b></button>
+  <button class="chip">Hour <b>03:00–06:00</b></button>
+  <button class="chip">Mic <b>Any</b></button>
+  <button class="chip">Rate <b>≥ 96k</b></button>
+  <button class="chip">Length <b>1–10 min</b></button>
+  <span class="sort">Sort: closest match ↓</span>
+</div>
+<div class="list"><table>
+  <thead><tr><th></th><th style="width:30%">Recording</th><th>Waveform</th><th>Length</th><th>Hour</th><th>Rate</th><th>Mic</th><th></th></tr></thead>
+  <tbody id="rows"></tbody>
+</table></div>
+<div class="dock">
+  <div><div class="title" id="dt"></div><div class="sub" id="ds"></div></div>
+  <div><div class="big"><canvas id="big"></canvas></div><div class="times"><span>02:14</span><span id="dl"></span></div></div>
+  <div class="transport"><button class="btn">Add to collection</button><button class="btn primary">Download WAV</button></div>
+</div>
+<script src="content.js"></script>
+<script>
+const css = getComputedStyle(document.documentElement);
+const v = (n) => css.getPropertyValue(n).trim();
+const rows = document.getElementById("rows");
+FN.clips.slice(0, 9).forEach((c, i) => {
+  const tr = document.createElement("tr");
+  if (i === 0) tr.className = "playing";
+  tr.innerHTML = `<td><span class="play"><svg viewBox="0 0 10 10">${i === 0 ? '<rect x="1" y="1" width="3" height="8"/><rect x="6" y="1" width="3" height="8"/>' : '<path d="M1 0l9 5-9 5z"/>'}</svg></span></td>
+    <td><div class="name">${c.name}</div><div class="where">${c.place}, ${c.region} · ${c.id}</div></td>
+    <td><canvas class="wave" data-seed="${c.seed}" data-played="${i === 0 ? 0.33 : 0}"></canvas></td>
+    <td class="m len">${c.len}</td><td class="m">${c.time}</td><td class="m">${c.rate}</td><td class="m">${c.mic}</td>
+    <td class="dl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg></td>`;
+  rows.appendChild(tr);
+});
+function draw(cv, seed, played, bar, gap) {
+  const r = devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  cv.width = w * r; cv.height = h * r;
+  const x = cv.getContext("2d"); x.scale(r, r);
+  const n = Math.floor(w / (bar + gap)), data = FN.wave(seed, n);
+  data.forEach((p, i) => {
+    x.fillStyle = i / n < played ? v("--accent") : (played ? v("--ink") : v("--ink-3"));
+    const bh = Math.max(2, p * h);
+    x.fillRect(i * (bar + gap), (h - bh) / 2, bar, bh);
+  });
+}
+document.querySelectorAll(".wave").forEach((cv) => draw(cv, +cv.dataset.seed, +cv.dataset.played, 2, 2));
+const c0 = FN.clips[0];
+document.getElementById("dt").textContent = c0.name;
+document.getElementById("ds").textContent = `${c0.place} · ${c0.time} · ${c0.weather}`;
+document.getElementById("dl").textContent = c0.len;
+const big = document.getElementById("big");
+draw(big, c0.seed, 0.33, 2, 1);
+const bx = big.getContext("2d"), r = devicePixelRatio || 1;
+bx.setTransform(r, 0, 0, r, 0, 0);
+bx.fillStyle = v("--ink"); bx.fillRect(big.clientWidth * 0.33, 0, 1.5, big.clientHeight);
+</script>
+</body>
+</html>

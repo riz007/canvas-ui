@@ -1,0 +1,55 @@
+{
+  "$comment": "One card per direction. Name it <id>.direction.json. Every field is a concrete decision, never an adjective. Fields marked (later) can wait until the direction is chosen.",
+  "id": "a",
+  "name": "Contact Sheet",
+  "northStar": "A sound library that reads like a well-kept tape archive: every clip labeled, measured, and one click from your timeline.",
+  "engine": {
+    "kind": "medium",
+    "_kinds": "material-setting | scene | character | movement | medium | rule-breaking",
+    "source": "Broadcast tape-box labels and spec sheets — the grammar of a field recordist's log, not its props.",
+    "evidence": "Users are post-production editors who search by metadata (mic, sample rate, location) before they listen."
+  },
+  "tone": {
+    "energy": 30,
+    "finish": 85,
+    "density": 75,
+    "weight": 40,
+    "formality": 70,
+    "_why": "Quiet + dense: editors scan hundreds of rows. Refined: this is a paid professional tool."
+  },
+  "benchmark": {
+    "category": "Sound-effects library for film and games",
+    "peers": ["Peer A (studied, screenshots in refs/peer-a/)", "Peer B (from memory — unverified)"],
+    "keep": ["Search bar is the first thing on screen", "Waveform preview per row"],
+    "change": ["Peers lead with a cinematic hero video; our users come to search, so the first screen is the result list"]
+  },
+  "skeleton": "Workspace. One-line header with search; filters as a single row of mono chips; 9 result rows visible at 1440x900; preview player docked at the bottom.",
+  "structure": "(later) Single column list + slide-over detail panel.",
+  "type": {
+    "display": { "family": "IBM Plex Sans Condensed", "weight": 600, "weights": [500, 600], "fallback": "sans" },
+    "body": { "family": "IBM Plex Sans", "weight": 400, "weights": [400, 500, 600], "fallback": "sans" },
+    "mono": { "family": "IBM Plex Mono", "weights": [400, 500], "fallback": "mono" },
+    "ratio": 1.2,
+    "_relationship": "Display only for the page title and clip names; all metadata in mono at step-n1."
+  },
+  "color": {
+    "bg": "#f3f1ea",
+    "ink": "#1b1a17",
+    "accent": "#e4572e",
+    "from": "The orange of a REC tally light — used only for 'playing' and the primary action, under 5% of the screen."
+  },
+  "hero": "The waveform of the selected clip, drawn in ink at full width; no photography.",
+  "icons": "Lucide at 1.5px stroke, square caps, 16px; transport controls are glyphs (▶ ■) in mono.",
+  "controls": "2px radius, 1px hairline borders, pressed = inset 1px ink line; focus = 2px accent ring offset 2px.",
+  "motion": {
+    "feel": "'Clack' — a cassette door closing: short, damped, no bounce.",
+    "entrance": "(later) Rows fade up 4px, 20ms stagger, first 9 only.",
+    "action": "(later) Play: waveform playhead sweeps; row tally dot lights.",
+    "echo": "(later) The same tally dot marks downloaded clips."
+  },
+  "breakthrough": "No hero at all — the result list starts 64px from the top.",
+  "memorable": "Scrubbing a waveform with the arrow keys plays 200ms grains, like jogging a tape deck.",
+  "refuses": ["Cinematic hero video", "Glassmorphism player", "Purple gradients", "Stock photos of microphones"],
+  "traits": ["Workspace-first", "Mono metadata", "One hot color"],
+  "tokens": {}
+}

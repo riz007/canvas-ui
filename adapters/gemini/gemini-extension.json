@@ -1,0 +1,6 @@
+{
+  "name": "canvas-ui",
+  "version": "0.1.0",
+  "description": "Design, redesign and review interfaces: explore three directions, compare them on a live canvas, tune tokens, refine against real screenshots.",
+  "contextFileName": "GEMINI.md"
+}

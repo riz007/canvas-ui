@@ -1,0 +1,82 @@
+{
+  "id": "b",
+  "name": "Night Exterior",
+  "northStar": "Every recording is a place at an hour. Open on one of them, so loud and specific you can almost feel the rain.",
+  "engine": {
+    "kind": "scene",
+    "source": "4:12 a.m. in a wet cedar forest: a recordist's headlamp off, levels glowing amber, everything else moss-dark.",
+    "evidence": "Sound designers buy atmosphere; the library's edge is that every file records when and where it happened."
+  },
+  "tone": {
+    "energy": 70,
+    "finish": 70,
+    "density": 20,
+    "weight": 65,
+    "formality": 45,
+    "_why": "Persuasion page for a creative audience: loud and airy, but crafted rather than raw."
+  },
+  "benchmark": {
+    "category": "Sound-effects library for film and games",
+    "keep": [
+      "Play is one click from the first screen"
+    ],
+    "change": [
+      "Peers show a generic cinematic montage; we show one real recording's spectrogram with its log"
+    ]
+  },
+  "skeleton": "Full-bleed spectrogram as the hero (top 70%). Headline set over the bottom-left like a film title card; one thumb-sized play button; a slate strip of recording metadata along the bottom edge.",
+  "type": {
+    "display": {
+      "family": "Instrument Serif",
+      "weight": 400,
+      "weights": [
+        400
+      ],
+      "italic": true,
+      "fallback": "serif"
+    },
+    "body": {
+      "family": "Hanken Grotesk",
+      "weight": 400,
+      "weights": [
+        400,
+        500,
+        600
+      ],
+      "fallback": "sans"
+    },
+    "mono": {
+      "family": "JetBrains Mono",
+      "weights": [
+        400
+      ],
+      "fallback": "mono"
+    },
+    "ratio": 1.5
+  },
+  "color": {
+    "bg": "#0e1511",
+    "ink": "#ece8dc",
+    "accent": "#f2a541",
+    "from": "Sodium-lamp amber of a recorder's level meters, against moss-black. Amber appears only where sound is (the spectrogram's peaks and the play control)."
+  },
+  "hero": "A spectrogram of the featured clip, rendered in moss → bone → amber; the hottest frequencies are the only saturated color.",
+  "icons": "No icon set: a drawn play triangle and arrows set in the body face.",
+  "controls": "Round play control 72px; text links underlined 1px offset 4px; no boxes.",
+  "motion": {
+    "feel": "'Hush' — a boom pole swinging slowly into place.",
+    "entrance": "(later) Spectrogram scrolls in from the right like a live capture."
+  },
+  "breakthrough": "No product UI above the fold at all: the first screen is one recording.",
+  "memorable": "Pressing play scrolls the spectrogram in real time and the headline time ticks (4:12 → 4:13).",
+  "refuses": [
+    "Left text / right screenshot split",
+    "Glow blobs",
+    "Gradient text"
+  ],
+  "traits": [
+    "One recording as hero",
+    "Editorial serif",
+    "Amber only where sound is"
+  ]
+}

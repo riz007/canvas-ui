@@ -1,0 +1,5 @@
+node_modules/
+.canvas-ui/
+.DS_Store
+examples/**/shots/report.json
+examples/**/shots/.sheet-*.html

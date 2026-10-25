@@ -1,0 +1,85 @@
+{
+  "id": "c",
+  "name": "Survey",
+  "northStar": "The library is an atlas: you find sound the way a location scout finds a place — by where it is.",
+  "engine": {
+    "kind": "medium",
+    "source": "Topographic survey sheets: contour lines, grid references, magenta overprint for the things that matter.",
+    "evidence": "Editors often search 'what does Lisbon sound like' before 'tram brakes'; 312 places is the library's moat."
+  },
+  "tone": {
+    "energy": 55,
+    "finish": 60,
+    "density": 55,
+    "weight": 45,
+    "formality": 30,
+    "_why": "Exploratory and a bit playful — scouting is fun — but it is still a tool."
+  },
+  "benchmark": {
+    "category": "Sound-effects library for film and games",
+    "keep": [
+      "Search stays in the top-left"
+    ],
+    "change": [
+      "Peers sort by category tree; we lead with places on a map"
+    ]
+  },
+  "skeleton": "Workspace with a map. Left index (380px): search + places grouped by region with counts. Map fills the rest; the selected place opens a sheet with its 3 best clips.",
+  "type": {
+    "display": {
+      "family": "Bricolage Grotesque",
+      "weight": 700,
+      "weights": [
+        500,
+        700
+      ],
+      "fallback": "sans"
+    },
+    "body": {
+      "family": "Atkinson Hyperlegible",
+      "weight": 400,
+      "weights": [
+        400,
+        700
+      ],
+      "fallback": "sans"
+    },
+    "mono": {
+      "family": "DM Mono",
+      "weights": [
+        400
+      ],
+      "fallback": "mono"
+    },
+    "ratio": 1.25
+  },
+  "color": {
+    "bg": "#f2f4ee",
+    "ink": "#10243e",
+    "accent": "#c8235f",
+    "from": "Survey-sheet navy for linework, and the magenta overprint mapmakers reserve for what you came for: pins and the play state.",
+    "extra": {
+      "contour": "#b9c6b0",
+      "water": "#cfe0e6"
+    }
+  },
+  "hero": "A contour map with pins sized by recording count; procedural terrain, no stock map tiles.",
+  "icons": "Phosphor at regular weight, 18px, round caps.",
+  "controls": "8px radius, navy 1.5px outlines, magenta fill for the selected state; pins scale up 1.15 on hover.",
+  "motion": {
+    "feel": "'Flick' — unfolding a paper map.",
+    "entrance": "(later) Pins drop in by count, largest first."
+  },
+  "breakthrough": "Navigation by place instead of by category.",
+  "memorable": "Hovering a pin plays a 2-second taste of that place.",
+  "refuses": [
+    "Category tree sidebar",
+    "Stock map tiles",
+    "Card grid of sounds"
+  ],
+  "traits": [
+    "Place-first",
+    "Contour map",
+    "Magenta overprint"
+  ]
+}
