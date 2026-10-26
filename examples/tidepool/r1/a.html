@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tidepool — Tide Table</title>
+<link rel="stylesheet" href="a.tokens.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--step-0);line-height:var(--leading-body);min-height:100vh;display:flex;flex-direction:column}
+header{display:flex;justify-content:space-between;align-items:baseline;padding:var(--space-4) var(--space-5);border-bottom:var(--border) solid var(--line-strong)}
+.wm{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-1)}
+.loc{font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2)}
+main{padding:var(--space-5);flex:1}
+.stamp{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+.q{font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2);margin:0 0 var(--space-2)}
+h1{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-4);line-height:var(--leading-tight);letter-spacing:var(--tracking-display);margin:0}
+.badge{flex:none;border:2px solid var(--accent-text);color:var(--accent-text);border-radius:var(--radius-sm);padding:var(--space-1) var(--space-3);font-family:var(--font-mono);font-size:var(--step-n1);font-weight:500;transform:rotate(-4deg);text-transform:uppercase;letter-spacing:.06em}
+table{width:100%;border-collapse:collapse;margin:var(--space-5) 0 var(--space-3)}
+td{padding:var(--space-3) 0;border-top:1px solid var(--line-strong)}
+tr:last-child td{border-bottom:1px solid var(--line-strong)}
+td:first-child{font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2);width:5.5em}
+td:last-child{font-weight:500}
+td b{font-family:var(--font-mono);font-weight:500;font-size:var(--step-1)}
+svg{display:block;width:100%;height:56px;margin-bottom:var(--space-6)}
+h2{font-family:var(--font-mono);font-size:var(--step-n1);font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);margin:0 0 var(--space-2)}
+.l{display:flex;justify-content:space-between;align-items:baseline;padding:var(--space-3) 0;border-top:1px solid var(--line-strong)}
+.l span{display:block;font-size:var(--step-n1);color:var(--ink-2)}
+.l strong{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-1)}
+.l em{font-style:normal;font-family:var(--font-mono);font-size:var(--step-2)}
+.bar{position:sticky;bottom:0;display:flex;gap:var(--space-4);align-items:center;padding:var(--space-4) var(--space-5);background:var(--surface);border-top:var(--border) solid var(--line-strong)}
+.bar small{flex:1;color:var(--ink-2);font-size:var(--step-n1)}
+.bar a{background:var(--accent);color:var(--on-accent);padding:var(--space-3) var(--space-6);border-radius:var(--radius-sm);font-weight:600;text-decoration:none}
+</style></head><body>
+<header><span class="wm">Tidepool</span><span class="loc">ERICEIRA · REPORT 7:30</span></header>
+<main>
+<p class="q">Today, for a first-timer</p>
+<div class="stamp"><h1>Good for beginners</h1><span class="badge">Go</span></div>
+<table>
+<tr><td>Waves</td><td><b>0.8–1.0 m</b></td></tr>
+<tr><td>Wind</td><td>Light offshore, 8 km/h</td></tr>
+<tr><td>Tide</td><td>Low 09:42, rising</td></tr>
+</table>
+<svg viewBox="0 0 300 56" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C40 4 90 4 125 28 S210 54 250 22 S290 8 300 12" fill="none" stroke="currentColor" stroke-width="2"/><line x1="0" y1="55" x2="300" y2="55" stroke="currentColor" stroke-opacity=".3"/></svg>
+<h2>Lessons · board and wetsuit included</h2>
+<div class="l"><div><strong>Group lesson</strong><span>2 h · up to 6 surfers</span></div><em>€45</em></div>
+<div class="l"><div><strong>Private lesson</strong><span>2 h · just you and an instructor</span></div><em>€90</em></div>
+<div class="l"><div><strong>5-day course</strong><span>5 mornings · beginner to improver</span></div><em>€190</em></div>
+</main>
+<div class="bar"><small>From €45 · board and wetsuit included</small><a href="#">Book a lesson</a></div>
+</body></html>

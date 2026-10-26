@@ -1,0 +1,63 @@
+{
+  "id": "a",
+  "name": "Roast Log",
+  "northStar": "Today's roast, in order, with the one thing that could go wrong \u2014 readable at arm's length from the roaster.",
+  "engine": {
+    "kind": "medium",
+    "source": "The paper roast log clipped to the roaster: ruled rows, times, weights, a red pen for problems.",
+    "evidence": "The roaster already keeps a paper log; the dashboard should feel like the clean version of it."
+  },
+  "tone": {
+    "energy": 25,
+    "finish": 80,
+    "density": 80,
+    "weight": 45,
+    "formality": 75,
+    "_why": "A working tool glanced at between batches: dense, calm, exact."
+  },
+  "skeleton": "Workspace: left 60% is the day's roast queue as a ruled log (6 rows, current one expanded with its live curve); right column stacks 'runs out soon' stock bars and tomorrow's shipments.",
+  "type": {
+    "display": {
+      "family": "Inter Tight",
+      "weight": 600,
+      "weights": [
+        500,
+        600,
+        700
+      ],
+      "fallback": "sans"
+    },
+    "body": {
+      "family": "Inter Tight",
+      "weight": 400,
+      "weights": [
+        400,
+        500,
+        600
+      ]
+    },
+    "mono": {
+      "family": "JetBrains Mono",
+      "weights": [
+        400,
+        500
+      ],
+      "fallback": "mono"
+    },
+    "ratio": 1.2
+  },
+  "color": {
+    "bg": "#f6f6f3",
+    "ink": "#151515",
+    "accent": "#d7261e",
+    "from": "The red pen on a roast log: only for what needs action (low stock, the current roast)."
+  },
+  "hero": "The live roast curve inside the active row.",
+  "icons": "None: status as words and a dot.",
+  "controls": "0 radius, hairline rules, red underline for focus.",
+  "traits": [
+    "Ruled log",
+    "Red pen only",
+    "Stock as bars"
+  ]
+}

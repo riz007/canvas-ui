@@ -1,180 +1,695 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Canvas</title>
-<style>
-:root {
-  --c-bg: #f4f4f5; --c-panel: #ffffff; --c-raise: #fafafa; --c-line: #e4e4e7; --c-line-2: #d4d4d8;
-  --c-ink: #18181b; --c-ink-2: #52525b; --c-ink-3: #8a8a93; --c-hot: #2563eb; --c-hot-ink: #fff; --c-hot-soft: #dbe6fe;
-  --c-good: #15803d; --c-shadow: 0 1px 2px rgb(0 0 0 / .06), 0 8px 24px -12px rgb(0 0 0 / .18);
-  --r: 10px; --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --c-bg: #0f0f12; --c-panel: #18181c; --c-raise: #1f1f24; --c-line: #2a2a31; --c-line-2: #3a3a42;
-  --c-ink: #ececef; --c-ink-2: #a8a8b2; --c-ink-3: #74747e; --c-hot: #6d9cff; --c-hot-ink: #0b1020; --c-hot-soft: #1d2a48;
-  --c-good: #4ade80; --c-shadow: 0 1px 2px rgb(0 0 0 / .4), 0 12px 32px -12px rgb(0 0 0 / .6); color-scheme: dark; } }
-:root[data-theme="dark"] {
-  --c-bg: #0f0f12; --c-panel: #18181c; --c-raise: #1f1f24; --c-line: #2a2a31; --c-line-2: #3a3a42;
-  --c-ink: #ececef; --c-ink-2: #a8a8b2; --c-ink-3: #74747e; --c-hot: #6d9cff; --c-hot-ink: #0b1020; --c-hot-soft: #1d2a48;
-  --c-good: #4ade80; --c-shadow: 0 1px 2px rgb(0 0 0 / .4), 0 12px 32px -12px rgb(0 0 0 / .6); color-scheme: dark; }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Canvas</title>
+    <style>
+      :root {
+        --c-bg: #f4f4f5;
+        --c-panel: #ffffff;
+        --c-raise: #fafafa;
+        --c-line: #e4e4e7;
+        --c-line-2: #d4d4d8;
+        --c-ink: #18181b;
+        --c-ink-2: #52525b;
+        --c-ink-3: #8a8a93;
+        --c-hot: #2563eb;
+        --c-hot-ink: #fff;
+        --c-hot-soft: #dbe6fe;
+        --c-good: #15803d;
+        --c-shadow:
+          0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px -12px rgb(0 0 0 / 0.18);
+        --r: 10px;
+        --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        --mono: ui-monospace, "SF Mono", Menlo, monospace;
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --c-bg: #0f0f12;
+          --c-panel: #18181c;
+          --c-raise: #1f1f24;
+          --c-line: #2a2a31;
+          --c-line-2: #3a3a42;
+          --c-ink: #ececef;
+          --c-ink-2: #a8a8b2;
+          --c-ink-3: #74747e;
+          --c-hot: #6d9cff;
+          --c-hot-ink: #0b1020;
+          --c-hot-soft: #1d2a48;
+          --c-good: #4ade80;
+          --c-shadow:
+            0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -12px rgb(0 0 0 / 0.6);
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --c-bg: #0f0f12;
+        --c-panel: #18181c;
+        --c-raise: #1f1f24;
+        --c-line: #2a2a31;
+        --c-line-2: #3a3a42;
+        --c-ink: #ececef;
+        --c-ink-2: #a8a8b2;
+        --c-ink-3: #74747e;
+        --c-hot: #6d9cff;
+        --c-hot-ink: #0b1020;
+        --c-hot-soft: #1d2a48;
+        --c-good: #4ade80;
+        --c-shadow:
+          0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -12px rgb(0 0 0 / 0.6);
+        color-scheme: dark;
+      }
 
-* { box-sizing: border-box; }
-html, body { margin: 0; background: var(--c-bg); color: var(--c-ink); font: 14px/1.45 var(--font); -webkit-font-smoothing: antialiased; }
-button, input, select, textarea { font: inherit; color: inherit; }
-button { cursor: pointer; }
-:focus-visible { outline: 2px solid var(--c-hot); outline-offset: 2px; }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        background: var(--c-bg);
+        color: var(--c-ink);
+        font: 14px/1.45 var(--font);
+        -webkit-font-smoothing: antialiased;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      :focus-visible {
+        outline: 2px solid var(--c-hot);
+        outline-offset: 2px;
+      }
 
-/* ---------- top bar ---------- */
-.bar { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  padding: 10px 16px; background: color-mix(in srgb, var(--c-bg) 86%, transparent); backdrop-filter: saturate(1.4) blur(10px);
-  border-bottom: 1px solid var(--c-line); }
-.title { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
-.title b { font-size: 15px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.title span { color: var(--c-ink-3); font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.seg { display: inline-flex; background: var(--c-panel); border: 1px solid var(--c-line); border-radius: 9px; padding: 2px; gap: 2px; }
-.seg button { border: 0; background: none; padding: 5px 10px; border-radius: 7px; color: var(--c-ink-2); font-size: 13px; white-space: nowrap; }
-.seg button[aria-pressed="true"] { background: var(--c-ink); color: var(--c-bg); }
-.tog { border: 1px solid var(--c-line); background: var(--c-panel); border-radius: 9px; padding: 5px 10px; font-size: 13px; color: var(--c-ink-2); }
-.tog[aria-pressed="true"] { border-color: var(--c-hot); color: var(--c-hot); background: var(--c-hot-soft); }
-kbd { font: 11px var(--mono); padding: 1px 4px; border: 1px solid var(--c-line-2); border-bottom-width: 2px; border-radius: 4px; color: var(--c-ink-3); }
+      /* ---------- top bar ---------- */
+      .bar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 10px 16px;
+        background: color-mix(in srgb, var(--c-bg) 86%, transparent);
+        backdrop-filter: saturate(1.4) blur(10px);
+        border-bottom: 1px solid var(--c-line);
+      }
+      .title {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        margin-right: auto;
+      }
+      .title b {
+        font-size: 15px;
+        font-weight: 650;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .title span {
+        color: var(--c-ink-3);
+        font-size: 12.5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .seg {
+        display: inline-flex;
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: 9px;
+        padding: 2px;
+        gap: 2px;
+      }
+      .seg button {
+        border: 0;
+        background: none;
+        padding: 5px 10px;
+        border-radius: 7px;
+        color: var(--c-ink-2);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--c-ink);
+        color: var(--c-bg);
+      }
+      .tog {
+        border: 1px solid var(--c-line);
+        background: var(--c-panel);
+        border-radius: 9px;
+        padding: 5px 10px;
+        font-size: 13px;
+        color: var(--c-ink-2);
+      }
+      .tog[aria-pressed="true"] {
+        border-color: var(--c-hot);
+        color: var(--c-hot);
+        background: var(--c-hot-soft);
+      }
+      kbd {
+        font: 11px var(--mono);
+        padding: 1px 4px;
+        border: 1px solid var(--c-line-2);
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        color: var(--c-ink-3);
+      }
 
-/* ---------- brief ---------- */
-.brief { padding: 14px 16px 0; color: var(--c-ink-2); max-width: 980px; }
-.brief p { margin: 0; }
+      /* ---------- brief ---------- */
+      .brief {
+        padding: 14px 16px 0;
+        color: var(--c-ink-2);
+        max-width: 980px;
+      }
+      .brief p {
+        margin: 0;
+      }
 
-/* ---------- grid ---------- */
-main { padding: 16px; }
-.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col, 360px)), 1fr)); align-items: stretch; }
-.card { background: var(--c-panel); border: 1px solid var(--c-line); border-radius: var(--r); box-shadow: var(--c-shadow); overflow: hidden; display: flex; flex-direction: column; }
-.card.picked { outline: 2px solid var(--c-good); outline-offset: 2px; }
-.card header { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--c-line); }
-.num { font: 600 12px/1 var(--mono); color: var(--c-ink-3); }
-.name { font-weight: 650; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.badge { font-size: 11.5px; padding: 2px 7px; border-radius: 99px; background: var(--c-raise); border: 1px solid var(--c-line); color: var(--c-ink-2); }
-.badge.good { color: var(--c-good); border-color: currentColor; background: none; }
-.icon-btn { border: 1px solid transparent; background: none; border-radius: 7px; padding: 4px 7px; color: var(--c-ink-2); font-size: 12.5px; }
-.icon-btn:hover { border-color: var(--c-line); background: var(--c-raise); }
+      /* ---------- grid ---------- */
+      main {
+        padding: 16px;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(
+          auto-fit,
+          minmax(min(100%, var(--col, 360px)), 1fr)
+        );
+        align-items: stretch;
+      }
+      .card {
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: var(--r);
+        box-shadow: var(--c-shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .card.picked {
+        outline: 2px solid var(--c-good);
+        outline-offset: 2px;
+      }
+      .card header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--c-line);
+      }
+      .num {
+        font: 600 12px/1 var(--mono);
+        color: var(--c-ink-3);
+      }
+      .name {
+        font-weight: 650;
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .badge {
+        font-size: 11.5px;
+        padding: 2px 7px;
+        border-radius: 99px;
+        background: var(--c-raise);
+        border: 1px solid var(--c-line);
+        color: var(--c-ink-2);
+      }
+      .badge.good {
+        color: var(--c-good);
+        border-color: currentColor;
+        background: none;
+      }
+      .icon-btn {
+        border: 1px solid transparent;
+        background: none;
+        border-radius: 7px;
+        padding: 4px 7px;
+        color: var(--c-ink-2);
+        font-size: 12.5px;
+      }
+      .icon-btn:hover {
+        border-color: var(--c-line);
+        background: var(--c-raise);
+      }
 
-.stage { position: relative; overflow: hidden; background: var(--c-raise); cursor: zoom-in; }
-.stage .frame { position: absolute; top: 0; left: 0; transform-origin: 0 0; border: 0; background: #fff; }
-.stage img.frame { object-fit: cover; object-position: top left; }
-.solo .stage, .compare .stage, .overlay .stage { cursor: default; }
-body.squint .frame { filter: grayscale(1) blur(var(--squint, 7px)) contrast(1.15); }
-.grid .stage iframe:not(.live) { pointer-events: none; }
+      .stage {
+        position: relative;
+        overflow: hidden;
+        background: var(--c-raise);
+        cursor: zoom-in;
+      }
+      .stage .frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform-origin: 0 0;
+        border: 0;
+        background: #fff;
+      }
+      .stage img.frame {
+        object-fit: cover;
+        object-position: top left;
+      }
+      .solo .stage,
+      .compare .stage,
+      .overlay .stage {
+        cursor: default;
+      }
+      body.squint .frame {
+        filter: grayscale(1) blur(var(--squint, 7px)) contrast(1.15);
+      }
+      .grid .stage iframe:not(.live) {
+        pointer-events: none;
+      }
 
-.meta { padding: 12px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--c-line); flex: 1; }
-.meta > .row:last-child { margin-top: auto; }
-.concept { margin: 0; color: var(--c-ink); }
-.kv { display: grid; grid-template-columns: 76px 1fr; gap: 4px 10px; font-size: 13px; }
-.kv dt { color: var(--c-ink-3); } .kv dd { margin: 0; color: var(--c-ink-2); }
-.swatches { display: flex; gap: 4px; flex-wrap: wrap; }
-.swatches i { width: 22px; height: 22px; border-radius: 6px; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .12); }
-.traits { display: flex; flex-wrap: wrap; gap: 4px; }
-.dials { display: grid; grid-template-columns: 70px 1fr 54px; gap: 3px 8px; font-size: 11.5px; color: var(--c-ink-3); align-items: center; }
-.dials .track { height: 4px; background: var(--c-line); border-radius: 4px; position: relative; }
-.dials .track b { position: absolute; top: -3px; width: 10px; height: 10px; border-radius: 50%; background: var(--c-ink-2); transform: translateX(-50%); }
-.dials span:nth-child(3n) { text-align: right; }
-.notes { display: grid; gap: 6px; }
-.notes textarea { width: 100%; resize: vertical; min-height: 34px; border: 1px solid var(--c-line); background: var(--c-raise); border-radius: 8px; padding: 7px 9px; font-size: 13px; }
-.notes textarea::placeholder { color: var(--c-ink-3); }
-.pick { border: 0; background: var(--c-hot); color: var(--c-hot-ink); padding: 9px 12px; border-radius: 8px; font-weight: 650; }
-.pick:hover { filter: brightness(1.08); }
-.row { display: flex; gap: 8px; align-items: center; }
-.row .pick { flex: 1; }
+      .meta {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-top: 1px solid var(--c-line);
+        flex: 1;
+      }
+      .meta > .row:last-child {
+        margin-top: auto;
+      }
+      .concept {
+        margin: 0;
+        color: var(--c-ink);
+      }
+      .kv {
+        display: grid;
+        grid-template-columns: 76px 1fr;
+        gap: 4px 10px;
+        font-size: 13px;
+      }
+      .kv dt {
+        color: var(--c-ink-3);
+      }
+      .kv dd {
+        margin: 0;
+        color: var(--c-ink-2);
+      }
+      .swatches {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .swatches i {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12);
+      }
+      .traits {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .dials {
+        display: grid;
+        grid-template-columns: 70px 1fr 54px;
+        gap: 3px 8px;
+        font-size: 11.5px;
+        color: var(--c-ink-3);
+        align-items: center;
+      }
+      .dials .track {
+        height: 4px;
+        background: var(--c-line);
+        border-radius: 4px;
+        position: relative;
+      }
+      .dials .track b {
+        position: absolute;
+        top: -3px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--c-ink-2);
+        transform: translateX(-50%);
+      }
+      .dials span:nth-child(3n) {
+        text-align: right;
+      }
+      .notes {
+        display: grid;
+        gap: 6px;
+      }
+      .notes textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 34px;
+        border: 1px solid var(--c-line);
+        background: var(--c-raise);
+        border-radius: 8px;
+        padding: 7px 9px;
+        font-size: 13px;
+      }
+      .notes textarea::placeholder {
+        color: var(--c-ink-3);
+      }
+      .pick {
+        border: 0;
+        background: var(--c-hot);
+        color: var(--c-hot-ink);
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-weight: 650;
+      }
+      .pick:hover {
+        filter: brightness(1.08);
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .row .pick {
+        flex: 1;
+      }
 
-body.blind .meta .concept, body.blind .meta .kv, body.blind .meta .swatches, body.blind .meta .traits, body.blind .meta .dials, body.blind .name, body.blind .badge:not(.good) { display: none; }
+      body.blind .meta .concept,
+      body.blind .meta .kv,
+      body.blind .meta .swatches,
+      body.blind .meta .traits,
+      body.blind .meta .dials,
+      body.blind .name,
+      body.blind .badge:not(.good) {
+        display: none;
+      }
 
-/* ---------- focus ---------- */
-.card.solo { display: grid; grid-template-columns: minmax(0, 1fr) 340px; grid-template-rows: auto 1fr; }
-.card.solo > header { grid-column: 1 / -1; }
-.card.solo > .stage { grid-column: 1; align-self: start; }
-.card.solo > .meta { grid-column: 2; grid-row: 2; border-top: 0; border-left: 1px solid var(--c-line); }
-.card.solo > .meta > .row:last-child { margin-top: 0; }
-.pager { display: flex; gap: 4px; }
+      /* ---------- focus ---------- */
+      .card.solo {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        grid-template-rows: auto 1fr;
+      }
+      .card.solo > header {
+        grid-column: 1 / -1;
+      }
+      .card.solo > .stage {
+        grid-column: 1;
+        align-self: start;
+      }
+      .card.solo > .meta {
+        grid-column: 2;
+        grid-row: 2;
+        border-top: 0;
+        border-left: 1px solid var(--c-line);
+      }
+      .card.solo > .meta > .row:last-child {
+        margin-top: 0;
+      }
+      .pager {
+        display: flex;
+        gap: 4px;
+      }
 
-/* ---------- compare / overlay ---------- */
-.ab { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.ab .slot { background: var(--c-panel); border: 1px solid var(--c-line); border-radius: var(--r); overflow: hidden; }
-.ab .slot header { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--c-line); }
-.ab select { border: 1px solid var(--c-line); background: var(--c-raise); border-radius: 7px; padding: 4px 6px; flex: 1; min-width: 0; }
-.ov { background: var(--c-panel); border: 1px solid var(--c-line); border-radius: var(--r); overflow: hidden; }
-.ov header { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--c-line); flex-wrap: wrap; }
-.ov .stage { cursor: default; }
-.ov .stage .top { opacity: var(--mix, .5); }
-.ov input[type=range] { width: 180px; }
+      /* ---------- compare / overlay ---------- */
+      .ab {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .ab .slot {
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: var(--r);
+        overflow: hidden;
+      }
+      .ab .slot header {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--c-line);
+      }
+      .ab select {
+        border: 1px solid var(--c-line);
+        background: var(--c-raise);
+        border-radius: 7px;
+        padding: 4px 6px;
+        flex: 1;
+        min-width: 0;
+      }
+      .ov {
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: var(--r);
+        overflow: hidden;
+      }
+      .ov header {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--c-line);
+        flex-wrap: wrap;
+      }
+      .ov .stage {
+        cursor: default;
+      }
+      .ov .stage .top {
+        opacity: var(--mix, 0.5);
+      }
+      .ov input[type="range"] {
+        width: 180px;
+      }
 
-/* ---------- tune drawer ---------- */
-.tune { display: none; gap: 10px; padding-top: 10px; border-top: 1px dashed var(--c-line-2); }
-.tune.open { display: grid; }
-.tune label { display: grid; grid-template-columns: 76px 1fr 36px; gap: 8px; align-items: center; font-size: 12.5px; color: var(--c-ink-2); }
-.tune input[type=range] { width: 100%; accent-color: var(--c-hot); }
-.tune output { font: 12px var(--mono); color: var(--c-ink-3); text-align: right; }
-.tune .colors { display: flex; gap: 8px; }
-.tune .colors label { grid-template-columns: auto auto; gap: 6px; }
-.tune input[type=color] { width: 30px; height: 26px; border: 1px solid var(--c-line); border-radius: 6px; padding: 0; background: none; }
-.tune small { color: var(--c-ink-3); }
+      /* ---------- tune drawer ---------- */
+      .tune {
+        display: none;
+        gap: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--c-line-2);
+      }
+      .tune.open {
+        display: grid;
+      }
+      .tune label {
+        display: grid;
+        grid-template-columns: 76px 1fr 36px;
+        gap: 8px;
+        align-items: center;
+        font-size: 12.5px;
+        color: var(--c-ink-2);
+      }
+      .tune input[type="range"] {
+        width: 100%;
+        accent-color: var(--c-hot);
+      }
+      .tune output {
+        font: 12px var(--mono);
+        color: var(--c-ink-3);
+        text-align: right;
+      }
+      .tune .colors {
+        display: flex;
+        gap: 8px;
+      }
+      .tune .colors label {
+        grid-template-columns: auto auto;
+        gap: 6px;
+      }
+      .tune input[type="color"] {
+        width: 30px;
+        height: 26px;
+        border: 1px solid var(--c-line);
+        border-radius: 6px;
+        padding: 0;
+        background: none;
+      }
+      .tune small {
+        color: var(--c-ink-3);
+      }
 
-/* ---------- toast ---------- */
-.toast { position: fixed; z-index: 50; left: 50%; bottom: 20px; transform: translateX(-50%) translateY(20px); opacity: 0; pointer-events: none;
-  width: min(640px, calc(100vw - 32px)); background: var(--c-ink); color: var(--c-bg); border-radius: 12px; padding: 14px; box-shadow: var(--c-shadow);
-  transition: opacity .18s, transform .22s cubic-bezier(.2,.7,.1,1); }
-.toast.show { opacity: 1; transform: translateX(-50%); pointer-events: auto; }
-.toast pre { margin: 8px 0 0; white-space: pre-wrap; font: 12px/1.5 var(--mono); max-height: 220px; overflow: auto; opacity: .85; }
-.toast .row { justify-content: space-between; }
-.toast button { background: none; border: 1px solid currentColor; border-radius: 7px; padding: 3px 9px; color: inherit; opacity: .8; }
+      /* ---------- toast ---------- */
+      .toast {
+        position: fixed;
+        z-index: 50;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%) translateY(20px);
+        opacity: 0;
+        pointer-events: none;
+        width: min(640px, calc(100vw - 32px));
+        background: var(--c-ink);
+        color: var(--c-bg);
+        border-radius: 12px;
+        padding: 14px;
+        box-shadow: var(--c-shadow);
+        transition:
+          opacity 0.18s,
+          transform 0.22s cubic-bezier(0.2, 0.7, 0.1, 1);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%);
+        pointer-events: auto;
+      }
+      .toast pre {
+        margin: 8px 0 0;
+        white-space: pre-wrap;
+        font: 12px/1.5 var(--mono);
+        max-height: 220px;
+        overflow: auto;
+        opacity: 0.85;
+      }
+      .toast .row {
+        justify-content: space-between;
+      }
+      .toast button {
+        background: none;
+        border: 1px solid currentColor;
+        border-radius: 7px;
+        padding: 3px 9px;
+        color: inherit;
+        opacity: 0.8;
+      }
 
-.help { position: fixed; inset: 0; z-index: 60; display: none; place-items: center; background: rgb(0 0 0 / .4); }
-.help.show { display: grid; }
-.help > div { background: var(--c-panel); border: 1px solid var(--c-line); border-radius: 14px; padding: 18px 20px; width: min(440px, calc(100vw - 32px)); box-shadow: var(--c-shadow); }
-.help dl { display: grid; grid-template-columns: 110px 1fr; gap: 6px 12px; margin: 10px 0 0; font-size: 13px; }
-.help dd { margin: 0; color: var(--c-ink-2); }
+      .help {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: none;
+        place-items: center;
+        background: rgb(0 0 0 / 0.4);
+      }
+      .help.show {
+        display: grid;
+      }
+      .help > div {
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: 14px;
+        padding: 18px 20px;
+        width: min(440px, calc(100vw - 32px));
+        box-shadow: var(--c-shadow);
+      }
+      .help dl {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        gap: 6px 12px;
+        margin: 10px 0 0;
+        font-size: 13px;
+      }
+      .help dd {
+        margin: 0;
+        color: var(--c-ink-2);
+      }
 
-@media (max-width: 760px) {
-  .ab { grid-template-columns: 1fr; }
-  .card.solo { grid-template-columns: 1fr; }
-  .card.solo > .meta { grid-column: 1; grid-row: auto; border-left: 0; border-top: 1px solid var(--c-line); }
-  .hide-sm { display: none; }
-}
-</style>
-</head>
-<body>
-<div class="bar">
-  <div class="title"><b id="title"></b><span id="sub"></span></div>
-  <div class="seg" id="views" role="group" aria-label="Layout">
-    <button data-v="grid" title="Grid (G)">Grid</button>
-    <button data-v="focus" title="Focus (F)">Focus</button>
-    <button data-v="compare" title="A / B (C)">A / B</button>
-    <button data-v="overlay" title="Overlay (O)">Overlay</button>
-  </div>
-  <div class="seg" id="vps" role="group" aria-label="Viewport"></div>
-  <button class="tog" id="squint" aria-pressed="false" title="Squint test (S)">Squint</button>
-  <button class="tog" id="blind" aria-pressed="false" title="Blind mode (B)">Blind</button>
-  <button class="tog hide-sm" id="sync" aria-pressed="true" title="Sync scroll across frames">Sync</button>
-  <button class="tog hide-sm" id="theme" title="Shell theme">◐</button>
-  <button class="tog" id="helpBtn" title="Shortcuts (?)">?</button>
-</div>
-<div class="brief" id="brief" hidden><p id="question"></p></div>
-<main id="main"></main>
-<div class="toast" id="toast" role="status" aria-live="polite"><div class="row"><b id="toastTitle">Copied</b><span class="row"><button id="dl">Save .json</button><button id="toastClose">Close</button></span></div><pre id="toastText"></pre></div>
-<div class="help" id="help"><div>
-  <b>Keyboard</b>
-  <dl>
-    <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Previous / next candidate</dd>
-    <dt><kbd>1</kbd>–<kbd>9</kbd></dt><dd>Focus candidate</dd>
-    <dt><kbd>G</kbd> <kbd>F</kbd> <kbd>C</kbd> <kbd>O</kbd></dt><dd>Grid · Focus · A/B · Overlay</dd>
-    <dt><kbd>D</kbd> <kbd>T</kbd> <kbd>M</kbd> <kbd>N</kbd></dt><dd>Desktop · Tablet · Mobile · Native</dd>
-    <dt><kbd>S</kbd> / <kbd>B</kbd></dt><dd>Squint test / Blind mode</dd>
-    <dt><kbd>U</kbd></dt><dd>Tune panel (focus view)</dd>
-    <dt><kbd>Enter</kbd></dt><dd>Pick the focused candidate</dd>
-    <dt><kbd>Esc</kbd></dt><dd>Back to grid / close</dd>
-  </dl>
-</div></div>
+      @media (max-width: 760px) {
+        .ab {
+          grid-template-columns: 1fr;
+        }
+        .card.solo {
+          grid-template-columns: 1fr;
+        }
+        .card.solo > .meta {
+          grid-column: 1;
+          grid-row: auto;
+          border-left: 0;
+          border-top: 1px solid var(--c-line);
+        }
+        .hide-sm {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <div class="title"><b id="title"></b><span id="sub"></span></div>
+      <div class="seg" id="views" role="group" aria-label="Layout">
+        <button data-v="grid" title="Grid (G)">Grid</button>
+        <button data-v="focus" title="Focus (F)">Focus</button>
+        <button data-v="compare" title="A / B (C)">A / B</button>
+        <button data-v="overlay" title="Overlay (O)">Overlay</button>
+      </div>
+      <div class="seg" id="vps" role="group" aria-label="Viewport"></div>
+      <button
+        class="tog"
+        id="squint"
+        aria-pressed="false"
+        title="Squint test (S)"
+      >
+        Squint
+      </button>
+      <button
+        class="tog"
+        id="blind"
+        aria-pressed="false"
+        title="Blind mode (B)"
+      >
+        Blind
+      </button>
+      <button
+        class="tog hide-sm"
+        id="sync"
+        aria-pressed="true"
+        title="Sync scroll across frames"
+      >
+        Sync
+      </button>
+      <button class="tog hide-sm" id="theme" title="Shell theme">◐</button>
+      <button class="tog" id="helpBtn" title="Shortcuts (?)">?</button>
+    </div>
+    <div class="brief" id="brief" hidden><p id="question"></p></div>
+    <main id="main"></main>
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <div class="row">
+        <b id="toastTitle">Copied</b
+        ><span class="row"
+          ><button id="dl">Save .json</button
+          ><button id="toastClose">Close</button></span
+        >
+      </div>
+      <pre id="toastText"></pre>
+    </div>
+    <div class="help" id="help">
+      <div>
+        <b>Keyboard</b>
+        <dl>
+          <dt><kbd>←</kbd> <kbd>→</kbd></dt>
+          <dd>Previous / next candidate</dd>
+          <dt><kbd>1</kbd>–<kbd>9</kbd></dt>
+          <dd>Focus candidate</dd>
+          <dt><kbd>G</kbd> <kbd>F</kbd> <kbd>C</kbd> <kbd>O</kbd></dt>
+          <dd>Grid · Focus · A/B · Overlay</dd>
+          <dt><kbd>D</kbd> <kbd>T</kbd> <kbd>M</kbd> <kbd>N</kbd></dt>
+          <dd>Desktop · Tablet · Mobile · Native</dd>
+          <dt><kbd>S</kbd> / <kbd>B</kbd></dt>
+          <dd>Squint test / Blind mode</dd>
+          <dt><kbd>U</kbd></dt>
+          <dd>Tune panel (focus view)</dd>
+          <dt><kbd>Enter</kbd></dt>
+          <dd>Pick the focused candidate</dd>
+          <dt><kbd>Esc</kbd></dt>
+          <dd>Back to grid / close</dd>
+        </dl>
+      </div>
+    </div>
 
-<script id="canvas-data" type="application/json">{"title":"Fieldnote — sound library","round":"r1","question":"Three first screens for the library. Which should we build out? Note what to keep from the others.","note":"","viewport":"desktop","candidates":[{"kind":"html","source":"a.html","name":"Contact Sheet","concept":"A sound library that reads like a well-kept tape archive: every clip labeled, measured, and one click from your timeline.","typography":"IBM Plex Sans Condensed 600 (display) · IBM Plex Sans 400 (body) · IBM Plex Mono (mono)","skeleton":"Workspace. One-line header with search; filters as a single row of mono chips; 9 result rows visible at 1440x900; preview player docked at the bottom.","hero":"The waveform of the selected clip, drawn in ink at full width; no photography.","palette":["#f3f1ea","#1b1a17","#e4572e"],"traits":["Workspace-first","Mono metadata","One hot color"],"baseline":false,"interactive":false,"direction":{"id":"a","name":"Contact Sheet","northStar":"A sound library that reads like a well-kept tape archive: every clip labeled, measured, and one click from your timeline.","engine":{"kind":"medium","source":"Broadcast tape-box labels and spec sheets — the grammar of a field recordist's log, not its props.","evidence":"Users are post-production editors who search by metadata (mic, sample rate, location) before they listen."},"tone":{"energy":30,"finish":85,"density":75,"weight":40,"formality":70,"_why":"Quiet + dense: editors scan hundreds of rows. Refined: this is a paid professional tool."},"benchmark":{"category":"Sound-effects library for film and games","peers":["Category leaders open with a cinematic hero video and a search box below the fold"],"keep":["Search bar is the first thing on screen","Waveform preview per row"],"change":["Peers lead with a cinematic hero video; our users come to search, so the first screen is the result list"]},"skeleton":"Workspace. One-line header with search; filters as a single row of mono chips; 9 result rows visible at 1440x900; preview player docked at the bottom.","structure":"(later) Single column list + slide-over detail panel.","type":{"display":{"family":"IBM Plex Sans Condensed","weight":600,"weights":[500,600],"fallback":"sans"},"body":{"family":"IBM Plex Sans","weight":400,"weights":[400,500,600],"fallback":"sans"},"mono":{"family":"IBM Plex Mono","weights":[400,500],"fallback":"mono"},"ratio":1.2,"_relationship":"Display only for the page title and clip names; all metadata in mono at step-n1."},"color":{"bg":"#f3f1ea","ink":"#1b1a17","accent":"#e4572e","from":"The orange of a REC tally light — used only for 'playing' and the primary action, under 5% of the screen."},"hero":"The waveform of the selected clip, drawn in ink at full width; no photography.","icons":"Lucide at 1.5px stroke, square caps, 16px; transport controls are glyphs (▶ ■) in mono.","controls":"2px radius, 1px hairline borders, pressed = inset 1px ink line; focus = 2px accent ring offset 2px.","motion":{"feel":"'Clack' — a cassette door closing: short, damped, no bounce.","entrance":"(later) Rows fade up 4px, 20ms stagger, first 9 only.","action":"(later) Play: waveform playhead sweeps; row tally dot lights.","echo":"(later) The same tally dot marks downloaded clips."},"breakthrough":"No hero at all — the result list starts 64px from the top.","memorable":"Scrubbing a waveform with the arrow keys plays 200ms grains, like jogging a tape deck.","refuses":["Cinematic hero video","Glassmorphism player","Purple gradients","Stock photos of microphones"],"traits":["Workspace-first","Mono metadata","One hot color"],"tokens":{}},"html":"\u003c!doctype html>\n\u003chtml lang=\"en\">\n\u003chead>\n\u003cmeta charset=\"utf-8\">\n\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n\u003ctitle>Archive Log\u003c/title>\n\u003clink rel=\"stylesheet\" href=\"a.tokens.css\">\n\u003cstyle>\n* { box-sizing: border-box; }\nhtml, body { margin: 0; height: 100%; }\nbody { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); display: grid; grid-template-rows: auto auto 1fr auto; height: 100vh; overflow: hidden; }\n.mono { font-family: var(--font-mono); }\n\nheader { display: grid; grid-template-columns: 180px minmax(0, 1fr) auto; align-items: center; gap: var(--space-6); padding: var(--space-3) var(--space-6); border-bottom: var(--border) solid var(--line-strong); }\n.mark { font: var(--weight-display) var(--step-2)/1 var(--font-display); letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }\n.mark i { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }\n.search { display: flex; align-items: center; gap: var(--space-3); height: 40px; padding: 0 var(--space-4); background: var(--surface); border: var(--border) solid var(--line-strong); border-radius: var(--radius-sm); }\n.search input { flex: 1; border: 0; background: none; font: inherit; color: var(--ink); outline: none; }\n.search .count { font: var(--step-n1) var(--font-mono); color: var(--ink-2); white-space: nowrap; }\n.search kbd { font: var(--step-n2) var(--font-mono); color: var(--ink-2); border: var(--border) solid var(--line-strong); border-radius: 3px; padding: 1px 5px; }\nnav { display: flex; gap: var(--space-5); font-size: var(--step-n1); }\nnav a { color: var(--ink-2); text-decoration: none; }\nnav a[aria-current] { color: var(--ink); font-weight: 600; }\n\n.filters { display: flex; gap: var(--space-2); align-items: center; padding: var(--space-3) var(--space-6); border-bottom: var(--border) solid var(--line); font: var(--step-n1) var(--font-mono); }\n.chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: var(--border) solid var(--line-strong); border-radius: var(--radius-sm); color: var(--ink-2); background: transparent; font: inherit; }\n.chip b { color: var(--ink); font-weight: 500; }\n.chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }\n.chip.on b { color: var(--bg); }\n.filters .sort { margin-left: auto; color: var(--ink-2); }\n\n.list { overflow: hidden; }\ntable { width: 100%; border-collapse: collapse; }\nth { font: 500 var(--step-n2)/1 var(--font-mono); color: var(--ink-2); text-align: left; padding: var(--space-3) var(--space-3); border-bottom: var(--border) solid var(--line); letter-spacing: 0.02em; }\ntd { padding: 0 var(--space-3); height: 58px; border-bottom: var(--border) solid var(--line); vertical-align: middle; }\ntd:first-child, th:first-child { padding-left: var(--space-6); width: 56px; }\ntd:last-child, th:last-child { padding-right: var(--space-6); }\ntr.playing { background: var(--accent-soft); }\n.play { width: 28px; height: 28px; border-radius: 50%; border: var(--border) solid var(--line-strong); display: grid; place-items: center; background: var(--bg); }\n.play svg { width: 10px; height: 10px; fill: var(--ink); margin-left: 2px; }\ntr.playing .play { background: var(--accent); border-color: var(--accent); }\ntr.playing .play svg { fill: var(--on-accent); margin: 0; }\n.name { font-weight: 500; line-height: 1.25; }\n.where { font: var(--step-n1) var(--font-mono); color: var(--ink-2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 380px; }\n.wave { width: 100%; height: 30px; display: block; }\n.m { font: var(--step-n1) var(--font-mono); color: var(--ink-2); white-space: nowrap; }\n.m.len { color: var(--ink); }\n.dl { color: var(--ink-2); }\n\n.dock { border-top: var(--border) solid var(--ink); background: var(--surface); display: grid; grid-template-columns: 360px minmax(0, 1fr) auto; align-items: center; gap: var(--space-6); padding: var(--space-4) var(--space-6); }\n.dock .title { font: var(--weight-display) var(--step-1)/1.15 var(--font-display); }\n.dock .sub { font: var(--step-n1) var(--font-mono); color: var(--ink-2); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }\n.big { position: relative; height: 64px; }\n.big canvas { width: 100%; height: 100%; display: block; }\n.times { display: flex; justify-content: space-between; font: var(--step-n2) var(--font-mono); color: var(--ink-2); margin-top: 4px; }\n.transport { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3); }\n.btn { height: 40px; padding: 0 var(--space-4); border-radius: var(--radius-sm); border: var(--border) solid var(--line-strong); background: var(--bg); font: 500 var(--step-n1) var(--font-body); color: var(--ink); display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }\n.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }\n\u003c/style>\n\u003c/head>\n\u003cbody>\n\u003cheader>\n  \u003cdiv class=\"mark\">\u003ci>\u003c/i>Fieldnote\u003c/div>\n  \u003clabel class=\"search\">\u003csvg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"square\">\u003ccircle cx=\"11\" cy=\"11\" r=\"7\"/>\u003cpath d=\"m20 20-3.5-3.5\"/>\u003c/svg>\n    \u003cinput aria-label=\"Search recordings\" value=\"rain, forest, pre-dawn\">\u003cspan class=\"count\">218 of 41,280\u003c/span>\u003ckbd>/\u003c/kbd>\u003c/label>\n  \u003cnav>\u003ca href=\"#\" aria-current=\"page\">Library\u003c/a>\u003ca href=\"#\">Collections\u003c/a>\u003ca href=\"#\">Downloads\u003c/a>\u003ca href=\"#\">Account\u003c/a>\u003c/nav>\n\u003c/header>\n\u003cdiv class=\"filters\">\n  \u003cbutton class=\"chip\">Place \u003cb>Any\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip on\">Weather \u003cb>Rain ×\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip\">Hour \u003cb>03:00–06:00\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip\">Mic \u003cb>Any\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip\">Rate \u003cb>≥ 96k\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip\">Length \u003cb>1–10 min\u003c/b>\u003c/button>\n  \u003cspan class=\"sort\">Sort: closest match ↓\u003c/span>\n\u003c/div>\n\u003cdiv class=\"list\">\u003ctable>\n  \u003cthead>\u003ctr>\u003cth>\u003c/th>\u003cth style=\"width:30%\">Recording\u003c/th>\u003cth>Waveform\u003c/th>\u003cth>Length\u003c/th>\u003cth>Hour\u003c/th>\u003cth>Rate\u003c/th>\u003cth>Mic\u003c/th>\u003cth>\u003c/th>\u003c/tr>\u003c/thead>\n  \u003ctbody id=\"rows\">\u003c/tbody>\n\u003c/table>\u003c/div>\n\u003cdiv class=\"dock\">\n  \u003cdiv>\u003cdiv class=\"title\" id=\"dt\">\u003c/div>\u003cdiv class=\"sub\" id=\"ds\">\u003c/div>\u003c/div>\n  \u003cdiv>\u003cdiv class=\"big\">\u003ccanvas id=\"big\">\u003c/canvas>\u003c/div>\u003cdiv class=\"times\">\u003cspan>02:14\u003c/span>\u003cspan id=\"dl\">\u003c/span>\u003c/div>\u003c/div>\n  \u003cdiv class=\"transport\">\u003cbutton class=\"btn\">Add to collection\u003c/button>\u003cbutton class=\"btn primary\">Download WAV\u003c/button>\u003c/div>\n\u003c/div>\n\u003cscript src=\"content.js\">\u003c/script>\n\u003cscript>\nconst css = getComputedStyle(document.documentElement);\nconst v = (n) => css.getPropertyValue(n).trim();\nconst rows = document.getElementById(\"rows\");\nFN.clips.slice(0, 9).forEach((c, i) => {\n  const tr = document.createElement(\"tr\");\n  if (i === 0) tr.className = \"playing\";\n  tr.innerHTML = `\u003ctd>\u003cspan class=\"play\">\u003csvg viewBox=\"0 0 10 10\">${i === 0 ? '\u003crect x=\"1\" y=\"1\" width=\"3\" height=\"8\"/>\u003crect x=\"6\" y=\"1\" width=\"3\" height=\"8\"/>' : '\u003cpath d=\"M1 0l9 5-9 5z\"/>'}\u003c/svg>\u003c/span>\u003c/td>\n    \u003ctd>\u003cdiv class=\"name\">${c.name}\u003c/div>\u003cdiv class=\"where\">${c.place}, ${c.region} · ${c.id}\u003c/div>\u003c/td>\n    \u003ctd>\u003ccanvas class=\"wave\" data-seed=\"${c.seed}\" data-played=\"${i === 0 ? 0.33 : 0}\">\u003c/canvas>\u003c/td>\n    \u003ctd class=\"m len\">${c.len}\u003c/td>\u003ctd class=\"m\">${c.time}\u003c/td>\u003ctd class=\"m\">${c.rate}\u003c/td>\u003ctd class=\"m\">${c.mic}\u003c/td>\n    \u003ctd class=\"dl\">\u003csvg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"square\">\u003cpath d=\"M12 4v11m-5-5 5 5 5-5M5 20h14\"/>\u003c/svg>\u003c/td>`;\n  rows.appendChild(tr);\n});\nfunction draw(cv, seed, played, bar, gap) {\n  const r = devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;\n  cv.width = w * r; cv.height = h * r;\n  const x = cv.getContext(\"2d\"); x.scale(r, r);\n  const n = Math.floor(w / (bar + gap)), data = FN.wave(seed, n);\n  data.forEach((p, i) => {\n    x.fillStyle = i / n \u003c played ? v(\"--accent\") : (played ? v(\"--ink\") : v(\"--ink-3\"));\n    const bh = Math.max(2, p * h);\n    x.fillRect(i * (bar + gap), (h - bh) / 2, bar, bh);\n  });\n}\ndocument.querySelectorAll(\".wave\").forEach((cv) => draw(cv, +cv.dataset.seed, +cv.dataset.played, 2, 2));\nconst c0 = FN.clips[0];\ndocument.getElementById(\"dt\").textContent = c0.name;\ndocument.getElementById(\"ds\").textContent = `${c0.place} · ${c0.time} · ${c0.weather}`;\ndocument.getElementById(\"dl\").textContent = c0.len;\nconst big = document.getElementById(\"big\");\ndraw(big, c0.seed, 0.33, 2, 1);\nconst bx = big.getContext(\"2d\"), r = devicePixelRatio || 1;\nbx.setTransform(r, 0, 0, r, 0, 0);\nbx.fillStyle = v(\"--ink\"); bx.fillRect(big.clientWidth * 0.33, 0, 1.5, big.clientHeight);\n\u003c/script>\n\u003c/body>\n\u003c/html>\n","open":"a.html"},{"kind":"html","source":"b.html","name":"Night Exterior","concept":"Every recording is a place at an hour. Open on one of them, so loud and specific you can almost feel the rain.","typography":"Instrument Serif 400 (display) · Hanken Grotesk 400 (body) · JetBrains Mono (mono)","skeleton":"Full-bleed spectrogram as the hero (top 70%). Headline set over the bottom-left like a film title card; one thumb-sized play button; a slate strip of recording metadata along the bottom edge.","hero":"A spectrogram of the featured clip, rendered in moss → bone → amber; the hottest frequencies are the only saturated color.","palette":["#0e1511","#ece8dc","#f2a541"],"traits":["One recording as hero","Editorial serif","Amber only where sound is"],"baseline":false,"interactive":false,"direction":{"id":"b","name":"Night Exterior","northStar":"Every recording is a place at an hour. Open on one of them, so loud and specific you can almost feel the rain.","engine":{"kind":"scene","source":"4:12 a.m. in a wet cedar forest: a recordist's headlamp off, levels glowing amber, everything else moss-dark.","evidence":"Sound designers buy atmosphere; the library's edge is that every file records when and where it happened."},"tone":{"energy":70,"finish":70,"density":20,"weight":65,"formality":45,"_why":"Persuasion page for a creative audience: loud and airy, but crafted rather than raw."},"benchmark":{"category":"Sound-effects library for film and games","keep":["Play is one click from the first screen"],"change":["Peers show a generic cinematic montage; we show one real recording's spectrogram with its log"]},"skeleton":"Full-bleed spectrogram as the hero (top 70%). Headline set over the bottom-left like a film title card; one thumb-sized play button; a slate strip of recording metadata along the bottom edge.","type":{"display":{"family":"Instrument Serif","weight":400,"weights":[400],"italic":true,"fallback":"serif"},"body":{"family":"Hanken Grotesk","weight":400,"weights":[400,500,600],"fallback":"sans"},"mono":{"family":"JetBrains Mono","weights":[400],"fallback":"mono"},"ratio":1.5},"color":{"bg":"#0e1511","ink":"#ece8dc","accent":"#f2a541","from":"Sodium-lamp amber of a recorder's level meters, against moss-black. Amber appears only where sound is (the spectrogram's peaks and the play control)."},"hero":"A spectrogram of the featured clip, rendered in moss → bone → amber; the hottest frequencies are the only saturated color.","icons":"No icon set: a drawn play triangle and arrows set in the body face.","controls":"Round play control 72px; text links underlined 1px offset 4px; no boxes.","motion":{"feel":"'Hush' — a boom pole swinging slowly into place.","entrance":"(later) Spectrogram scrolls in from the right like a live capture."},"breakthrough":"No product UI above the fold at all: the first screen is one recording.","memorable":"Pressing play scrolls the spectrogram in real time and the headline time ticks (4:12 → 4:13).","refuses":["Left text / right screenshot split","Glow blobs","Gradient text"],"traits":["One recording as hero","Editorial serif","Amber only where sound is"]},"html":"\u003c!doctype html>\n\u003chtml lang=\"en\">\n\u003chead>\n\u003cmeta charset=\"utf-8\">\n\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n\u003ctitle>Night Exterior\u003c/title>\n\u003clink rel=\"stylesheet\" href=\"b.tokens.css\">\n\u003cstyle>\n* { box-sizing: border-box; }\nhtml, body { margin: 0; height: 100%; }\nbody { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); height: 100vh; overflow: hidden; position: relative; }\n\n#spec { position: absolute; inset: 0 0 auto 0; width: 100%; height: 74vh; display: block; }\n.fade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 38%, var(--bg) 74%); pointer-events: none; }\n\nheader { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: baseline; justify-content: space-between; padding: var(--space-5) var(--space-7); z-index: 2; }\n.mark { font: italic 400 var(--step-3)/1 var(--font-display); }\nnav { display: flex; gap: var(--space-6); font-size: var(--step-n1); }\nnav a { color: var(--ink); text-decoration: none; opacity: .82; }\nnav a:last-child { opacity: 1; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }\n\n.freq { position: absolute; top: 96px; right: var(--space-7); z-index: 2; display: grid; gap: 74px; font: var(--step-n2) var(--font-mono); color: var(--ink-2); text-align: right; }\n\n.title { position: absolute; left: var(--space-7); bottom: 132px; z-index: 2; max-width: 980px; }\nh1 { font: 400 clamp(4.5rem, 3rem + 5vw, 9rem)/0.88 var(--font-display); letter-spacing: -0.02em; margin: 0; }\nh1 em { color: var(--accent); }\n.lede { font-size: var(--step-1); color: var(--ink-2); max-width: 34ch; margin: var(--space-5) 0 0; line-height: 1.4; }\n.actions { position: absolute; right: var(--space-7); bottom: 140px; z-index: 2; display: flex; align-items: center; gap: var(--space-5); }\n.play { width: 84px; height: 84px; border-radius: 50%; background: var(--accent); border: 0; display: grid; place-items: center; box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 16%, transparent); }\n.play svg { width: 26px; height: 26px; fill: var(--on-accent); margin-left: 5px; }\n.actions .lbl { font-size: var(--step-n1); color: var(--ink-2); line-height: 1.35; }\n.actions .lbl b { display: block; color: var(--ink); font-weight: 600; font-size: var(--step-0); }\n.browse { color: var(--ink); text-underline-offset: 5px; text-decoration-thickness: 1px; margin-left: var(--space-5); }\n\n.slate { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; display: grid; grid-template-columns: repeat(6, auto); justify-content: space-between; gap: var(--space-5); padding: var(--space-4) var(--space-7); border-top: 1px solid var(--line); font: var(--step-n1) var(--font-mono); color: var(--ink-2); }\n.slate span b { display: block; font: 400 var(--step-n2) var(--font-mono); color: var(--ink-3); margin-bottom: 2px; }\n.slate span { color: var(--ink); }\n\u003c/style>\n\u003c/head>\n\u003cbody>\n\u003ccanvas id=\"spec\" aria-hidden=\"true\">\u003c/canvas>\n\u003cdiv class=\"fade\">\u003c/div>\n\u003cheader>\u003cdiv class=\"mark\">Fieldnote\u003c/div>\u003cnav>\u003ca href=\"#\">Library\u003c/a>\u003ca href=\"#\">Places\u003c/a>\u003ca href=\"#\">Pricing\u003c/a>\u003ca href=\"#\">Sign in\u003c/a>\u003c/nav>\u003c/header>\n\u003cdiv class=\"freq\" aria-hidden=\"true\">\u003cspan>16 kHz\u003c/span>\u003cspan>4 kHz\u003c/span>\u003cspan>1 kHz\u003c/span>\u003cspan>250 Hz\u003c/span>\u003c/div>\n\u003cdiv class=\"title\">\n  \u003ch1>Rain on cedar,\u003cbr>\u003cem>4:12\u003c/em> a.m.\u003c/h1>\n  \u003cp class=\"lede\" id=\"lede\">\u003c/p>\n\u003c/div>\n\u003cdiv class=\"actions\">\n  \u003cbutton class=\"play\" aria-label=\"Play recording\">\u003csvg viewBox=\"0 0 10 10\">\u003cpath d=\"M0 0l10 5-10 5z\"/>\u003c/svg>\u003c/button>\n  \u003cspan class=\"lbl\">\u003cb>Play 6:48\u003c/b>Headphones on\u003c/span>\n  \u003ca class=\"browse\" href=\"#\">Browse 41,280 recordings →\u003c/a>\n\u003c/div>\n\u003cdiv class=\"slate\" id=\"slate\">\u003c/div>\n\u003cscript src=\"content.js\">\u003c/script>\n\u003cscript>\nconst c = FN.clips[0];\ndocument.getElementById(\"lede\").textContent = FN.pitch;\ndocument.getElementById(\"slate\").innerHTML = [\n  [\"Place\", `${c.place}, ${c.region}`], [\"Position\", \"47.86° N 123.93° W\"], [\"Hour\", `${c.time} local`],\n  [\"Weather\", c.weather], [\"Mic\", c.mic], [\"Format\", `${FN.stats.format} · ${c.id}`],\n].map(([k, v]) => `\u003cspan>\u003cb>${k}\u003c/b>${v}\u003c/span>`).join(\"\");\n\n// Procedural spectrogram: rain is broadband with dense high-frequency speckle; drips are short vertical streaks.\nconst cv = document.getElementById(\"spec\"), css = getComputedStyle(document.documentElement);\nconst hex = (n) => css.getPropertyValue(n).trim();\nconst rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));\nconst [BG, INK, HOT] = [rgb(hex(\"--bg\")), rgb(hex(\"--ink\")), rgb(hex(\"--accent\"))];\nconst W = cv.width = Math.floor(cv.clientWidth / 2), H = cv.height = Math.floor(cv.clientHeight / 2);\nconst ctx = cv.getContext(\"2d\"), img = ctx.createImageData(W, H);\nlet s = 7; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);\nconst drips = Array.from({ length: 55 }, () => [rnd() * W, 0.15 + rnd() * 0.6, 0.4 + rnd() * 0.6]);\nfor (let x = 0; x \u003c W; x++) {\n  const swell = 0.55 + 0.25 * Math.sin(x / W * 5.2) + 0.12 * Math.sin(x / 37);\n  for (let y = 0; y \u003c H; y++) {\n    const f = 1 - y / H; // 0 = low freq (bottom), 1 = high\n    let e = (0.35 + 0.65 * Math.exp(-((f - 0.62) ** 2) / 0.05)) * swell * (0.45 + rnd() * 0.75);\n    e += 0.55 * Math.exp(-((f - 0.08) ** 2) / 0.004) * (0.6 + 0.4 * Math.sin(x / 11)); // low rumble band\n    for (const [dx, df, amp] of drips) if (Math.abs(x - dx) \u003c 1.6 && f > df - 0.25 && f \u003c df + 0.2) e += amp * 0.42;\n    e = Math.min(1, Math.max(0, e - 0.18));\n    const t1 = Math.min(1, e * 1.6), t2 = Math.max(0, e - 0.72) / 0.28;\n    const col = [0, 1, 2].map((k) => BG[k] + (INK[k] - BG[k]) * t1 * 0.62 + (HOT[k] - (BG[k] + (INK[k] - BG[k]) * t1 * 0.62)) * t2);\n    const i = (y * W + x) * 4;\n    img.data[i] = col[0]; img.data[i + 1] = col[1]; img.data[i + 2] = col[2]; img.data[i + 3] = 255;\n  }\n}\nctx.putImageData(img, 0, 0);\n\u003c/script>\n\u003c/body>\n\u003c/html>\n","open":"b.html"},{"kind":"html","source":"c.html","name":"Survey","concept":"The library is an atlas: you find sound the way a location scout finds a place — by where it is.","typography":"Bricolage Grotesque 700 (display) · Atkinson Hyperlegible 400 (body) · DM Mono (mono)","skeleton":"Workspace with a map. Left index (380px): search + places grouped by region with counts. Map fills the rest; the selected place opens a sheet with its 3 best clips.","hero":"A contour map with pins sized by recording count; procedural terrain, no stock map tiles.","palette":["#f2f4ee","#10243e","#c8235f","#b9c6b0","#cfe0e6"],"traits":["Place-first","Contour map","Magenta overprint"],"baseline":false,"interactive":false,"direction":{"id":"c","name":"Survey","northStar":"The library is an atlas: you find sound the way a location scout finds a place — by where it is.","engine":{"kind":"medium","source":"Topographic survey sheets: contour lines, grid references, magenta overprint for the things that matter.","evidence":"Editors often search 'what does Lisbon sound like' before 'tram brakes'; 312 places is the library's moat."},"tone":{"energy":55,"finish":60,"density":55,"weight":45,"formality":30,"_why":"Exploratory and a bit playful — scouting is fun — but it is still a tool."},"benchmark":{"category":"Sound-effects library for film and games","keep":["Search stays in the top-left"],"change":["Peers sort by category tree; we lead with places on a map"]},"skeleton":"Workspace with a map. Left index (380px): search + places grouped by region with counts. Map fills the rest; the selected place opens a sheet with its 3 best clips.","type":{"display":{"family":"Bricolage Grotesque","weight":700,"weights":[500,700],"fallback":"sans"},"body":{"family":"Atkinson Hyperlegible","weight":400,"weights":[400,700],"fallback":"sans"},"mono":{"family":"DM Mono","weights":[400],"fallback":"mono"},"ratio":1.25},"color":{"bg":"#f2f4ee","ink":"#10243e","accent":"#c8235f","from":"Survey-sheet navy for linework, and the magenta overprint mapmakers reserve for what you came for: pins and the play state.","extra":{"contour":"#b9c6b0","water":"#cfe0e6"}},"hero":"A contour map with pins sized by recording count; procedural terrain, no stock map tiles.","icons":"Phosphor at regular weight, 18px, round caps.","controls":"8px radius, navy 1.5px outlines, magenta fill for the selected state; pins scale up 1.15 on hover.","motion":{"feel":"'Flick' — unfolding a paper map.","entrance":"(later) Pins drop in by count, largest first."},"breakthrough":"Navigation by place instead of by category.","memorable":"Hovering a pin plays a 2-second taste of that place.","refuses":["Category tree sidebar","Stock map tiles","Card grid of sounds"],"traits":["Place-first","Contour map","Magenta overprint"]},"html":"\u003c!doctype html>\n\u003chtml lang=\"en\">\n\u003chead>\n\u003cmeta charset=\"utf-8\">\n\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n\u003ctitle>Survey\u003c/title>\n\u003clink rel=\"stylesheet\" href=\"c.tokens.css\">\n\u003cstyle>\n* { box-sizing: border-box; }\nhtml, body { margin: 0; height: 100%; }\nbody { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); height: 100vh; overflow: hidden; display: grid; grid-template-columns: 380px minmax(0, 1fr); }\n\naside { border-right: 1.5px solid var(--ink); display: flex; flex-direction: column; min-height: 0; background: var(--bg); z-index: 2; }\n.top { padding: var(--space-5) var(--space-5) var(--space-4); }\n.mark { font: 700 var(--step-2)/1 var(--font-display); letter-spacing: -0.03em; display: flex; align-items: center; gap: 10px; }\n.mark svg { width: 26px; height: 26px; }\n.search { margin-top: var(--space-5); display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 var(--space-4); border: 1.5px solid var(--ink); border-radius: var(--radius); background: #fff; }\n.search input { border: 0; outline: 0; flex: 1; font: inherit; color: var(--ink); background: none; }\n.tabs { display: flex; gap: var(--space-2); margin-top: var(--space-4); }\n.tabs button { font: 700 var(--step-n1) var(--font-body); padding: 6px 12px; border-radius: var(--radius); border: 1.5px solid var(--ink); background: none; color: var(--ink); }\n.tabs button[aria-pressed=\"true\"] { background: var(--ink); color: var(--bg); }\n\n.index { overflow: hidden; flex: 1; border-top: 1.5px solid var(--ink); }\n.region { padding: var(--space-3) var(--space-5) var(--space-1); font: var(--step-n1) var(--font-mono); color: var(--ink-2); }\n.place { display: grid; grid-template-columns: 1fr auto; align-items: baseline; padding: 9px var(--space-5); border-bottom: 1px solid var(--line); }\n.place b { font: 500 var(--step-1)/1.2 var(--font-display); letter-spacing: -0.01em; }\n.place span { font: var(--step-n1) var(--font-mono); color: var(--ink-2); }\n.place.sel { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }\n.place.sel span { color: var(--on-accent); }\n\nmain { position: relative; overflow: hidden; background: var(--bg); }\n#map { position: absolute; inset: 0; width: 100%; height: 100%; }\n.grid-ref { position: absolute; font: var(--step-n2) var(--font-mono); color: var(--ink-2); }\n.pin { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 0 1.5px var(--accent); display: grid; place-items: center; color: var(--on-accent); font: 700 var(--step-n2)/1 var(--font-mono); }\n.pin.sel { box-shadow: 0 0 0 1.5px var(--accent), 0 0 0 10px color-mix(in srgb, var(--accent) 18%, transparent); }\n.label { position: absolute; transform: translate(12px, -50%); font: 700 var(--step-n1)/1 var(--font-display); color: var(--ink); white-space: nowrap; text-shadow: 0 0 3px var(--bg), 0 0 3px var(--bg), 0 0 3px var(--bg); }\n\n.sheet { position: absolute; left: 38%; bottom: var(--space-6); width: 420px; background: #fff; border: 1.5px solid var(--ink); border-radius: var(--radius-lg); box-shadow: 6px 6px 0 var(--ink); }\n.sheet header { padding: var(--space-4) var(--space-5); border-bottom: 1.5px solid var(--ink); display: flex; justify-content: space-between; align-items: start; gap: var(--space-3); }\n.sheet h2 { font: 700 var(--step-3)/1 var(--font-display); letter-spacing: -0.03em; margin: 0; }\n.sheet .coord { font: var(--step-n1) var(--font-mono); color: var(--ink-2); margin-top: 6px; white-space: nowrap; }\n.sheet .n { white-space: nowrap; font: var(--step-n1) var(--font-mono); background: var(--accent-soft); color: var(--ink); padding: 4px 8px; border-radius: var(--radius-sm); }\n.clip { display: grid; grid-template-columns: 36px 1fr auto; gap: var(--space-3); align-items: center; padding: var(--space-3) var(--space-5); border-bottom: 1px solid var(--line); }\n.clip:last-of-type { border-bottom: 0; }\n.clip .pl { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; }\n.clip .pl svg { width: 11px; height: 11px; fill: var(--ink); margin-left: 2px; }\n.clip.on .pl { background: var(--accent); border-color: var(--accent); }\n.clip.on .pl svg { fill: var(--on-accent); }\n.clip .t { font-weight: 700; line-height: 1.25; }\n.clip canvas { display: block; width: 100%; height: 18px; margin-top: 4px; }\n.clip .len { font: var(--step-n1) var(--font-mono); color: var(--ink-2); }\n.sheet footer { padding: var(--space-3) var(--space-5) var(--space-4); }\n.sheet footer a { color: var(--accent-text); font-weight: 700; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }\n.scale { position: absolute; right: var(--space-6); bottom: var(--space-5); font: var(--step-n2) var(--font-mono); color: var(--ink-2); display: flex; align-items: center; gap: 10px; }\n.scale i { display: block; width: 120px; height: 6px; border: 1.5px solid var(--ink); border-top: 0; }\n\u003c/style>\n\u003c/head>\n\u003cbody>\n\u003caside>\n  \u003cdiv class=\"top\">\n    \u003cdiv class=\"mark\">\u003csvg viewBox=\"0 0 26 26\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\">\u003cpath d=\"M3 18c4-6 7 2 10-4s6-4 10-8\"/>\u003cpath d=\"M3 23c5-5 8 1 11-3s6-3 9-6\" opacity=\".5\"/>\u003ccircle cx=\"17\" cy=\"9\" r=\"2.6\" fill=\"var(--accent)\" stroke=\"none\"/>\u003c/svg>Fieldnote\u003c/div>\n    \u003clabel class=\"search\">\u003csvg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\">\u003ccircle cx=\"11\" cy=\"11\" r=\"7\"/>\u003cpath d=\"m20 20-3.5-3.5\"/>\u003c/svg>\u003cinput aria-label=\"Search places or sounds\" placeholder=\"A place, or a sound…\">\u003c/label>\n    \u003cdiv class=\"tabs\">\u003cbutton aria-pressed=\"true\">Places\u003c/button>\u003cbutton aria-pressed=\"false\">Sounds\u003c/button>\u003cbutton aria-pressed=\"false\">Hours\u003c/button>\u003c/div>\n  \u003c/div>\n  \u003cdiv class=\"index\" id=\"index\">\u003c/div>\n\u003c/aside>\n\u003cmain>\n  \u003ccanvas id=\"map\" aria-hidden=\"true\">\u003c/canvas>\n  \u003cdiv id=\"pins\">\u003c/div>\n  \u003csection class=\"sheet\" aria-label=\"Selected place\">\n    \u003cheader>\u003cdiv>\u003ch2>Pacific Northwest\u003c/h2>\u003cdiv class=\"coord\">47.6° N 122.3° W · 211 wet days/yr\u003c/div>\u003c/div>\u003cspan class=\"n\">1,840 rec.\u003c/span>\u003c/header>\n    \u003cdiv id=\"clips\">\u003c/div>\n    \u003cfooter>\u003ca href=\"#\">All 1,840 from this region →\u003c/a>\u003c/footer>\n  \u003c/section>\n  \u003cdiv class=\"scale\">\u003ci>\u003c/i>1,000 km · equirectangular\u003c/div>\n\u003c/main>\n\u003cscript src=\"content.js\">\u003c/script>\n\u003cscript>\ndocument.fonts.ready.then(() => {\nconst css = getComputedStyle(document.documentElement), v = (n) => css.getPropertyValue(n).trim(), r = devicePixelRatio || 1;\n\n// Index: places grouped by hemisphere band.\nconst bands = [[\"North\", (p) => p.lat > 40], [\"Tropics & mid-latitudes\", (p) => p.lat \u003c= 40 && p.lat > -15], [\"South\", (p) => p.lat \u003c= -15]];\ndocument.getElementById(\"index\").innerHTML = bands.map(([name, f]) =>\n  `\u003cdiv class=\"region\">${name}\u003c/div>` + FN.places.filter(f).sort((a, b) => b.count - a.count).map((p) =>\n    `\u003cdiv class=\"place${p.name === \"Pacific Northwest\" ? \" sel\" : \"\"}\">\u003cb>${p.name}\u003c/b>\u003cspan>${p.count.toLocaleString(\"en\")}\u003c/span>\u003c/div>`).join(\"\")).join(\"\");\n\n// Sheet clips with mini waveforms\nconst picks = [FN.clips[0], { ...FN.clips[3], name: \"Creek under alder, snowmelt\", len: \"5:10\", seed: 51 }, { ...FN.clips[5], name: \"Ferry horn across Puget Sound\", len: \"0:48\", seed: 57 }];\ndocument.getElementById(\"clips\").innerHTML = picks.map((c, i) => `\u003cdiv class=\"clip${i === 0 ? \" on\" : \"\"}\">\u003cspan class=\"pl\">\u003csvg viewBox=\"0 0 10 10\">\u003cpath d=\"M0 0l10 5-10 5z\"/>\u003c/svg>\u003c/span>\u003cdiv>\u003cdiv class=\"t\">${c.name}\u003c/div>\u003ccanvas data-seed=\"${c.seed}\">\u003c/canvas>\u003c/div>\u003cspan class=\"len\">${c.len}\u003c/span>\u003c/div>`).join(\"\");\ndocument.querySelectorAll(\".clip canvas\").forEach((cv, k) => {\n  const w = cv.clientWidth, h = cv.clientHeight; cv.width = w * r; cv.height = h * r;\n  const g = cv.getContext(\"2d\"); g.scale(r, r);\n  FN.wave(+cv.dataset.seed, Math.floor(w / 3)).forEach((p, i, arr) => { g.fillStyle = k === 0 && i / arr.length \u003c 0.4 ? v(\"--accent\") : v(\"--ink-3\"); const bh = Math.max(2, p * h); g.fillRect(i * 3, (h - bh) / 2, 2, bh); });\n});\n\n// Map: procedural terrain contours (value noise + marching squares), graticule, pins.\nconst main = document.querySelector(\"main\"), cv = document.getElementById(\"map\");\nconst W = main.clientWidth, H = main.clientHeight;\ncv.width = W * r; cv.height = H * r;\nconst x = cv.getContext(\"2d\"); x.scale(r, r);\nconst proj = (lat, lon) => [((lon + 170) / 340) * W, ((72 - lat) / 130) * H];\n\nlet seed = 5; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);\nconst G = 48, grid = Array.from({ length: G + 1 }, () => Array.from({ length: G + 1 }, rnd));\nconst smooth = (t) => t * t * (3 - 2 * t);\nconst noise = (u, w) => { const i = Math.floor(u), j = Math.floor(w), fu = smooth(u - i), fw = smooth(w - j), g = (a, b) => grid[(a % G + G) % G][(b % G + G) % G];\n  return g(i, j) * (1 - fu) * (1 - fw) + g(i + 1, j) * fu * (1 - fw) + g(i, j + 1) * (1 - fu) * fw + g(i + 1, j + 1) * fu * fw; };\nconst height = (px, py) => { const u = px / W * 6, w = py / H * 4; return noise(u, w) * 0.6 + noise(u * 2.1, w * 2.1) * 0.3 + noise(u * 4.3, w * 4.3) * 0.1; };\n\nconst step = 6, cols = Math.ceil(W / step) + 1, rows = Math.ceil(H / step) + 1;\nconst hm = []; for (let j = 0; j \u003c rows; j++) { hm.push([]); for (let i = 0; i \u003c cols; i++) hm[j].push(height(i * step, j * step)); }\n// water below 0.38\n// Water: low-res mask scaled up with smoothing; the 0.38 contour drawn below gives the crisp coastline.\nconst wm = document.createElement(\"canvas\"); wm.width = cols; wm.height = rows;\nconst wx = wm.getContext(\"2d\"), wd = wx.createImageData(cols, rows), [wr, wg, wb] = [1, 3, 5].map((k) => parseInt(v(\"--water\").slice(k, k + 2), 16));\nfor (let j = 0; j \u003c rows; j++) for (let i = 0; i \u003c cols; i++) { const o = (j * cols + i) * 4; wd.data[o] = wr; wd.data[o + 1] = wg; wd.data[o + 2] = wb; wd.data[o + 3] = Math.max(0, Math.min(255, (0.385 - hm[j][i]) * 255 * 40)); }\nwx.putImageData(wd, 0, 0);\nx.imageSmoothingEnabled = true; x.imageSmoothingQuality = \"high\"; x.drawImage(wm, 0, 0, cols * step, rows * step);\nfor (let k = 0; k \u003c 14; k++) {\n  const lvl = 0.38 + k * 0.035;\n  x.strokeStyle = k % 5 === 0 ? v(\"--ink-3\") : v(\"--contour\"); x.lineWidth = k % 5 === 0 ? 1.1 : 0.8;\n  x.beginPath();\n  for (let j = 0; j \u003c rows - 1; j++) for (let i = 0; i \u003c cols - 1; i++) {\n    const a = hm[j][i], b = hm[j][i + 1], c = hm[j + 1][i + 1], d = hm[j + 1][i];\n    const pts = [];\n    const e = (p, q, x0, y0, x1, y1) => { if ((p \u003c lvl) !== (q \u003c lvl)) { const t = (lvl - p) / (q - p); pts.push([x0 + (x1 - x0) * t, y0 + (y1 - y0) * t]); } };\n    const X = i * step, Y = j * step;\n    e(a, b, X, Y, X + step, Y); e(b, c, X + step, Y, X + step, Y + step); e(d, c, X, Y + step, X + step, Y + step); e(a, d, X, Y, X, Y + step);\n    if (pts.length >= 2) { x.moveTo(...pts[0]); x.lineTo(...pts[1]); }\n    if (pts.length === 4) { x.moveTo(...pts[2]); x.lineTo(...pts[3]); }\n  }\n  x.stroke();\n}\n// graticule\nx.strokeStyle = v(\"--ink\"); x.globalAlpha = 0.12; x.lineWidth = 1; x.setLineDash([2, 4]);\nfor (let lon = -150; lon \u003c= 160; lon += 30) { const [px] = proj(0, lon); x.beginPath(); x.moveTo(px, 0); x.lineTo(px, H); x.stroke(); }\nfor (let lat = -45; lat \u003c= 60; lat += 15) { const [, py] = proj(lat, 0); x.beginPath(); x.moveTo(0, py); x.lineTo(W, py); x.stroke(); }\nx.setLineDash([]); x.globalAlpha = 1;\n\nconst pins = document.getElementById(\"pins\");\nfor (const lat of [60, 30, 0, -30]) { const [, py] = proj(lat, 0); pins.insertAdjacentHTML(\"beforeend\", `\u003cspan class=\"grid-ref\" style=\"left:12px;top:${py - 16}px\">${Math.abs(lat)}°${lat >= 0 ? \"N\" : \"S\"}\u003c/span>`); }\n// Pins largest first; labels skip when they would collide with another label or the sheet, and flip left near the edge.\nconst sheet = document.querySelector(\".sheet\").getBoundingClientRect(), mainBox = main.getBoundingClientRect();\nconst avoid = [{ l: sheet.left - mainBox.left - 8, t: sheet.top - mainBox.top - 8, r: sheet.right - mainBox.left + 8, b: sheet.bottom - mainBox.top + 8 }];\nconst hit = (a) => avoid.some((b) => a.l \u003c b.r && a.r > b.l && a.t \u003c b.b && a.b > b.t);\nlet selPin;\nfor (const p of [...FN.places].sort((a, b) => b.count - a.count)) {\n  const [px, py] = proj(p.lat, p.lon), size = 14 + Math.sqrt(p.count) * 0.42, sel = p.name === \"Pacific Northwest\";\n  if (hit({ l: px - size / 2, t: py - size / 2, r: px + size / 2, b: py + size / 2 })) continue;\n  pins.insertAdjacentHTML(\"beforeend\", `\u003cspan class=\"pin${sel ? \" sel\" : \"\"}\" style=\"left:${px}px;top:${py}px;width:${size}px;height:${size}px\">${size > 30 ? Math.round(p.count / 100) / 10 + \"k\" : \"\"}\u003c/span>`);\n  avoid.push({ l: px - size / 2, t: py - size / 2, r: px + size / 2, b: py + size / 2 });\n  if (sel) selPin = [px, py, size];\n  const lbl = document.createElement(\"span\"); lbl.className = \"label\"; lbl.textContent = p.name; pins.appendChild(lbl);\n  const lw = lbl.offsetWidth, flip = px + size / 2 + 12 + lw > W - 16;\n  const box = { l: flip ? px - size / 2 - 12 - lw : px + size / 2 + 12, t: py - 9, r: flip ? px - size / 2 - 12 : px + size / 2 + 12 + lw, b: py + 9 };\n  if (hit(box)) { lbl.remove(); continue; }\n  lbl.style.left = box.l + \"px\"; lbl.style.top = py + \"px\"; lbl.style.transform = \"translateY(-50%)\";\n  avoid.push(box);\n}\n// Magenta leader line from the selected pin to its sheet, like a survey callout.\nif (selPin) {\n  x.strokeStyle = v(\"--accent\"); x.lineWidth = 1.5; x.setLineDash([5, 4]);\n  x.beginPath(); x.moveTo(selPin[0] + selPin[2] / 2, selPin[1]); x.lineTo(sheet.left - mainBox.left + 40, selPin[1]); x.lineTo(sheet.left - mainBox.left + 40, sheet.top - mainBox.top); x.stroke(); x.setLineDash([]);\n}\n\n});\n\u003c/script>\n\u003c/body>\n\u003c/html>\n","open":"c.html"}]}</script>
-<script>// Pure token engine: direction card -> design tokens.
+    <script id="canvas-data" type="application/json">
+      {"title":"Fieldnote — sound library","round":"r1","question":"Three first screens for the library. Which should we build out? Note what to keep from the others.","note":"","viewport":"desktop","candidates":[{"kind":"html","source":"a.html","name":"Contact Sheet","concept":"A sound library that reads like a well-kept tape archive: every clip labeled, measured, and one click from your timeline.","typography":"IBM Plex Sans Condensed 600 (display) · IBM Plex Sans 400 (body) · IBM Plex Mono (mono)","skeleton":"Workspace. One-line header with search; filters as a single row of mono chips; 9 result rows visible at 1440x900; preview player docked at the bottom.","hero":"The waveform of the selected clip, drawn in ink at full width; no photography.","palette":["#f3f1ea","#1b1a17","#e4572e"],"traits":["Workspace-first","Mono metadata","One hot color"],"baseline":false,"interactive":false,"direction":{"id":"a","name":"Contact Sheet","northStar":"A sound library that reads like a well-kept tape archive: every clip labeled, measured, and one click from your timeline.","engine":{"kind":"medium","source":"Broadcast tape-box labels and spec sheets — the grammar of a field recordist's log, not its props.","evidence":"Users are post-production editors who search by metadata (mic, sample rate, location) before they listen."},"tone":{"energy":30,"finish":85,"density":75,"weight":40,"formality":70,"_why":"Quiet + dense: editors scan hundreds of rows. Refined: this is a paid professional tool."},"benchmark":{"category":"Sound-effects library for film and games","peers":["Category leaders open with a cinematic hero video and a search box below the fold"],"keep":["Search bar is the first thing on screen","Waveform preview per row"],"change":["Peers lead with a cinematic hero video; our users come to search, so the first screen is the result list"]},"skeleton":"Workspace. One-line header with search; filters as a single row of mono chips; 9 result rows visible at 1440x900; preview player docked at the bottom.","structure":"(later) Single column list + slide-over detail panel.","type":{"display":{"family":"IBM Plex Sans Condensed","weight":600,"weights":[500,600],"fallback":"sans"},"body":{"family":"IBM Plex Sans","weight":400,"weights":[400,500,600],"fallback":"sans"},"mono":{"family":"IBM Plex Mono","weights":[400,500],"fallback":"mono"},"ratio":1.2,"_relationship":"Display only for the page title and clip names; all metadata in mono at step-n1."},"color":{"bg":"#f3f1ea","ink":"#1b1a17","accent":"#e4572e","from":"The orange of a REC tally light — used only for 'playing' and the primary action, under 5% of the screen."},"hero":"The waveform of the selected clip, drawn in ink at full width; no photography.","icons":"Lucide at 1.5px stroke, square caps, 16px; transport controls are glyphs (▶ ■) in mono.","controls":"2px radius, 1px hairline borders, pressed = inset 1px ink line; focus = 2px accent ring offset 2px.","motion":{"feel":"'Clack' — a cassette door closing: short, damped, no bounce.","entrance":"(later) Rows fade up 4px, 20ms stagger, first 9 only.","action":"(later) Play: waveform playhead sweeps; row tally dot lights.","echo":"(later) The same tally dot marks downloaded clips."},"breakthrough":"No hero at all — the result list starts 64px from the top.","memorable":"Scrubbing a waveform with the arrow keys plays 200ms grains, like jogging a tape deck.","refuses":["Cinematic hero video","Glassmorphism player","Purple gradients","Stock photos of microphones"],"traits":["Workspace-first","Mono metadata","One hot color"],"tokens":{}},"html":"\u003c!doctype html>\n\u003chtml lang=\"en\">\n\u003chead>\n\u003cmeta charset=\"utf-8\">\n\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n\u003ctitle>Archive Log\u003c/title>\n\u003clink rel=\"stylesheet\" href=\"a.tokens.css\">\n\u003cstyle>\n* { box-sizing: border-box; }\nhtml, body { margin: 0; height: 100%; }\nbody { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); display: grid; grid-template-rows: auto auto 1fr auto; height: 100vh; overflow: hidden; }\n.mono { font-family: var(--font-mono); }\n\nheader { display: grid; grid-template-columns: 180px minmax(0, 1fr) auto; align-items: center; gap: var(--space-6); padding: var(--space-3) var(--space-6); border-bottom: var(--border) solid var(--line-strong); }\n.mark { font: var(--weight-display) var(--step-2)/1 var(--font-display); letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }\n.mark i { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }\n.search { display: flex; align-items: center; gap: var(--space-3); height: 40px; padding: 0 var(--space-4); background: var(--surface); border: var(--border) solid var(--line-strong); border-radius: var(--radius-sm); }\n.search input { flex: 1; border: 0; background: none; font: inherit; color: var(--ink); outline: none; }\n.search .count { font: var(--step-n1) var(--font-mono); color: var(--ink-2); white-space: nowrap; }\n.search kbd { font: var(--step-n2) var(--font-mono); color: var(--ink-2); border: var(--border) solid var(--line-strong); border-radius: 3px; padding: 1px 5px; }\nnav { display: flex; gap: var(--space-5); font-size: var(--step-n1); }\nnav a { color: var(--ink-2); text-decoration: none; }\nnav a[aria-current] { color: var(--ink); font-weight: 600; }\n\n.filters { display: flex; gap: var(--space-2); align-items: center; padding: var(--space-3) var(--space-6); border-bottom: var(--border) solid var(--line); font: var(--step-n1) var(--font-mono); }\n.chip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: var(--border) solid var(--line-strong); border-radius: var(--radius-sm); color: var(--ink-2); background: transparent; font: inherit; }\n.chip b { color: var(--ink); font-weight: 500; }\n.chip.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }\n.chip.on b { color: var(--bg); }\n.filters .sort { margin-left: auto; color: var(--ink-2); }\n\n.list { overflow: hidden; }\ntable { width: 100%; border-collapse: collapse; }\nth { font: 500 var(--step-n2)/1 var(--font-mono); color: var(--ink-2); text-align: left; padding: var(--space-3) var(--space-3); border-bottom: var(--border) solid var(--line); letter-spacing: 0.02em; }\ntd { padding: 0 var(--space-3); height: 58px; border-bottom: var(--border) solid var(--line); vertical-align: middle; }\ntd:first-child, th:first-child { padding-left: var(--space-6); width: 56px; }\ntd:last-child, th:last-child { padding-right: var(--space-6); }\ntr.playing { background: var(--accent-soft); }\n.play { width: 28px; height: 28px; border-radius: 50%; border: var(--border) solid var(--line-strong); display: grid; place-items: center; background: var(--bg); }\n.play svg { width: 10px; height: 10px; fill: var(--ink); margin-left: 2px; }\ntr.playing .play { background: var(--accent); border-color: var(--accent); }\ntr.playing .play svg { fill: var(--on-accent); margin: 0; }\n.name { font-weight: 500; line-height: 1.25; }\n.where { font: var(--step-n1) var(--font-mono); color: var(--ink-2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 380px; }\n.wave { width: 100%; height: 30px; display: block; }\n.m { font: var(--step-n1) var(--font-mono); color: var(--ink-2); white-space: nowrap; }\n.m.len { color: var(--ink); }\n.dl { color: var(--ink-2); }\n\n.dock { border-top: var(--border) solid var(--ink); background: var(--surface); display: grid; grid-template-columns: 360px minmax(0, 1fr) auto; align-items: center; gap: var(--space-6); padding: var(--space-4) var(--space-6); }\n.dock .title { font: var(--weight-display) var(--step-1)/1.15 var(--font-display); }\n.dock .sub { font: var(--step-n1) var(--font-mono); color: var(--ink-2); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }\n.big { position: relative; height: 64px; }\n.big canvas { width: 100%; height: 100%; display: block; }\n.times { display: flex; justify-content: space-between; font: var(--step-n2) var(--font-mono); color: var(--ink-2); margin-top: 4px; }\n.transport { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3); }\n.btn { height: 40px; padding: 0 var(--space-4); border-radius: var(--radius-sm); border: var(--border) solid var(--line-strong); background: var(--bg); font: 500 var(--step-n1) var(--font-body); color: var(--ink); display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }\n.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }\n\u003c/style>\n\u003c/head>\n\u003cbody>\n\u003cheader>\n  \u003cdiv class=\"mark\">\u003ci>\u003c/i>Fieldnote\u003c/div>\n  \u003clabel class=\"search\">\u003csvg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"square\">\u003ccircle cx=\"11\" cy=\"11\" r=\"7\"/>\u003cpath d=\"m20 20-3.5-3.5\"/>\u003c/svg>\n    \u003cinput aria-label=\"Search recordings\" value=\"rain, forest, pre-dawn\">\u003cspan class=\"count\">218 of 41,280\u003c/span>\u003ckbd>/\u003c/kbd>\u003c/label>\n  \u003cnav>\u003ca href=\"#\" aria-current=\"page\">Library\u003c/a>\u003ca href=\"#\">Collections\u003c/a>\u003ca href=\"#\">Downloads\u003c/a>\u003ca href=\"#\">Account\u003c/a>\u003c/nav>\n\u003c/header>\n\u003cdiv class=\"filters\">\n  \u003cbutton class=\"chip\">Place \u003cb>Any\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip on\">Weather \u003cb>Rain ×\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip\">Hour \u003cb>03:00–06:00\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip\">Mic \u003cb>Any\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip\">Rate \u003cb>≥ 96k\u003c/b>\u003c/button>\n  \u003cbutton class=\"chip\">Length \u003cb>1–10 min\u003c/b>\u003c/button>\n  \u003cspan class=\"sort\">Sort: closest match ↓\u003c/span>\n\u003c/div>\n\u003cdiv class=\"list\">\u003ctable>\n  \u003cthead>\u003ctr>\u003cth>\u003c/th>\u003cth style=\"width:30%\">Recording\u003c/th>\u003cth>Waveform\u003c/th>\u003cth>Length\u003c/th>\u003cth>Hour\u003c/th>\u003cth>Rate\u003c/th>\u003cth>Mic\u003c/th>\u003cth>\u003c/th>\u003c/tr>\u003c/thead>\n  \u003ctbody id=\"rows\">\u003c/tbody>\n\u003c/table>\u003c/div>\n\u003cdiv class=\"dock\">\n  \u003cdiv>\u003cdiv class=\"title\" id=\"dt\">\u003c/div>\u003cdiv class=\"sub\" id=\"ds\">\u003c/div>\u003c/div>\n  \u003cdiv>\u003cdiv class=\"big\">\u003ccanvas id=\"big\">\u003c/canvas>\u003c/div>\u003cdiv class=\"times\">\u003cspan>02:14\u003c/span>\u003cspan id=\"dl\">\u003c/span>\u003c/div>\u003c/div>\n  \u003cdiv class=\"transport\">\u003cbutton class=\"btn\">Add to collection\u003c/button>\u003cbutton class=\"btn primary\">Download WAV\u003c/button>\u003c/div>\n\u003c/div>\n\u003cscript src=\"content.js\">\u003c/script>\n\u003cscript>\nconst css = getComputedStyle(document.documentElement);\nconst v = (n) => css.getPropertyValue(n).trim();\nconst rows = document.getElementById(\"rows\");\nFN.clips.slice(0, 9).forEach((c, i) => {\n  const tr = document.createElement(\"tr\");\n  if (i === 0) tr.className = \"playing\";\n  tr.innerHTML = `\u003ctd>\u003cspan class=\"play\">\u003csvg viewBox=\"0 0 10 10\">${i === 0 ? '\u003crect x=\"1\" y=\"1\" width=\"3\" height=\"8\"/>\u003crect x=\"6\" y=\"1\" width=\"3\" height=\"8\"/>' : '\u003cpath d=\"M1 0l9 5-9 5z\"/>'}\u003c/svg>\u003c/span>\u003c/td>\n    \u003ctd>\u003cdiv class=\"name\">${c.name}\u003c/div>\u003cdiv class=\"where\">${c.place}, ${c.region} · ${c.id}\u003c/div>\u003c/td>\n    \u003ctd>\u003ccanvas class=\"wave\" data-seed=\"${c.seed}\" data-played=\"${i === 0 ? 0.33 : 0}\">\u003c/canvas>\u003c/td>\n    \u003ctd class=\"m len\">${c.len}\u003c/td>\u003ctd class=\"m\">${c.time}\u003c/td>\u003ctd class=\"m\">${c.rate}\u003c/td>\u003ctd class=\"m\">${c.mic}\u003c/td>\n    \u003ctd class=\"dl\">\u003csvg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"square\">\u003cpath d=\"M12 4v11m-5-5 5 5 5-5M5 20h14\"/>\u003c/svg>\u003c/td>`;\n  rows.appendChild(tr);\n});\nfunction draw(cv, seed, played, bar, gap) {\n  const r = devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;\n  cv.width = w * r; cv.height = h * r;\n  const x = cv.getContext(\"2d\"); x.scale(r, r);\n  const n = Math.floor(w / (bar + gap)), data = FN.wave(seed, n);\n  data.forEach((p, i) => {\n    x.fillStyle = i / n \u003c played ? v(\"--accent\") : (played ? v(\"--ink\") : v(\"--ink-3\"));\n    const bh = Math.max(2, p * h);\n    x.fillRect(i * (bar + gap), (h - bh) / 2, bar, bh);\n  });\n}\ndocument.querySelectorAll(\".wave\").forEach((cv) => draw(cv, +cv.dataset.seed, +cv.dataset.played, 2, 2));\nconst c0 = FN.clips[0];\ndocument.getElementById(\"dt\").textContent = c0.name;\ndocument.getElementById(\"ds\").textContent = `${c0.place} · ${c0.time} · ${c0.weather}`;\ndocument.getElementById(\"dl\").textContent = c0.len;\nconst big = document.getElementById(\"big\");\ndraw(big, c0.seed, 0.33, 2, 1);\nconst bx = big.getContext(\"2d\"), r = devicePixelRatio || 1;\nbx.setTransform(r, 0, 0, r, 0, 0);\nbx.fillStyle = v(\"--ink\"); bx.fillRect(big.clientWidth * 0.33, 0, 1.5, big.clientHeight);\n\u003c/script>\n\u003c/body>\n\u003c/html>\n","open":"a.html"},{"kind":"html","source":"b.html","name":"Night Exterior","concept":"Every recording is a place at an hour. Open on one of them, so loud and specific you can almost feel the rain.","typography":"Instrument Serif 400 (display) · Hanken Grotesk 400 (body) · JetBrains Mono (mono)","skeleton":"Full-bleed spectrogram as the hero (top 70%). Headline set over the bottom-left like a film title card; one thumb-sized play button; a slate strip of recording metadata along the bottom edge.","hero":"A spectrogram of the featured clip, rendered in moss → bone → amber; the hottest frequencies are the only saturated color.","palette":["#0e1511","#ece8dc","#f2a541"],"traits":["One recording as hero","Editorial serif","Amber only where sound is"],"baseline":false,"interactive":false,"direction":{"id":"b","name":"Night Exterior","northStar":"Every recording is a place at an hour. Open on one of them, so loud and specific you can almost feel the rain.","engine":{"kind":"scene","source":"4:12 a.m. in a wet cedar forest: a recordist's headlamp off, levels glowing amber, everything else moss-dark.","evidence":"Sound designers buy atmosphere; the library's edge is that every file records when and where it happened."},"tone":{"energy":70,"finish":70,"density":20,"weight":65,"formality":45,"_why":"Persuasion page for a creative audience: loud and airy, but crafted rather than raw."},"benchmark":{"category":"Sound-effects library for film and games","keep":["Play is one click from the first screen"],"change":["Peers show a generic cinematic montage; we show one real recording's spectrogram with its log"]},"skeleton":"Full-bleed spectrogram as the hero (top 70%). Headline set over the bottom-left like a film title card; one thumb-sized play button; a slate strip of recording metadata along the bottom edge.","type":{"display":{"family":"Instrument Serif","weight":400,"weights":[400],"italic":true,"fallback":"serif"},"body":{"family":"Hanken Grotesk","weight":400,"weights":[400,500,600],"fallback":"sans"},"mono":{"family":"JetBrains Mono","weights":[400],"fallback":"mono"},"ratio":1.5},"color":{"bg":"#0e1511","ink":"#ece8dc","accent":"#f2a541","from":"Sodium-lamp amber of a recorder's level meters, against moss-black. Amber appears only where sound is (the spectrogram's peaks and the play control)."},"hero":"A spectrogram of the featured clip, rendered in moss → bone → amber; the hottest frequencies are the only saturated color.","icons":"No icon set: a drawn play triangle and arrows set in the body face.","controls":"Round play control 72px; text links underlined 1px offset 4px; no boxes.","motion":{"feel":"'Hush' — a boom pole swinging slowly into place.","entrance":"(later) Spectrogram scrolls in from the right like a live capture."},"breakthrough":"No product UI above the fold at all: the first screen is one recording.","memorable":"Pressing play scrolls the spectrogram in real time and the headline time ticks (4:12 → 4:13).","refuses":["Left text / right screenshot split","Glow blobs","Gradient text"],"traits":["One recording as hero","Editorial serif","Amber only where sound is"]},"html":"\u003c!doctype html>\n\u003chtml lang=\"en\">\n\u003chead>\n\u003cmeta charset=\"utf-8\">\n\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n\u003ctitle>Night Exterior\u003c/title>\n\u003clink rel=\"stylesheet\" href=\"b.tokens.css\">\n\u003cstyle>\n* { box-sizing: border-box; }\nhtml, body { margin: 0; height: 100%; }\nbody { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); height: 100vh; overflow: hidden; position: relative; }\n\n#spec { position: absolute; inset: 0 0 auto 0; width: 100%; height: 74vh; display: block; }\n.fade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 38%, var(--bg) 74%); pointer-events: none; }\n\nheader { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: baseline; justify-content: space-between; padding: var(--space-5) var(--space-7); z-index: 2; }\n.mark { font: italic 400 var(--step-3)/1 var(--font-display); }\nnav { display: flex; gap: var(--space-6); font-size: var(--step-n1); }\nnav a { color: var(--ink); text-decoration: none; opacity: .82; }\nnav a:last-child { opacity: 1; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }\n\n.freq { position: absolute; top: 96px; right: var(--space-7); z-index: 2; display: grid; gap: 74px; font: var(--step-n2) var(--font-mono); color: var(--ink-2); text-align: right; }\n\n.title { position: absolute; left: var(--space-7); bottom: 132px; z-index: 2; max-width: 980px; }\nh1 { font: 400 clamp(4.5rem, 3rem + 5vw, 9rem)/0.88 var(--font-display); letter-spacing: -0.02em; margin: 0; }\nh1 em { color: var(--accent); }\n.lede { font-size: var(--step-1); color: var(--ink-2); max-width: 34ch; margin: var(--space-5) 0 0; line-height: 1.4; }\n.actions { position: absolute; right: var(--space-7); bottom: 140px; z-index: 2; display: flex; align-items: center; gap: var(--space-5); }\n.play { width: 84px; height: 84px; border-radius: 50%; background: var(--accent); border: 0; display: grid; place-items: center; box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 16%, transparent); }\n.play svg { width: 26px; height: 26px; fill: var(--on-accent); margin-left: 5px; }\n.actions .lbl { font-size: var(--step-n1); color: var(--ink-2); line-height: 1.35; }\n.actions .lbl b { display: block; color: var(--ink); font-weight: 600; font-size: var(--step-0); }\n.browse { color: var(--ink); text-underline-offset: 5px; text-decoration-thickness: 1px; margin-left: var(--space-5); }\n\n.slate { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; display: grid; grid-template-columns: repeat(6, auto); justify-content: space-between; gap: var(--space-5); padding: var(--space-4) var(--space-7); border-top: 1px solid var(--line); font: var(--step-n1) var(--font-mono); color: var(--ink-2); }\n.slate span b { display: block; font: 400 var(--step-n2) var(--font-mono); color: var(--ink-3); margin-bottom: 2px; }\n.slate span { color: var(--ink); }\n\u003c/style>\n\u003c/head>\n\u003cbody>\n\u003ccanvas id=\"spec\" aria-hidden=\"true\">\u003c/canvas>\n\u003cdiv class=\"fade\">\u003c/div>\n\u003cheader>\u003cdiv class=\"mark\">Fieldnote\u003c/div>\u003cnav>\u003ca href=\"#\">Library\u003c/a>\u003ca href=\"#\">Places\u003c/a>\u003ca href=\"#\">Pricing\u003c/a>\u003ca href=\"#\">Sign in\u003c/a>\u003c/nav>\u003c/header>\n\u003cdiv class=\"freq\" aria-hidden=\"true\">\u003cspan>16 kHz\u003c/span>\u003cspan>4 kHz\u003c/span>\u003cspan>1 kHz\u003c/span>\u003cspan>250 Hz\u003c/span>\u003c/div>\n\u003cdiv class=\"title\">\n  \u003ch1>Rain on cedar,\u003cbr>\u003cem>4:12\u003c/em> a.m.\u003c/h1>\n  \u003cp class=\"lede\" id=\"lede\">\u003c/p>\n\u003c/div>\n\u003cdiv class=\"actions\">\n  \u003cbutton class=\"play\" aria-label=\"Play recording\">\u003csvg viewBox=\"0 0 10 10\">\u003cpath d=\"M0 0l10 5-10 5z\"/>\u003c/svg>\u003c/button>\n  \u003cspan class=\"lbl\">\u003cb>Play 6:48\u003c/b>Headphones on\u003c/span>\n  \u003ca class=\"browse\" href=\"#\">Browse 41,280 recordings →\u003c/a>\n\u003c/div>\n\u003cdiv class=\"slate\" id=\"slate\">\u003c/div>\n\u003cscript src=\"content.js\">\u003c/script>\n\u003cscript>\nconst c = FN.clips[0];\ndocument.getElementById(\"lede\").textContent = FN.pitch;\ndocument.getElementById(\"slate\").innerHTML = [\n  [\"Place\", `${c.place}, ${c.region}`], [\"Position\", \"47.86° N 123.93° W\"], [\"Hour\", `${c.time} local`],\n  [\"Weather\", c.weather], [\"Mic\", c.mic], [\"Format\", `${FN.stats.format} · ${c.id}`],\n].map(([k, v]) => `\u003cspan>\u003cb>${k}\u003c/b>${v}\u003c/span>`).join(\"\");\n\n// Procedural spectrogram: rain is broadband with dense high-frequency speckle; drips are short vertical streaks.\nconst cv = document.getElementById(\"spec\"), css = getComputedStyle(document.documentElement);\nconst hex = (n) => css.getPropertyValue(n).trim();\nconst rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));\nconst [BG, INK, HOT] = [rgb(hex(\"--bg\")), rgb(hex(\"--ink\")), rgb(hex(\"--accent\"))];\nconst W = cv.width = Math.floor(cv.clientWidth / 2), H = cv.height = Math.floor(cv.clientHeight / 2);\nconst ctx = cv.getContext(\"2d\"), img = ctx.createImageData(W, H);\nlet s = 7; const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);\nconst drips = Array.from({ length: 55 }, () => [rnd() * W, 0.15 + rnd() * 0.6, 0.4 + rnd() * 0.6]);\nfor (let x = 0; x \u003c W; x++) {\n  const swell = 0.55 + 0.25 * Math.sin(x / W * 5.2) + 0.12 * Math.sin(x / 37);\n  for (let y = 0; y \u003c H; y++) {\n    const f = 1 - y / H; // 0 = low freq (bottom), 1 = high\n    let e = (0.35 + 0.65 * Math.exp(-((f - 0.62) ** 2) / 0.05)) * swell * (0.45 + rnd() * 0.75);\n    e += 0.55 * Math.exp(-((f - 0.08) ** 2) / 0.004) * (0.6 + 0.4 * Math.sin(x / 11)); // low rumble band\n    for (const [dx, df, amp] of drips) if (Math.abs(x - dx) \u003c 1.6 && f > df - 0.25 && f \u003c df + 0.2) e += amp * 0.42;\n    e = Math.min(1, Math.max(0, e - 0.18));\n    const t1 = Math.min(1, e * 1.6), t2 = Math.max(0, e - 0.72) / 0.28;\n    const col = [0, 1, 2].map((k) => BG[k] + (INK[k] - BG[k]) * t1 * 0.62 + (HOT[k] - (BG[k] + (INK[k] - BG[k]) * t1 * 0.62)) * t2);\n    const i = (y * W + x) * 4;\n    img.data[i] = col[0]; img.data[i + 1] = col[1]; img.data[i + 2] = col[2]; img.data[i + 3] = 255;\n  }\n}\nctx.putImageData(img, 0, 0);\n\u003c/script>\n\u003c/body>\n\u003c/html>\n","open":"b.html"},{"kind":"html","source":"c.html","name":"Survey","concept":"The library is an atlas: you find sound the way a location scout finds a place — by where it is.","typography":"Bricolage Grotesque 700 (display) · Atkinson Hyperlegible 400 (body) · DM Mono (mono)","skeleton":"Workspace with a map. Left index (380px): search + places grouped by region with counts. Map fills the rest; the selected place opens a sheet with its 3 best clips.","hero":"A contour map with pins sized by recording count; procedural terrain, no stock map tiles.","palette":["#f2f4ee","#10243e","#c8235f","#b9c6b0","#cfe0e6"],"traits":["Place-first","Contour map","Magenta overprint"],"baseline":false,"interactive":false,"direction":{"id":"c","name":"Survey","northStar":"The library is an atlas: you find sound the way a location scout finds a place — by where it is.","engine":{"kind":"medium","source":"Topographic survey sheets: contour lines, grid references, magenta overprint for the things that matter.","evidence":"Editors often search 'what does Lisbon sound like' before 'tram brakes'; 312 places is the library's moat."},"tone":{"energy":55,"finish":60,"density":55,"weight":45,"formality":30,"_why":"Exploratory and a bit playful — scouting is fun — but it is still a tool."},"benchmark":{"category":"Sound-effects library for film and games","keep":["Search stays in the top-left"],"change":["Peers sort by category tree; we lead with places on a map"]},"skeleton":"Workspace with a map. Left index (380px): search + places grouped by region with counts. Map fills the rest; the selected place opens a sheet with its 3 best clips.","type":{"display":{"family":"Bricolage Grotesque","weight":700,"weights":[500,700],"fallback":"sans"},"body":{"family":"Atkinson Hyperlegible","weight":400,"weights":[400,700],"fallback":"sans"},"mono":{"family":"DM Mono","weights":[400],"fallback":"mono"},"ratio":1.25},"color":{"bg":"#f2f4ee","ink":"#10243e","accent":"#c8235f","from":"Survey-sheet navy for linework, and the magenta overprint mapmakers reserve for what you came for: pins and the play state.","extra":{"contour":"#b9c6b0","water":"#cfe0e6"}},"hero":"A contour map with pins sized by recording count; procedural terrain, no stock map tiles.","icons":"Phosphor at regular weight, 18px, round caps.","controls":"8px radius, navy 1.5px outlines, magenta fill for the selected state; pins scale up 1.15 on hover.","motion":{"feel":"'Flick' — unfolding a paper map.","entrance":"(later) Pins drop in by count, largest first."},"breakthrough":"Navigation by place instead of by category.","memorable":"Hovering a pin plays a 2-second taste of that place.","refuses":["Category tree sidebar","Stock map tiles","Card grid of sounds"],"traits":["Place-first","Contour map","Magenta overprint"]},"html":"\u003c!doctype html>\n\u003chtml lang=\"en\">\n\u003chead>\n\u003cmeta charset=\"utf-8\">\n\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n\u003ctitle>Survey\u003c/title>\n\u003clink rel=\"stylesheet\" href=\"c.tokens.css\">\n\u003cstyle>\n* { box-sizing: border-box; }\nhtml, body { margin: 0; height: 100%; }\nbody { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); height: 100vh; overflow: hidden; display: grid; grid-template-columns: 380px minmax(0, 1fr); }\n\naside { border-right: 1.5px solid var(--ink); display: flex; flex-direction: column; min-height: 0; background: var(--bg); z-index: 2; }\n.top { padding: var(--space-5) var(--space-5) var(--space-4); }\n.mark { font: 700 var(--step-2)/1 var(--font-display); letter-spacing: -0.03em; display: flex; align-items: center; gap: 10px; }\n.mark svg { width: 26px; height: 26px; }\n.search { margin-top: var(--space-5); display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 var(--space-4); border: 1.5px solid var(--ink); border-radius: var(--radius); background: #fff; }\n.search input { border: 0; outline: 0; flex: 1; font: inherit; color: var(--ink); background: none; }\n.tabs { display: flex; gap: var(--space-2); margin-top: var(--space-4); }\n.tabs button { font: 700 var(--step-n1) var(--font-body); padding: 6px 12px; border-radius: var(--radius); border: 1.5px solid var(--ink); background: none; color: var(--ink); }\n.tabs button[aria-pressed=\"true\"] { background: var(--ink); color: var(--bg); }\n\n.index { overflow: hidden; flex: 1; border-top: 1.5px solid var(--ink); }\n.region { padding: var(--space-3) var(--space-5) var(--space-1); font: var(--step-n1) var(--font-mono); color: var(--ink-2); }\n.place { display: grid; grid-template-columns: 1fr auto; align-items: baseline; padding: 9px var(--space-5); border-bottom: 1px solid var(--line); }\n.place b { font: 500 var(--step-1)/1.2 var(--font-display); letter-spacing: -0.01em; }\n.place span { font: var(--step-n1) var(--font-mono); color: var(--ink-2); }\n.place.sel { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }\n.place.sel span { color: var(--on-accent); }\n\nmain { position: relative; overflow: hidden; background: var(--bg); }\n#map { position: absolute; inset: 0; width: 100%; height: 100%; }\n.grid-ref { position: absolute; font: var(--step-n2) var(--font-mono); color: var(--ink-2); }\n.pin { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 0 1.5px var(--accent); display: grid; place-items: center; color: var(--on-accent); font: 700 var(--step-n2)/1 var(--font-mono); }\n.pin.sel { box-shadow: 0 0 0 1.5px var(--accent), 0 0 0 10px color-mix(in srgb, var(--accent) 18%, transparent); }\n.label { position: absolute; transform: translate(12px, -50%); font: 700 var(--step-n1)/1 var(--font-display); color: var(--ink); white-space: nowrap; text-shadow: 0 0 3px var(--bg), 0 0 3px var(--bg), 0 0 3px var(--bg); }\n\n.sheet { position: absolute; left: 38%; bottom: var(--space-6); width: 420px; background: #fff; border: 1.5px solid var(--ink); border-radius: var(--radius-lg); box-shadow: 6px 6px 0 var(--ink); }\n.sheet header { padding: var(--space-4) var(--space-5); border-bottom: 1.5px solid var(--ink); display: flex; justify-content: space-between; align-items: start; gap: var(--space-3); }\n.sheet h2 { font: 700 var(--step-3)/1 var(--font-display); letter-spacing: -0.03em; margin: 0; }\n.sheet .coord { font: var(--step-n1) var(--font-mono); color: var(--ink-2); margin-top: 6px; white-space: nowrap; }\n.sheet .n { white-space: nowrap; font: var(--step-n1) var(--font-mono); background: var(--accent-soft); color: var(--ink); padding: 4px 8px; border-radius: var(--radius-sm); }\n.clip { display: grid; grid-template-columns: 36px 1fr auto; gap: var(--space-3); align-items: center; padding: var(--space-3) var(--space-5); border-bottom: 1px solid var(--line); }\n.clip:last-of-type { border-bottom: 0; }\n.clip .pl { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--ink); display: grid; place-items: center; }\n.clip .pl svg { width: 11px; height: 11px; fill: var(--ink); margin-left: 2px; }\n.clip.on .pl { background: var(--accent); border-color: var(--accent); }\n.clip.on .pl svg { fill: var(--on-accent); }\n.clip .t { font-weight: 700; line-height: 1.25; }\n.clip canvas { display: block; width: 100%; height: 18px; margin-top: 4px; }\n.clip .len { font: var(--step-n1) var(--font-mono); color: var(--ink-2); }\n.sheet footer { padding: var(--space-3) var(--space-5) var(--space-4); }\n.sheet footer a { color: var(--accent-text); font-weight: 700; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }\n.scale { position: absolute; right: var(--space-6); bottom: var(--space-5); font: var(--step-n2) var(--font-mono); color: var(--ink-2); display: flex; align-items: center; gap: 10px; }\n.scale i { display: block; width: 120px; height: 6px; border: 1.5px solid var(--ink); border-top: 0; }\n\u003c/style>\n\u003c/head>\n\u003cbody>\n\u003caside>\n  \u003cdiv class=\"top\">\n    \u003cdiv class=\"mark\">\u003csvg viewBox=\"0 0 26 26\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\">\u003cpath d=\"M3 18c4-6 7 2 10-4s6-4 10-8\"/>\u003cpath d=\"M3 23c5-5 8 1 11-3s6-3 9-6\" opacity=\".5\"/>\u003ccircle cx=\"17\" cy=\"9\" r=\"2.6\" fill=\"var(--accent)\" stroke=\"none\"/>\u003c/svg>Fieldnote\u003c/div>\n    \u003clabel class=\"search\">\u003csvg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\">\u003ccircle cx=\"11\" cy=\"11\" r=\"7\"/>\u003cpath d=\"m20 20-3.5-3.5\"/>\u003c/svg>\u003cinput aria-label=\"Search places or sounds\" placeholder=\"A place, or a sound…\">\u003c/label>\n    \u003cdiv class=\"tabs\">\u003cbutton aria-pressed=\"true\">Places\u003c/button>\u003cbutton aria-pressed=\"false\">Sounds\u003c/button>\u003cbutton aria-pressed=\"false\">Hours\u003c/button>\u003c/div>\n  \u003c/div>\n  \u003cdiv class=\"index\" id=\"index\">\u003c/div>\n\u003c/aside>\n\u003cmain>\n  \u003ccanvas id=\"map\" aria-hidden=\"true\">\u003c/canvas>\n  \u003cdiv id=\"pins\">\u003c/div>\n  \u003csection class=\"sheet\" aria-label=\"Selected place\">\n    \u003cheader>\u003cdiv>\u003ch2>Pacific Northwest\u003c/h2>\u003cdiv class=\"coord\">47.6° N 122.3° W · 211 wet days/yr\u003c/div>\u003c/div>\u003cspan class=\"n\">1,840 rec.\u003c/span>\u003c/header>\n    \u003cdiv id=\"clips\">\u003c/div>\n    \u003cfooter>\u003ca href=\"#\">All 1,840 from this region →\u003c/a>\u003c/footer>\n  \u003c/section>\n  \u003cdiv class=\"scale\">\u003ci>\u003c/i>1,000 km · equirectangular\u003c/div>\n\u003c/main>\n\u003cscript src=\"content.js\">\u003c/script>\n\u003cscript>\ndocument.fonts.ready.then(() => {\nconst css = getComputedStyle(document.documentElement), v = (n) => css.getPropertyValue(n).trim(), r = devicePixelRatio || 1;\n\n// Index: places grouped by hemisphere band.\nconst bands = [[\"North\", (p) => p.lat > 40], [\"Tropics & mid-latitudes\", (p) => p.lat \u003c= 40 && p.lat > -15], [\"South\", (p) => p.lat \u003c= -15]];\ndocument.getElementById(\"index\").innerHTML = bands.map(([name, f]) =>\n  `\u003cdiv class=\"region\">${name}\u003c/div>` + FN.places.filter(f).sort((a, b) => b.count - a.count).map((p) =>\n    `\u003cdiv class=\"place${p.name === \"Pacific Northwest\" ? \" sel\" : \"\"}\">\u003cb>${p.name}\u003c/b>\u003cspan>${p.count.toLocaleString(\"en\")}\u003c/span>\u003c/div>`).join(\"\")).join(\"\");\n\n// Sheet clips with mini waveforms\nconst picks = [FN.clips[0], { ...FN.clips[3], name: \"Creek under alder, snowmelt\", len: \"5:10\", seed: 51 }, { ...FN.clips[5], name: \"Ferry horn across Puget Sound\", len: \"0:48\", seed: 57 }];\ndocument.getElementById(\"clips\").innerHTML = picks.map((c, i) => `\u003cdiv class=\"clip${i === 0 ? \" on\" : \"\"}\">\u003cspan class=\"pl\">\u003csvg viewBox=\"0 0 10 10\">\u003cpath d=\"M0 0l10 5-10 5z\"/>\u003c/svg>\u003c/span>\u003cdiv>\u003cdiv class=\"t\">${c.name}\u003c/div>\u003ccanvas data-seed=\"${c.seed}\">\u003c/canvas>\u003c/div>\u003cspan class=\"len\">${c.len}\u003c/span>\u003c/div>`).join(\"\");\ndocument.querySelectorAll(\".clip canvas\").forEach((cv, k) => {\n  const w = cv.clientWidth, h = cv.clientHeight; cv.width = w * r; cv.height = h * r;\n  const g = cv.getContext(\"2d\"); g.scale(r, r);\n  FN.wave(+cv.dataset.seed, Math.floor(w / 3)).forEach((p, i, arr) => { g.fillStyle = k === 0 && i / arr.length \u003c 0.4 ? v(\"--accent\") : v(\"--ink-3\"); const bh = Math.max(2, p * h); g.fillRect(i * 3, (h - bh) / 2, 2, bh); });\n});\n\n// Map: procedural terrain contours (value noise + marching squares), graticule, pins.\nconst main = document.querySelector(\"main\"), cv = document.getElementById(\"map\");\nconst W = main.clientWidth, H = main.clientHeight;\ncv.width = W * r; cv.height = H * r;\nconst x = cv.getContext(\"2d\"); x.scale(r, r);\nconst proj = (lat, lon) => [((lon + 170) / 340) * W, ((72 - lat) / 130) * H];\n\nlet seed = 5; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);\nconst G = 48, grid = Array.from({ length: G + 1 }, () => Array.from({ length: G + 1 }, rnd));\nconst smooth = (t) => t * t * (3 - 2 * t);\nconst noise = (u, w) => { const i = Math.floor(u), j = Math.floor(w), fu = smooth(u - i), fw = smooth(w - j), g = (a, b) => grid[(a % G + G) % G][(b % G + G) % G];\n  return g(i, j) * (1 - fu) * (1 - fw) + g(i + 1, j) * fu * (1 - fw) + g(i, j + 1) * (1 - fu) * fw + g(i + 1, j + 1) * fu * fw; };\nconst height = (px, py) => { const u = px / W * 6, w = py / H * 4; return noise(u, w) * 0.6 + noise(u * 2.1, w * 2.1) * 0.3 + noise(u * 4.3, w * 4.3) * 0.1; };\n\nconst step = 6, cols = Math.ceil(W / step) + 1, rows = Math.ceil(H / step) + 1;\nconst hm = []; for (let j = 0; j \u003c rows; j++) { hm.push([]); for (let i = 0; i \u003c cols; i++) hm[j].push(height(i * step, j * step)); }\n// water below 0.38\n// Water: low-res mask scaled up with smoothing; the 0.38 contour drawn below gives the crisp coastline.\nconst wm = document.createElement(\"canvas\"); wm.width = cols; wm.height = rows;\nconst wx = wm.getContext(\"2d\"), wd = wx.createImageData(cols, rows), [wr, wg, wb] = [1, 3, 5].map((k) => parseInt(v(\"--water\").slice(k, k + 2), 16));\nfor (let j = 0; j \u003c rows; j++) for (let i = 0; i \u003c cols; i++) { const o = (j * cols + i) * 4; wd.data[o] = wr; wd.data[o + 1] = wg; wd.data[o + 2] = wb; wd.data[o + 3] = Math.max(0, Math.min(255, (0.385 - hm[j][i]) * 255 * 40)); }\nwx.putImageData(wd, 0, 0);\nx.imageSmoothingEnabled = true; x.imageSmoothingQuality = \"high\"; x.drawImage(wm, 0, 0, cols * step, rows * step);\nfor (let k = 0; k \u003c 14; k++) {\n  const lvl = 0.38 + k * 0.035;\n  x.strokeStyle = k % 5 === 0 ? v(\"--ink-3\") : v(\"--contour\"); x.lineWidth = k % 5 === 0 ? 1.1 : 0.8;\n  x.beginPath();\n  for (let j = 0; j \u003c rows - 1; j++) for (let i = 0; i \u003c cols - 1; i++) {\n    const a = hm[j][i], b = hm[j][i + 1], c = hm[j + 1][i + 1], d = hm[j + 1][i];\n    const pts = [];\n    const e = (p, q, x0, y0, x1, y1) => { if ((p \u003c lvl) !== (q \u003c lvl)) { const t = (lvl - p) / (q - p); pts.push([x0 + (x1 - x0) * t, y0 + (y1 - y0) * t]); } };\n    const X = i * step, Y = j * step;\n    e(a, b, X, Y, X + step, Y); e(b, c, X + step, Y, X + step, Y + step); e(d, c, X, Y + step, X + step, Y + step); e(a, d, X, Y, X, Y + step);\n    if (pts.length >= 2) { x.moveTo(...pts[0]); x.lineTo(...pts[1]); }\n    if (pts.length === 4) { x.moveTo(...pts[2]); x.lineTo(...pts[3]); }\n  }\n  x.stroke();\n}\n// graticule\nx.strokeStyle = v(\"--ink\"); x.globalAlpha = 0.12; x.lineWidth = 1; x.setLineDash([2, 4]);\nfor (let lon = -150; lon \u003c= 160; lon += 30) { const [px] = proj(0, lon); x.beginPath(); x.moveTo(px, 0); x.lineTo(px, H); x.stroke(); }\nfor (let lat = -45; lat \u003c= 60; lat += 15) { const [, py] = proj(lat, 0); x.beginPath(); x.moveTo(0, py); x.lineTo(W, py); x.stroke(); }\nx.setLineDash([]); x.globalAlpha = 1;\n\nconst pins = document.getElementById(\"pins\");\nfor (const lat of [60, 30, 0, -30]) { const [, py] = proj(lat, 0); pins.insertAdjacentHTML(\"beforeend\", `\u003cspan class=\"grid-ref\" style=\"left:12px;top:${py - 16}px\">${Math.abs(lat)}°${lat >= 0 ? \"N\" : \"S\"}\u003c/span>`); }\n// Pins largest first; labels skip when they would collide with another label or the sheet, and flip left near the edge.\nconst sheet = document.querySelector(\".sheet\").getBoundingClientRect(), mainBox = main.getBoundingClientRect();\nconst avoid = [{ l: sheet.left - mainBox.left - 8, t: sheet.top - mainBox.top - 8, r: sheet.right - mainBox.left + 8, b: sheet.bottom - mainBox.top + 8 }];\nconst hit = (a) => avoid.some((b) => a.l \u003c b.r && a.r > b.l && a.t \u003c b.b && a.b > b.t);\nlet selPin;\nfor (const p of [...FN.places].sort((a, b) => b.count - a.count)) {\n  const [px, py] = proj(p.lat, p.lon), size = 14 + Math.sqrt(p.count) * 0.42, sel = p.name === \"Pacific Northwest\";\n  if (hit({ l: px - size / 2, t: py - size / 2, r: px + size / 2, b: py + size / 2 })) continue;\n  pins.insertAdjacentHTML(\"beforeend\", `\u003cspan class=\"pin${sel ? \" sel\" : \"\"}\" style=\"left:${px}px;top:${py}px;width:${size}px;height:${size}px\">${size > 30 ? Math.round(p.count / 100) / 10 + \"k\" : \"\"}\u003c/span>`);\n  avoid.push({ l: px - size / 2, t: py - size / 2, r: px + size / 2, b: py + size / 2 });\n  if (sel) selPin = [px, py, size];\n  const lbl = document.createElement(\"span\"); lbl.className = \"label\"; lbl.textContent = p.name; pins.appendChild(lbl);\n  const lw = lbl.offsetWidth, flip = px + size / 2 + 12 + lw > W - 16;\n  const box = { l: flip ? px - size / 2 - 12 - lw : px + size / 2 + 12, t: py - 9, r: flip ? px - size / 2 - 12 : px + size / 2 + 12 + lw, b: py + 9 };\n  if (hit(box)) { lbl.remove(); continue; }\n  lbl.style.left = box.l + \"px\"; lbl.style.top = py + \"px\"; lbl.style.transform = \"translateY(-50%)\";\n  avoid.push(box);\n}\n// Magenta leader line from the selected pin to its sheet, like a survey callout.\nif (selPin) {\n  x.strokeStyle = v(\"--accent\"); x.lineWidth = 1.5; x.setLineDash([5, 4]);\n  x.beginPath(); x.moveTo(selPin[0] + selPin[2] / 2, selPin[1]); x.lineTo(sheet.left - mainBox.left + 40, selPin[1]); x.lineTo(sheet.left - mainBox.left + 40, sheet.top - mainBox.top); x.stroke(); x.setLineDash([]);\n}\n\n});\n\u003c/script>\n\u003c/body>\n\u003c/html>\n","open":"c.html"}]}
+    </script>
+    <script>
+      // Pure token engine: direction card -> design tokens.
 // Shared by scripts/tokens.mjs (Node) and the canvas Tune panel (inlined into the page),
 // so it must stay dependency-free and DOM-free.
 
@@ -439,193 +954,393 @@ function googleFontsHref(direction) {
   }
   return fams.length ? `https://fonts.googleapis.com/css2?${fams.map((f) => `family=${f}`).join("&")}&display=swap` : null;
 }
-</script>
-<script>
-(() => {
-const DATA = JSON.parse(document.getElementById("canvas-data").textContent);
-const C = DATA.candidates;
-const KEY = `canvas-ui:${DATA.title}:${DATA.round}`;
-const VPS = { desktop: [1440, 900, "Desktop", "D"], tablet: [820, 1180, "Tablet", "T"], mobile: [390, 844, "Mobile", "M"] };
-const DIAL_NAMES = typeof DIALS !== "undefined" ? DIALS : { energy: ["quiet", "loud"], finish: ["raw", "refined"], density: ["airy", "dense"], weight: ["light", "heavy"], formality: ["playful", "formal"] };
 
-const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } };
-const saved = load();
-const S = Object.assign({ view: "grid", vp: DATA.viewport || "desktop", active: 0, a: 0, b: Math.min(1, C.length - 1), mix: 0.5,
-  squint: false, blind: false, sync: true, notes: {}, tune: {}, picked: null, tuneOpen: false }, saved);
-if (!VPS[S.vp] && S.vp !== "native") S.vp = "desktop";
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
-const $ = (s, r = document) => r.querySelector(s);
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const num = (i) => String(i + 1).padStart(2, "0");
+    </script>
+    <script>
+      (() => {
+        const DATA = JSON.parse(
+          document.getElementById("canvas-data").textContent,
+        );
+        const C = DATA.candidates;
+        const KEY = `canvas-ui:${DATA.title}:${DATA.round}`;
+        const VPS = {
+          desktop: [1440, 900, "Desktop", "D"],
+          tablet: [820, 1180, "Tablet", "T"],
+          mobile: [390, 844, "Mobile", "M"],
+        };
+        const DIAL_NAMES =
+          typeof DIALS !== "undefined"
+            ? DIALS
+            : {
+                energy: ["quiet", "loud"],
+                finish: ["raw", "refined"],
+                density: ["airy", "dense"],
+                weight: ["light", "heavy"],
+                formality: ["playful", "formal"],
+              };
 
-$("#title").textContent = DATA.title;
-$("#sub").textContent = [DATA.round && `Round ${DATA.round}`, `${C.length} candidates`, DATA.note].filter(Boolean).join(" · ");
-document.title = `${DATA.title} — canvas`;
-if (DATA.question) { $("#brief").hidden = false; $("#question").textContent = DATA.question; }
+        const load = () => {
+          try {
+            return JSON.parse(localStorage.getItem(KEY)) || {};
+          } catch {
+            return {};
+          }
+        };
+        const saved = load();
+        const S = Object.assign(
+          {
+            view: "grid",
+            vp: DATA.viewport || "desktop",
+            active: 0,
+            a: 0,
+            b: Math.min(1, C.length - 1),
+            mix: 0.5,
+            squint: false,
+            blind: false,
+            sync: true,
+            notes: {},
+            tune: {},
+            picked: null,
+            tuneOpen: false,
+          },
+          saved,
+        );
+        if (!VPS[S.vp] && S.vp !== "native") S.vp = "desktop";
+        const save = () => {
+          try {
+            localStorage.setItem(KEY, JSON.stringify(S));
+          } catch {}
+        };
+        const $ = (s, r = document) => r.querySelector(s);
+        const esc = (s) =>
+          String(s ?? "").replace(
+            /[&<>"]/g,
+            (c) =>
+              ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+          );
+        const num = (i) => String(i + 1).padStart(2, "0");
 
-// viewport buttons
-const vpBar = $("#vps");
-for (const [k, v] of Object.entries(VPS)) vpBar.insertAdjacentHTML("beforeend", `<button data-vp="${k}" title="${v[2]} ${v[0]}×${v[1]} (${v[3]})">${v[2]}</button>`);
-if (C.some((c) => c.nativeViewport)) vpBar.insertAdjacentHTML("beforeend", `<button data-vp="native" title="Each candidate's own size (N)">Native</button>`);
+        $("#title").textContent = DATA.title;
+        $("#sub").textContent = [
+          DATA.round && `Round ${DATA.round}`,
+          `${C.length} candidates`,
+          DATA.note,
+        ]
+          .filter(Boolean)
+          .join(" · ");
+        document.title = `${DATA.title} — canvas`;
+        if (DATA.question) {
+          $("#brief").hidden = false;
+          $("#question").textContent = DATA.question;
+        }
 
-function vpOf(c) {
-  if (S.vp === "native" && c.nativeViewport) return c.nativeViewport.split("x").map(Number);
-  const v = VPS[S.vp] || VPS.desktop; return [v[0], v[1]];
-}
+        // viewport buttons
+        const vpBar = $("#vps");
+        for (const [k, v] of Object.entries(VPS))
+          vpBar.insertAdjacentHTML(
+            "beforeend",
+            `<button data-vp="${k}" title="${v[2]} ${v[0]}×${v[1]} (${v[3]})">${v[2]}</button>`,
+          );
+        if (C.some((c) => c.nativeViewport))
+          vpBar.insertAdjacentHTML(
+            "beforeend",
+            `<button data-vp="native" title="Each candidate's own size (N)">Native</button>`,
+          );
 
-// ---------- frames ----------
-const docs = new Map(); // iframe -> candidate index
-function frameFor(c, i, extraClass = "") {
-  const [w, h] = vpOf(c);
-  let el;
-  if (c.kind === "image") { el = document.createElement("img"); el.src = c.image; el.alt = c.name || ""; }
-  else {
-    el = document.createElement("iframe");
-    el.title = c.name || `Candidate ${i + 1}`;
-    el.setAttribute("loading", "eager");
-    if (c.kind === "url") el.src = c.url; else el.srcdoc = c.html;
-    if (c.interactive) el.classList.add("live");
-    el.addEventListener("load", () => { docs.set(el, i); applyTune(i, el); hookScroll(el); });
-  }
-  el.className += ` frame ${extraClass}`;
-  el.style.width = w + "px"; el.style.height = h + "px";
-  el.dataset.w = w; el.dataset.h = h;
-  return el;
-}
-function fit(stage) {
-  const f = stage.querySelectorAll(".frame");
-  if (!f.length) return;
-  const w = +f[0].dataset.w, h = +f[0].dataset.h;
-  const max = stage.dataset.max === "1" ? 1 : Infinity;
-  const s = Math.min(max, stage.clientWidth / w);
-  stage.style.height = Math.round(h * s) + "px";
-  f.forEach((x) => (x.style.transform = `scale(${s})`));
-}
-const ro = new ResizeObserver((entries) => entries.forEach((e) => fit(e.target)));
+        function vpOf(c) {
+          if (S.vp === "native" && c.nativeViewport)
+            return c.nativeViewport.split("x").map(Number);
+          const v = VPS[S.vp] || VPS.desktop;
+          return [v[0], v[1]];
+        }
 
-let syncing = false;
-function hookScroll(iframe) {
-  let d; try { d = iframe.contentDocument; } catch { return; }
-  if (!d) return;
-  d.addEventListener("scroll", () => {
-    if (!S.sync || syncing) return;
-    const se = d.scrollingElement, frac = se.scrollTop / Math.max(1, se.scrollHeight - se.clientHeight);
-    syncing = true;
-    for (const other of docs.keys()) {
-      if (other === iframe || !other.isConnected) continue;
-      try { const o = other.contentDocument.scrollingElement; o.scrollTop = frac * (o.scrollHeight - o.clientHeight); } catch {}
-    }
-    requestAnimationFrame(() => (syncing = false));
-  }, { passive: true });
-}
+        // ---------- frames ----------
+        const docs = new Map(); // iframe -> candidate index
+        function frameFor(c, i, extraClass = "") {
+          const [w, h] = vpOf(c);
+          let el;
+          if (c.kind === "image") {
+            el = document.createElement("img");
+            el.src = c.image;
+            el.alt = c.name || "";
+          } else {
+            el = document.createElement("iframe");
+            el.title = c.name || `Candidate ${i + 1}`;
+            el.setAttribute("loading", "eager");
+            if (c.kind === "url") el.src = c.url;
+            else el.srcdoc = c.html;
+            if (c.interactive) el.classList.add("live");
+            el.addEventListener("load", () => {
+              docs.set(el, i);
+              applyTune(i, el);
+              hookScroll(el);
+            });
+          }
+          el.className += ` frame ${extraClass}`;
+          el.style.width = w + "px";
+          el.style.height = h + "px";
+          el.dataset.w = w;
+          el.dataset.h = h;
+          return el;
+        }
+        function fit(stage) {
+          const f = stage.querySelectorAll(".frame");
+          if (!f.length) return;
+          const w = +f[0].dataset.w,
+            h = +f[0].dataset.h;
+          const max = stage.dataset.max === "1" ? 1 : Infinity;
+          const s = Math.min(max, stage.clientWidth / w);
+          stage.style.height = Math.round(h * s) + "px";
+          f.forEach((x) => (x.style.transform = `scale(${s})`));
+        }
+        const ro = new ResizeObserver((entries) =>
+          entries.forEach((e) => fit(e.target)),
+        );
 
-// ---------- tune ----------
-function tunedDirection(i) {
-  const base = C[i].direction; if (!base) return null;
-  const t = S.tune[i]; if (!t) return base;
-  const d = JSON.parse(JSON.stringify(base));
-  d.tone = { ...(d.tone || {}), ...(t.tone || {}) };
-  d.color = { ...(d.color || {}), ...(t.color || {}) };
-  d.type = { ...(d.type || {}), ...(t.type || {}) };
-  return d;
-}
-function applyTune(i, iframe) {
-  if (typeof buildTokens === "undefined" || !C[i].direction) return;
-  const targets = iframe ? [iframe] : [...docs.keys()].filter((f) => docs.get(f) === i && f.isConnected);
-  const t = S.tune[i];
-  for (const f of targets) {
-    let d; try { d = f.contentDocument; } catch { continue; }
-    if (!d || !d.documentElement) continue;
-    let st = d.getElementById("canvas-tune");
-    if (!t) { st?.remove(); continue; }
-    const { vars } = buildTokens(tunedDirection(i));
-    if (!st) { st = d.createElement("style"); st.id = "canvas-tune"; }
-    st.textContent = `:root{${Object.entries(vars).filter(([k]) => !k.startsWith("--font")).map(([k, v]) => `${k}:${v} !important`).join(";")}}`;
-    d.documentElement.appendChild(st);
-  }
-}
-function tuneDiff(i) {
-  const t = S.tune[i], base = C[i].direction; if (!t || !base) return [];
-  const out = [];
-  for (const k of Object.keys(t.tone || {})) if (t.tone[k] !== (base.tone?.[k] ?? 50)) out.push(`tone.${k} ${base.tone?.[k] ?? 50}→${t.tone[k]}`);
-  for (const k of Object.keys(t.color || {})) if (t.color[k] !== base.color?.[k]) out.push(`color.${k} ${base.color?.[k] ?? "auto"}→${t.color[k]}`);
-  for (const k of Object.keys(t.type || {})) if (t.type[k] !== base.type?.[k]) out.push(`type.${k} ${base.type?.[k] ?? "auto"}→${t.type[k]}`);
-  return out;
-}
-function tunePanel(i) {
-  const c = C[i]; if (!c.direction || c.kind !== "html") return `<p class="tune" style="display:block"><small>Tune needs an HTML candidate with a direction card that uses canvas-ui tokens.</small></p>`;
-  const d = tunedDirection(i);
-  const dial = (k) => `<label>${k}<input type="range" min="0" max="100" step="1" data-tone="${k}" value="${d.tone?.[k] ?? 50}"><output>${d.tone?.[k] ?? 50}</output></label>`;
-  const col = (k) => `<label><input type="color" data-color="${k}" value="${d.color?.[k] || "#888888"}">${k}</label>`;
-  const ratio = d.type?.ratio || buildTokens(d).vars["--step-1"].replace("rem", "");
-  return `<div class="tune ${S.tuneOpen ? "open" : ""}" data-i="${i}">
+        let syncing = false;
+        function hookScroll(iframe) {
+          let d;
+          try {
+            d = iframe.contentDocument;
+          } catch {
+            return;
+          }
+          if (!d) return;
+          d.addEventListener(
+            "scroll",
+            () => {
+              if (!S.sync || syncing) return;
+              const se = d.scrollingElement,
+                frac =
+                  se.scrollTop / Math.max(1, se.scrollHeight - se.clientHeight);
+              syncing = true;
+              for (const other of docs.keys()) {
+                if (other === iframe || !other.isConnected) continue;
+                try {
+                  const o = other.contentDocument.scrollingElement;
+                  o.scrollTop = frac * (o.scrollHeight - o.clientHeight);
+                } catch {}
+              }
+              requestAnimationFrame(() => (syncing = false));
+            },
+            { passive: true },
+          );
+        }
+
+        // ---------- tune ----------
+        function tunedDirection(i) {
+          const base = C[i].direction;
+          if (!base) return null;
+          const t = S.tune[i];
+          if (!t) return base;
+          const d = JSON.parse(JSON.stringify(base));
+          d.tone = { ...(d.tone || {}), ...(t.tone || {}) };
+          d.color = { ...(d.color || {}), ...(t.color || {}) };
+          d.type = { ...(d.type || {}), ...(t.type || {}) };
+          return d;
+        }
+        function applyTune(i, iframe) {
+          if (typeof buildTokens === "undefined" || !C[i].direction) return;
+          const targets = iframe
+            ? [iframe]
+            : [...docs.keys()].filter(
+                (f) => docs.get(f) === i && f.isConnected,
+              );
+          const t = S.tune[i];
+          for (const f of targets) {
+            let d;
+            try {
+              d = f.contentDocument;
+            } catch {
+              continue;
+            }
+            if (!d || !d.documentElement) continue;
+            let st = d.getElementById("canvas-tune");
+            if (!t) {
+              st?.remove();
+              continue;
+            }
+            const { vars } = buildTokens(tunedDirection(i));
+            if (!st) {
+              st = d.createElement("style");
+              st.id = "canvas-tune";
+            }
+            st.textContent = `:root{${Object.entries(vars)
+              .filter(([k]) => !k.startsWith("--font"))
+              .map(([k, v]) => `${k}:${v} !important`)
+              .join(";")}}`;
+            d.documentElement.appendChild(st);
+          }
+        }
+        function tuneDiff(i) {
+          const t = S.tune[i],
+            base = C[i].direction;
+          if (!t || !base) return [];
+          const out = [];
+          for (const k of Object.keys(t.tone || {}))
+            if (t.tone[k] !== (base.tone?.[k] ?? 50))
+              out.push(`tone.${k} ${base.tone?.[k] ?? 50}→${t.tone[k]}`);
+          for (const k of Object.keys(t.color || {}))
+            if (t.color[k] !== base.color?.[k])
+              out.push(`color.${k} ${base.color?.[k] ?? "auto"}→${t.color[k]}`);
+          for (const k of Object.keys(t.type || {}))
+            if (t.type[k] !== base.type?.[k])
+              out.push(`type.${k} ${base.type?.[k] ?? "auto"}→${t.type[k]}`);
+          return out;
+        }
+        function tunePanel(i) {
+          const c = C[i];
+          if (!c.direction || c.kind !== "html")
+            return `<p class="tune" style="display:block"><small>Tune needs an HTML candidate with a direction card that uses canvas-ui tokens.</small></p>`;
+          const d = tunedDirection(i);
+          const dial = (k) =>
+            `<label>${k}<input type="range" min="0" max="100" step="1" data-tone="${k}" value="${d.tone?.[k] ?? 50}"><output>${d.tone?.[k] ?? 50}</output></label>`;
+          const col = (k) =>
+            `<label><input type="color" data-color="${k}" value="${d.color?.[k] || "#888888"}">${k}</label>`;
+          const ratio =
+            d.type?.ratio || buildTokens(d).vars["--step-1"].replace("rem", "");
+          return `<div class="tune ${S.tuneOpen ? "open" : ""}" data-i="${i}">
     ${Object.keys(DIAL_NAMES).map(dial).join("")}
     <label>type ratio<input type="range" min="1.1" max="1.6" step="0.01" data-ratio value="${(+ratio).toFixed(2)}"><output>${(+ratio).toFixed(2)}</output></label>
     <div class="colors">${["bg", "ink", "accent"].map(col).join("")}</div>
     <div class="row"><small style="flex:1">Live preview of token changes. Picks include them.</small><button class="icon-btn" data-reset>Reset</button></div>
   </div>`;
-}
-function wireTune(root, i) {
-  const panel = root.querySelector(".tune[data-i]"); if (!panel) return;
-  panel.addEventListener("input", (e) => {
-    const t = (S.tune[i] ||= {});
-    const el = e.target;
-    if (el.dataset.tone) { (t.tone ||= {})[el.dataset.tone] = +el.value; el.nextElementSibling.value = el.value; }
-    if (el.dataset.color) (t.color ||= {})[el.dataset.color] = el.value;
-    if ("ratio" in el.dataset) { (t.type ||= {}).ratio = +el.value; el.nextElementSibling.value = (+el.value).toFixed(2); }
-    applyTune(i); save(); markTuned();
-  });
-  panel.querySelector("[data-reset]").addEventListener("click", () => { delete S.tune[i]; applyTune(i); save(); render(); });
-}
-function markTuned() { document.querySelectorAll(".card").forEach((card) => { const i = +card.dataset.i; const b = card.querySelector(".tuned"); if (b) b.hidden = !tuneDiff(i).length; }); }
+        }
+        function wireTune(root, i) {
+          const panel = root.querySelector(".tune[data-i]");
+          if (!panel) return;
+          panel.addEventListener("input", (e) => {
+            const t = (S.tune[i] ||= {});
+            const el = e.target;
+            if (el.dataset.tone) {
+              (t.tone ||= {})[el.dataset.tone] = +el.value;
+              el.nextElementSibling.value = el.value;
+            }
+            if (el.dataset.color) (t.color ||= {})[el.dataset.color] = el.value;
+            if ("ratio" in el.dataset) {
+              (t.type ||= {}).ratio = +el.value;
+              el.nextElementSibling.value = (+el.value).toFixed(2);
+            }
+            applyTune(i);
+            save();
+            markTuned();
+          });
+          panel.querySelector("[data-reset]").addEventListener("click", () => {
+            delete S.tune[i];
+            applyTune(i);
+            save();
+            render();
+          });
+        }
+        function markTuned() {
+          document.querySelectorAll(".card").forEach((card) => {
+            const i = +card.dataset.i;
+            const b = card.querySelector(".tuned");
+            if (b) b.hidden = !tuneDiff(i).length;
+          });
+        }
 
-// ---------- pick ----------
-function pickText(i) {
-  const c = C[i], n = (k) => (S.notes[k] || {});
-  const lines = [`[canvas-ui] ${DATA.title}${DATA.round ? ` · round ${DATA.round}` : ""}`, `Pick: ${num(i)} "${c.name}"${c.source ? ` (${c.source})` : ""}`];
-  if (n(i).keep) lines.push(`Keep: ${n(i).keep}`);
-  if (n(i).change) lines.push(`Change: ${n(i).change}`);
-  C.forEach((o, k) => { if (k !== i && n(k).keep) lines.push(`Borrow from ${num(k)} "${o.name}": ${n(k).keep}`); });
-  C.forEach((o, k) => { if (k !== i && n(k).change) lines.push(`Avoid (seen in ${num(k)}): ${n(k).change}`); });
-  const td = tuneDiff(i); if (td.length) lines.push(`Token overrides for ${num(i)}: ${td.join("; ")}`);
-  return lines.join("\n");
-}
-function decision(i) {
-  return { tool: "canvas-ui", title: DATA.title, round: DATA.round, pick: { n: i + 1, name: C[i].name, source: C[i].source },
-    notes: Object.fromEntries(C.map((c, k) => [num(k), S.notes[k] || {}]).filter(([, v]) => v.keep || v.change)),
-    tune: tunedDirection(i) && tuneDiff(i).length ? { changes: tuneDiff(i), direction: tunedDirection(i) } : null, at: new Date().toISOString() };
-}
-async function pick(i) {
-  S.picked = i; save();
-  const text = pickText(i);
-  let ok = false;
-  try { await navigator.clipboard.writeText(text); ok = true; } catch {
-    const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
-    try { ok = document.execCommand("copy"); } catch {} ta.remove();
-  }
-  $("#toastTitle").textContent = ok ? "Copied — paste this to your agent" : "Copy this to your agent";
-  $("#toastText").textContent = text;
-  $("#toast").classList.add("show");
-  $("#dl").onclick = () => {
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([JSON.stringify(decision(i), null, 2)], { type: "application/json" }));
-    a.download = `decision-${DATA.round || "round"}.json`; a.click();
-  };
-  render();
-}
-$("#toastClose").onclick = () => $("#toast").classList.remove("show");
+        // ---------- pick ----------
+        function pickText(i) {
+          const c = C[i],
+            n = (k) => S.notes[k] || {};
+          const lines = [
+            `[canvas-ui] ${DATA.title}${DATA.round ? ` · round ${DATA.round}` : ""}`,
+            `Pick: ${num(i)} "${c.name}"${c.source ? ` (${c.source})` : ""}`,
+          ];
+          if (n(i).keep) lines.push(`Keep: ${n(i).keep}`);
+          if (n(i).change) lines.push(`Change: ${n(i).change}`);
+          C.forEach((o, k) => {
+            if (k !== i && n(k).keep)
+              lines.push(`Borrow from ${num(k)} "${o.name}": ${n(k).keep}`);
+          });
+          C.forEach((o, k) => {
+            if (k !== i && n(k).change)
+              lines.push(`Avoid (seen in ${num(k)}): ${n(k).change}`);
+          });
+          const td = tuneDiff(i);
+          if (td.length)
+            lines.push(`Token overrides for ${num(i)}: ${td.join("; ")}`);
+          return lines.join("\n");
+        }
+        function decision(i) {
+          return {
+            tool: "canvas-ui",
+            title: DATA.title,
+            round: DATA.round,
+            pick: { n: i + 1, name: C[i].name, source: C[i].source },
+            notes: Object.fromEntries(
+              C.map((c, k) => [num(k), S.notes[k] || {}]).filter(
+                ([, v]) => v.keep || v.change,
+              ),
+            ),
+            tune:
+              tunedDirection(i) && tuneDiff(i).length
+                ? { changes: tuneDiff(i), direction: tunedDirection(i) }
+                : null,
+            at: new Date().toISOString(),
+          };
+        }
+        async function pick(i) {
+          S.picked = i;
+          save();
+          const text = pickText(i);
+          let ok = false;
+          try {
+            await navigator.clipboard.writeText(text);
+            ok = true;
+          } catch {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+              ok = document.execCommand("copy");
+            } catch {}
+            ta.remove();
+          }
+          $("#toastTitle").textContent = ok
+            ? "Copied — paste this to your agent"
+            : "Copy this to your agent";
+          $("#toastText").textContent = text;
+          $("#toast").classList.add("show");
+          $("#dl").onclick = () => {
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(
+              new Blob([JSON.stringify(decision(i), null, 2)], {
+                type: "application/json",
+              }),
+            );
+            a.download = `decision-${DATA.round || "round"}.json`;
+            a.click();
+          };
+          render();
+        }
+        $("#toastClose").onclick = () => $("#toast").classList.remove("show");
 
-// ---------- render ----------
-const order = () => {
-  if (!S.blind) return C.map((_, i) => i);
-  const seed = [...(DATA.title + DATA.round)].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7);
-  return C.map((_, i) => i).sort((a, b) => ((a + 1) * seed % 97) - ((b + 1) * seed % 97));
-};
-function meta(c, i) {
-  const n = S.notes[i] || {};
-  const tone = c.direction?.tone;
-  const dials = tone ? `<div class="dials">${Object.entries(DIAL_NAMES).map(([k, [lo, hi]]) => `<span>${k}</span><span class="track"><b style="left:${tone[k] ?? 50}%"></b></span><span>${(tone[k] ?? 50) < 50 ? lo : hi}</span>`).join("")}</div>` : "";
-  return `<div class="meta">
+        // ---------- render ----------
+        const order = () => {
+          if (!S.blind) return C.map((_, i) => i);
+          const seed = [...(DATA.title + DATA.round)].reduce(
+            (a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0,
+            7,
+          );
+          return C.map((_, i) => i).sort(
+            (a, b) => (((a + 1) * seed) % 97) - (((b + 1) * seed) % 97),
+          );
+        };
+        function meta(c, i) {
+          const n = S.notes[i] || {};
+          const tone = c.direction?.tone;
+          const dials = tone
+            ? `<div class="dials">${Object.entries(DIAL_NAMES)
+                .map(
+                  ([k, [lo, hi]]) =>
+                    `<span>${k}</span><span class="track"><b style="left:${tone[k] ?? 50}%"></b></span><span>${(tone[k] ?? 50) < 50 ? lo : hi}</span>`,
+                )
+                .join("")}</div>`
+            : "";
+          return `<div class="meta">
     ${c.concept ? `<p class="concept">${esc(c.concept)}</p>` : ""}
     ${c.typography || c.hero || c.skeleton ? `<dl class="kv">${c.typography ? `<dt>Type</dt><dd>${esc(c.typography)}</dd>` : ""}${c.skeleton ? `<dt>Skeleton</dt><dd>${esc(c.skeleton)}</dd>` : ""}${c.hero ? `<dt>Hero</dt><dd>${esc(c.hero)}</dd>` : ""}</dl>` : ""}
     ${c.palette?.length ? `<div class="swatches">${c.palette.map((p) => `<i style="background:${esc(p)}" title="${esc(p)}"></i>`).join("")}</div>` : ""}
@@ -638,107 +1353,238 @@ function meta(c, i) {
     ${S.view === "focus" ? tunePanel(i) : ""}
     <div class="row"><button class="pick" data-pick="${i}">${S.picked === i ? "Picked ✓ — copy again" : "Pick this"}</button>${S.view === "focus" && c.direction ? `<button class="icon-btn" data-tune-toggle title="Tune (U)">Tune</button>` : ""}</div>
   </div>`;
-}
-function card(i, label) {
-  const c = C[i];
-  const el = document.createElement("article");
-  el.className = `card${S.picked === i ? " picked" : ""}${S.view === "focus" ? " solo" : ""}`;
-  el.dataset.i = i;
-  el.innerHTML = `<header><span class="num">${label}</span><span class="name">${esc(c.name)}</span>
+        }
+        function card(i, label) {
+          const c = C[i];
+          const el = document.createElement("article");
+          el.className = `card${S.picked === i ? " picked" : ""}${S.view === "focus" ? " solo" : ""}`;
+          el.dataset.i = i;
+          el.innerHTML = `<header><span class="num">${label}</span><span class="name">${esc(c.name)}</span>
     ${c.baseline ? `<span class="badge">current</span>` : ""}<span class="badge tuned" hidden>tuned</span>${S.picked === i ? `<span class="badge good">picked</span>` : ""}
     ${c.open ? `<a class="icon-btn" href="${esc(c.open)}" target="_blank" rel="noopener" title="Open at 100%">↗</a>` : ""}
     ${S.view === "focus" ? `<span class="pager"><button class="icon-btn" data-move="-1" title="Previous (←)">←</button><button class="icon-btn" data-move="1" title="Next (→)">→</button></span>` : ""}</header>
     <div class="stage"></div>${meta(c, i)}`;
-  const stage = el.querySelector(".stage");
-  stage.appendChild(frameFor(c, i));
-  if (S.view === "focus") stage.dataset.max = "1";
-  stage.addEventListener("click", () => { if (S.view === "grid") { S.active = i; setView("focus"); } });
-  ro.observe(stage);
-  wireTune(el, i);
-  return el;
-}
-function slot(which) {
-  const i = S[which];
-  const el = document.createElement("div"); el.className = "slot";
-  el.innerHTML = `<header><b class="num">${which.toUpperCase()}</b><select aria-label="Candidate ${which}">${C.map((c, k) => `<option value="${k}" ${k === i ? "selected" : ""}>${S.blind ? "Candidate " + String.fromCharCode(65 + order().indexOf(k)) : num(k) + " " + esc(c.name)}</option>`).join("")}</select>
+          const stage = el.querySelector(".stage");
+          stage.appendChild(frameFor(c, i));
+          if (S.view === "focus") stage.dataset.max = "1";
+          stage.addEventListener("click", () => {
+            if (S.view === "grid") {
+              S.active = i;
+              setView("focus");
+            }
+          });
+          ro.observe(stage);
+          wireTune(el, i);
+          return el;
+        }
+        function slot(which) {
+          const i = S[which];
+          const el = document.createElement("div");
+          el.className = "slot";
+          el.innerHTML = `<header><b class="num">${which.toUpperCase()}</b><select aria-label="Candidate ${which}">${C.map((c, k) => `<option value="${k}" ${k === i ? "selected" : ""}>${S.blind ? "Candidate " + String.fromCharCode(65 + order().indexOf(k)) : num(k) + " " + esc(c.name)}</option>`).join("")}</select>
     <button class="icon-btn" data-pick="${i}">Pick</button></header><div class="stage"></div>`;
-  el.querySelector(".stage").appendChild(frameFor(C[i], i));
-  el.querySelector("select").onchange = (e) => { S[which] = +e.target.value; save(); render(); };
-  ro.observe(el.querySelector(".stage"));
-  return el;
-}
-function render() {
-  docs.clear(); ro.disconnect();
-  const main = $("#main"); main.innerHTML = "";
-  document.querySelectorAll("#views button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.v === S.view));
-  document.querySelectorAll("#vps button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.vp === S.vp));
-  $("#squint").setAttribute("aria-pressed", S.squint); $("#blind").setAttribute("aria-pressed", S.blind); $("#sync").setAttribute("aria-pressed", S.sync);
-  document.body.classList.toggle("squint", S.squint); document.body.classList.toggle("blind", S.blind);
+          el.querySelector(".stage").appendChild(frameFor(C[i], i));
+          el.querySelector("select").onchange = (e) => {
+            S[which] = +e.target.value;
+            save();
+            render();
+          };
+          ro.observe(el.querySelector(".stage"));
+          return el;
+        }
+        function render() {
+          docs.clear();
+          ro.disconnect();
+          const main = $("#main");
+          main.innerHTML = "";
+          document
+            .querySelectorAll("#views button")
+            .forEach((b) =>
+              b.setAttribute("aria-pressed", b.dataset.v === S.view),
+            );
+          document
+            .querySelectorAll("#vps button")
+            .forEach((b) =>
+              b.setAttribute("aria-pressed", b.dataset.vp === S.vp),
+            );
+          $("#squint").setAttribute("aria-pressed", S.squint);
+          $("#blind").setAttribute("aria-pressed", S.blind);
+          $("#sync").setAttribute("aria-pressed", S.sync);
+          document.body.classList.toggle("squint", S.squint);
+          document.body.classList.toggle("blind", S.blind);
 
-  if (S.view === "compare") {
-    const ab = document.createElement("div"); ab.className = "ab compare";
-    ab.append(slot("a"), slot("b")); main.appendChild(ab);
-  } else if (S.view === "overlay") {
-    const ov = document.createElement("div"); ov.className = "ov overlay";
-    ov.innerHTML = `<header><b>Overlay</b>
+          if (S.view === "compare") {
+            const ab = document.createElement("div");
+            ab.className = "ab compare";
+            ab.append(slot("a"), slot("b"));
+            main.appendChild(ab);
+          } else if (S.view === "overlay") {
+            const ov = document.createElement("div");
+            ov.className = "ov overlay";
+            ov.innerHTML = `<header><b>Overlay</b>
       <select data-w="a">${C.map((c, k) => `<option value="${k}" ${k === S.a ? "selected" : ""}>${num(k)} ${esc(c.name)}</option>`).join("")}</select>
       <input type="range" min="0" max="1" step="0.01" value="${S.mix}" aria-label="Blend">
       <select data-w="b">${C.map((c, k) => `<option value="${k}" ${k === S.b ? "selected" : ""}>${num(k)} ${esc(c.name)}</option>`).join("")}</select>
       <small style="color:var(--c-ink-3)">Onion-skin: drag to blend. Best for baseline vs. redesign or reference vs. recreation.</small></header><div class="stage"></div>`;
-    const st = ov.querySelector(".stage");
-    st.append(frameFor(C[S.a], S.a), frameFor(C[S.b], S.b, "top"));
-    st.style.setProperty("--mix", S.mix);
-    ov.querySelector("input").oninput = (e) => { S.mix = +e.target.value; st.style.setProperty("--mix", S.mix); save(); };
-    ov.querySelectorAll("select").forEach((s) => (s.onchange = (e) => { S[s.dataset.w] = +e.target.value; save(); render(); }));
-    main.appendChild(ov); ro.observe(st);
-  } else {
-    const ord = order();
-    const label = (i) => (S.blind ? String.fromCharCode(65 + ord.indexOf(i)) : num(i));
-    if (S.view === "focus") {
-      S.active = Math.min(S.active, C.length - 1);
-      main.appendChild(card(S.active, label(S.active)));
-    } else {
-      const g = document.createElement("div"); g.className = "grid";
-      const [w] = vpOf(C[0]); g.style.setProperty("--col", w < 600 ? "240px" : w < 1000 ? "300px" : "360px");
-      ord.forEach((i) => g.appendChild(card(i, label(i))));
-      main.appendChild(g);
-    }
-  }
-  main.querySelectorAll("[data-move]").forEach((b) => (b.onclick = () => move(+b.dataset.move)));
-  main.querySelectorAll("[data-pick]").forEach((b) => (b.onclick = () => pick(+b.dataset.pick)));
-  main.querySelectorAll("textarea[data-note]").forEach((t) => (t.oninput = () => { (S.notes[t.dataset.i] ||= {})[t.dataset.note] = t.value; save(); }));
-  main.querySelectorAll("[data-tune-toggle]").forEach((b) => (b.onclick = () => { S.tuneOpen = !S.tuneOpen; save(); main.querySelector(".tune")?.classList.toggle("open", S.tuneOpen); }));
-  markTuned();
-}
-function setView(v) { S.view = v; save(); render(); scrollTo({ top: 0 }); }
-const move = (d) => { const o = order(); S.active = o[(o.indexOf(S.active) + d + o.length) % o.length]; if (S.view !== "focus") S.view = "focus"; save(); render(); };
+            const st = ov.querySelector(".stage");
+            st.append(frameFor(C[S.a], S.a), frameFor(C[S.b], S.b, "top"));
+            st.style.setProperty("--mix", S.mix);
+            ov.querySelector("input").oninput = (e) => {
+              S.mix = +e.target.value;
+              st.style.setProperty("--mix", S.mix);
+              save();
+            };
+            ov.querySelectorAll("select").forEach(
+              (s) =>
+                (s.onchange = (e) => {
+                  S[s.dataset.w] = +e.target.value;
+                  save();
+                  render();
+                }),
+            );
+            main.appendChild(ov);
+            ro.observe(st);
+          } else {
+            const ord = order();
+            const label = (i) =>
+              S.blind ? String.fromCharCode(65 + ord.indexOf(i)) : num(i);
+            if (S.view === "focus") {
+              S.active = Math.min(S.active, C.length - 1);
+              main.appendChild(card(S.active, label(S.active)));
+            } else {
+              const g = document.createElement("div");
+              g.className = "grid";
+              const [w] = vpOf(C[0]);
+              g.style.setProperty(
+                "--col",
+                w < 600 ? "240px" : w < 1000 ? "300px" : "360px",
+              );
+              ord.forEach((i) => g.appendChild(card(i, label(i))));
+              main.appendChild(g);
+            }
+          }
+          main
+            .querySelectorAll("[data-move]")
+            .forEach((b) => (b.onclick = () => move(+b.dataset.move)));
+          main
+            .querySelectorAll("[data-pick]")
+            .forEach((b) => (b.onclick = () => pick(+b.dataset.pick)));
+          main.querySelectorAll("textarea[data-note]").forEach(
+            (t) =>
+              (t.oninput = () => {
+                (S.notes[t.dataset.i] ||= {})[t.dataset.note] = t.value;
+                save();
+              }),
+          );
+          main.querySelectorAll("[data-tune-toggle]").forEach(
+            (b) =>
+              (b.onclick = () => {
+                S.tuneOpen = !S.tuneOpen;
+                save();
+                main
+                  .querySelector(".tune")
+                  ?.classList.toggle("open", S.tuneOpen);
+              }),
+          );
+          markTuned();
+        }
+        function setView(v) {
+          S.view = v;
+          save();
+          render();
+          scrollTo({ top: 0 });
+        }
+        const move = (d) => {
+          const o = order();
+          S.active = o[(o.indexOf(S.active) + d + o.length) % o.length];
+          if (S.view !== "focus") S.view = "focus";
+          save();
+          render();
+        };
 
-$("#views").onclick = (e) => { const v = e.target.closest("button")?.dataset.v; if (v) setView(v); };
-$("#vps").onclick = (e) => { const v = e.target.closest("button")?.dataset.vp; if (v) { S.vp = v; save(); render(); } };
-$("#squint").onclick = () => { S.squint = !S.squint; save(); render(); };
-$("#blind").onclick = () => { S.blind = !S.blind; save(); render(); };
-$("#sync").onclick = () => { S.sync = !S.sync; save(); render(); };
-$("#theme").onclick = () => { const r = document.documentElement; const cur = r.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); r.dataset.theme = cur === "dark" ? "light" : "dark"; };
-$("#helpBtn").onclick = () => $("#help").classList.add("show");
-$("#help").onclick = () => $("#help").classList.remove("show");
+        $("#views").onclick = (e) => {
+          const v = e.target.closest("button")?.dataset.v;
+          if (v) setView(v);
+        };
+        $("#vps").onclick = (e) => {
+          const v = e.target.closest("button")?.dataset.vp;
+          if (v) {
+            S.vp = v;
+            save();
+            render();
+          }
+        };
+        $("#squint").onclick = () => {
+          S.squint = !S.squint;
+          save();
+          render();
+        };
+        $("#blind").onclick = () => {
+          S.blind = !S.blind;
+          save();
+          render();
+        };
+        $("#sync").onclick = () => {
+          S.sync = !S.sync;
+          save();
+          render();
+        };
+        $("#theme").onclick = () => {
+          const r = document.documentElement;
+          const cur =
+            r.dataset.theme ||
+            (matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light");
+          r.dataset.theme = cur === "dark" ? "light" : "dark";
+        };
+        $("#helpBtn").onclick = () => $("#help").classList.add("show");
+        $("#help").onclick = () => $("#help").classList.remove("show");
 
-addEventListener("keydown", (e) => {
-  if (e.target.matches("textarea,input,select") || e.metaKey || e.ctrlKey || e.altKey) return;
-  const k = e.key;
-  if (k === "ArrowRight") move(1); else if (k === "ArrowLeft") move(-1);
-  else if (/^[1-9]$/.test(k) && +k <= C.length) { S.active = +k - 1; setView("focus"); }
-  else if (k === "g") setView("grid"); else if (k === "f") setView("focus"); else if (k === "c") setView("compare"); else if (k === "o") setView("overlay");
-  else if ({ d: "desktop", t: "tablet", m: "mobile", n: "native" }[k]) { const v = { d: "desktop", t: "tablet", m: "mobile", n: "native" }[k]; if (v !== "native" || C.some((c) => c.nativeViewport)) { S.vp = v; save(); render(); } }
-  else if (k === "s") $("#squint").click(); else if (k === "b") $("#blind").click();
-  else if (k === "u" && S.view === "focus") { S.tuneOpen = !S.tuneOpen; save(); $(".tune")?.classList.toggle("open", S.tuneOpen); }
-  else if (k === "Enter" && S.view === "focus") pick(S.active);
-  else if (k === "?") $("#help").classList.toggle("show");
-  else if (k === "Escape") { $("#help").classList.remove("show"); $("#toast").classList.remove("show"); if (S.view !== "grid") setView("grid"); }
-  else return;
-  e.preventDefault();
-});
-render();
-})();
-</script>
-</body>
+        addEventListener("keydown", (e) => {
+          if (
+            e.target.matches("textarea,input,select") ||
+            e.metaKey ||
+            e.ctrlKey ||
+            e.altKey
+          )
+            return;
+          const k = e.key;
+          if (k === "ArrowRight") move(1);
+          else if (k === "ArrowLeft") move(-1);
+          else if (/^[1-9]$/.test(k) && +k <= C.length) {
+            S.active = +k - 1;
+            setView("focus");
+          } else if (k === "g") setView("grid");
+          else if (k === "f") setView("focus");
+          else if (k === "c") setView("compare");
+          else if (k === "o") setView("overlay");
+          else if ({ d: "desktop", t: "tablet", m: "mobile", n: "native" }[k]) {
+            const v = { d: "desktop", t: "tablet", m: "mobile", n: "native" }[
+              k
+            ];
+            if (v !== "native" || C.some((c) => c.nativeViewport)) {
+              S.vp = v;
+              save();
+              render();
+            }
+          } else if (k === "s") $("#squint").click();
+          else if (k === "b") $("#blind").click();
+          else if (k === "u" && S.view === "focus") {
+            S.tuneOpen = !S.tuneOpen;
+            save();
+            $(".tune")?.classList.toggle("open", S.tuneOpen);
+          } else if (k === "Enter" && S.view === "focus") pick(S.active);
+          else if (k === "?") $("#help").classList.toggle("show");
+          else if (k === "Escape") {
+            $("#help").classList.remove("show");
+            $("#toast").classList.remove("show");
+            if (S.view !== "grid") setView("grid");
+          } else return;
+          e.preventDefault();
+        });
+        render();
+      })();
+    </script>
+  </body>
 </html>

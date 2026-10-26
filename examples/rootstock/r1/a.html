@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roast Log</title>
+<link rel="stylesheet" href="a.tokens.css">
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); height: 100vh; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+header { display: flex; align-items: baseline; gap: var(--space-6); padding: var(--space-4) var(--space-6); border-bottom: 2px solid var(--ink); }
+.mark { font: 700 var(--step-1)/1 var(--font-display); letter-spacing: -0.02em; }
+header h1 { font: 600 var(--step-1)/1 var(--font-display); margin: 0; }
+header .meta { color: var(--ink-2); font-size: var(--step-n1); }
+header nav { margin-left: auto; display: flex; gap: var(--space-5); font-size: var(--step-n1); }
+header nav a { color: var(--ink-2); text-decoration: none; }
+header nav a[aria-current] { color: var(--ink); font-weight: 600; }
+
+main { display: grid; grid-template-columns: minmax(0, 1fr) 400px; min-height: 0; }
+.log { padding: var(--space-5) var(--space-6); border-right: 1px solid var(--line-strong); overflow: hidden; }
+.cols, .row { display: grid; grid-template-columns: 36px minmax(0, 1.6fr) 110px 70px 80px 90px 120px; align-items: center; column-gap: var(--space-4); }
+.cols { font: 500 var(--step-n2)/1 var(--font-mono); color: var(--ink-2); padding-bottom: var(--space-2); border-bottom: 1px solid var(--ink); }
+.row { min-height: 52px; border-bottom: 1px solid var(--line); }
+.row .coffee { font-weight: 600; }
+.row .origin { color: var(--ink-2); font-size: var(--step-n1); }
+.row.done { color: var(--ink-2); }
+.row.done .coffee { font-weight: 500; text-decoration: line-through; text-decoration-color: var(--line-strong); }
+.state { font-size: var(--step-n1); display: inline-flex; align-items: center; gap: 6px; }
+.state i { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+.done .state i { background: var(--ink-3); }
+.roasting .state { color: var(--accent-text); font-weight: 600; }
+.roasting .state i { background: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+.active { padding: var(--space-4) 0 var(--space-5); border-bottom: 2px solid var(--ink); display: grid; grid-template-columns: 1fr 230px; gap: var(--space-6); }
+.active canvas { width: 100%; height: 190px; display: block; }
+.readout { display: grid; align-content: start; gap: var(--space-4); }
+.readout div b { display: block; font: 600 var(--step-4)/1 var(--font-mono); letter-spacing: -0.02em; }
+.readout div span { font-size: var(--step-n1); color: var(--ink-2); }
+.readout .fc b { color: var(--accent-text); }
+
+aside { padding: var(--space-5) var(--space-6); overflow: hidden; display: grid; align-content: start; gap: var(--space-7); }
+aside h2 { font: 600 var(--step-0)/1.2 var(--font-display); margin: 0 0 var(--space-3); display: flex; justify-content: space-between; align-items: baseline; }
+aside h2 small { font: 400 var(--step-n1) var(--font-body); color: var(--ink-2); }
+.bean { display: grid; grid-template-columns: 1fr auto; row-gap: 4px; padding: var(--space-2) 0; }
+.bean .label { font-size: var(--step-n1); }
+.bean .days { font-size: var(--step-n1); color: var(--ink-2); }
+.bean .bar { grid-column: 1 / -1; height: 6px; background: var(--surface-2); position: relative; }
+.bean .bar b { position: absolute; inset: 0 auto 0 0; background: var(--ink); }
+.bean.low .days { color: var(--accent-text); font-weight: 600; }
+.bean.low .bar b { background: var(--accent); }
+.bean .bar s { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--ink-2); }
+.ship { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--space-3); padding: var(--space-2) 0; border-top: 1px solid var(--line); font-size: var(--step-n1); }
+.ship b { font-weight: 600; }
+.ship span { color: var(--ink-2); grid-column: 1 / -1; }
+</style>
+</head>
+<body>
+<header>
+  <span class="mark">Rootstock</span>
+  <h1 id="day"></h1>
+  <span class="meta" id="meta"></span>
+  <nav><a href="#" aria-current="page">Today</a><a href="#">Green stock</a><a href="#">Orders</a><a href="#">Profiles</a></nav>
+</header>
+<main>
+  <section class="log" aria-label="Roast queue">
+    <div class="cols"><span>#</span><span>Coffee</span><span>Profile</span><span>Kg</span><span>Start</span><span>Orders</span><span>Status</span></div>
+    <div id="rows"></div>
+  </section>
+  <aside>
+    <section><h2>Green stock <small>runs out in</small></h2><div id="stock"></div></section>
+    <section><h2>Ships <span id="shipday"></span> <small id="shipcount"></small></h2><div id="ships"></div></section>
+  </aside>
+</main>
+<script src="content.js"></script>
+<script>
+document.fonts.ready.then(() => {
+const css = getComputedStyle(document.documentElement), v = (n) => css.getPropertyValue(n).trim();
+const done = RS.roasts.filter((r) => r.status === "done").length;
+document.getElementById("day").textContent = RS.day;
+document.getElementById("meta").textContent = `${done} of ${RS.roasts.length} roasted · ${RS.roasts.reduce((a, r) => a + r.kg, 0)} kg today`;
+const label = { done: "Done", roasting: "Roasting", next: "Next", queued: "Queued" };
+document.getElementById("rows").innerHTML = RS.roasts.map((r) => {
+  const row = `<div class="row ${r.status}"><span class="num">${r.n}</span><span><span class="coffee">${r.coffee}</span> <span class="origin">${r.origin}</span></span><span>${r.profile}</span><span class="num">${r.kg}</span><span class="num">${r.start}</span><span class="num">${r.orders}</span><span class="state"><i></i>${label[r.status]}</span></div>`;
+  if (r.status !== "roasting") return row;
+  return row + `<div class="active"><canvas id="curve" aria-label="Live roast curve"></canvas><div class="readout">
+    <div><b class="num">${r.temp}°</b><span>bean temp, rising 9°/min</span></div>
+    <div><b class="num">7:30</b><span>of ~12:00 · drop at ${r.start.replace("08:20", "08:32")}</span></div>
+    <div class="fc"><b class="num">1:05</b><span>to first crack (predicted)</span></div></div></div>`;
+}).join("");
+
+const stock = RS.stock.map((s) => ({ ...s, days: Math.round((s.kg / s.perWeek) * 7) })).sort((a, b) => a.days - b.days);
+const max = 60;
+document.getElementById("stock").innerHTML = stock.map((s) => `<div class="bean${s.days < 10 ? " low" : ""}"><span class="label">${s.coffee}</span><span class="days num">${s.days >= max ? max + "+ d" : s.days + " d"}${s.days < 10 ? " · reorder" : ""}</span><span class="bar"><b style="width:${Math.min(100, (s.days / max) * 100)}%"></b><s style="left:${(14 / max) * 100}%" title="Lead time 14 days"></s></span></div>`).join("");
+document.getElementById("shipday").textContent = RS.shipBy;
+document.getElementById("shipcount").textContent = `${RS.orders.filter((o) => o.due === "Thu").length} drops`;
+document.getElementById("ships").innerHTML = RS.orders.map((o) => `<div class="ship"><b>${o.who}</b><span class="num">${o.due}</span><span>${o.items} — ${o.state}</span></div>`).join("");
+
+// Live curve: reference profile (faint) vs current roast (ink), first-crack line.
+const cv = document.getElementById("curve"), r = devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+cv.width = W * r; cv.height = H * r;
+const x = cv.getContext("2d"); x.scale(r, r);
+const X = (m) => 34 + (m / 13) * (W - 40), Y = (t) => H - 18 - ((t - 80) / 140) * (H - 28);
+x.font = `12px ${v("--font-mono")}`; x.fillStyle = v("--ink-2"); x.strokeStyle = v("--line");
+for (const t of [100, 150, 200]) { x.beginPath(); x.moveTo(34, Y(t)); x.lineTo(W, Y(t)); x.stroke(); x.fillText(t + "°", 0, Y(t) + 4); }
+for (const m of [0, 4, 8, 12]) x.fillText(m + "′", X(m) - 6, H - 2);
+const line = (pts, color, w, dash = []) => { x.beginPath(); x.setLineDash(dash); x.strokeStyle = color; x.lineWidth = w; pts.forEach(([m, t], i) => (i ? x.lineTo(X(m), Y(t)) : x.moveTo(X(m), Y(t)))); x.stroke(); x.setLineDash([]); };
+line(RS.curve(12, 214), v("--ink-3"), 1.25, [4, 4]);
+line(RS.curve(7.5, 214).map(([m, t]) => [m, t - 1.5]), v("--ink"), 2.5);
+x.strokeStyle = v("--accent"); x.lineWidth = 1; x.beginPath(); x.moveTo(X(8.6), 10); x.lineTo(X(8.6), H - 18); x.stroke();
+x.fillStyle = v("--accent-text"); x.fillText("first crack", X(8.6) + 6, 22);
+const [lm, lt] = RS.curve(7.5, 214).at(-1);
+x.fillStyle = v("--ink"); x.beginPath(); x.arc(X(lm), Y(lt - 1.5), 4.5, 0, 7); x.fill();
+});
+</script>
+</body>
+</html>

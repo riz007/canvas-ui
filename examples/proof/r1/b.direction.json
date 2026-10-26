@@ -1,0 +1,59 @@
+{
+  "id": "b",
+  "name": "Feed Me",
+  "northStar": "Your starter has a voice and it's demanding: the page shouts the one thing it wants to know.",
+  "engine": {
+    "kind": "character",
+    "source": "The starter as a needy, funny pet that yells when it's hungry.",
+    "evidence": "Bakers name their starters and talk about killing them; the emotional hook is guilt and affection."
+  },
+  "tone": {
+    "energy": 90,
+    "finish": 40,
+    "density": 35,
+    "weight": 90,
+    "formality": 15,
+    "_why": "Loud and playful; it's a launch and the audience is in on the joke."
+  },
+  "skeleton": "Type as image: 'PEAKED AT 4:52' set edge to edge and cropped by the viewport, a short line and CTA in a band at the bottom.",
+  "type": {
+    "display": {
+      "family": "Anton",
+      "weight": 400,
+      "weights": [
+        400
+      ],
+      "fallback": "sans"
+    },
+    "body": {
+      "family": "Space Grotesk",
+      "weight": 500,
+      "weights": [
+        400,
+        500,
+        700
+      ]
+    },
+    "mono": {
+      "family": "Space Mono",
+      "weights": [
+        400
+      ]
+    },
+    "ratio": 1.5
+  },
+  "color": {
+    "bg": "#8c2f1b",
+    "ink": "#fbefdc",
+    "accent": "#f6c453",
+    "from": "Bread crust and a yolk-yellow alarm."
+  },
+  "hero": "The headline itself.",
+  "icons": "None.",
+  "controls": "Square, heavy, 3px borders.",
+  "traits": [
+    "Type as image",
+    "Starter with a voice",
+    "Crust and yolk"
+  ]
+}

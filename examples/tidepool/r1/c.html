@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tidepool — Pick Your Day</title>
+<link rel="stylesheet" href="c.tokens.css">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--step-0);min-height:100vh;padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-5)}
+.wm{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-1);display:flex;justify-content:space-between}
+.wm small{font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2);font-weight:400}
+h1{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-2);margin:0;letter-spacing:var(--tracking-display)}
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-2)}
+.d{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-3) 0;text-align:center;font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2)}
+.d b{display:block;font-family:var(--font-display);font-size:var(--step-2);color:var(--ink);margin:2px 0 var(--space-2)}
+.d i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ink-faint);margin:0 1px}
+.d i.on{background:var(--accent)}
+.d.sel{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.d.sel b{color:var(--on-accent)}
+.d.sel i{background:color-mix(in oklab,var(--on-accent) 30%,transparent)}
+.d.sel i.on{background:var(--on-accent)}
+.fc{background:var(--surface);border-radius:var(--radius-lg);padding:var(--space-4)}
+.fc p{margin:0 0 var(--space-3);display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2)}
+.fc p{line-height:1.4;gap:var(--space-3)}
+.fc p b{color:var(--accent-text);font-weight:700}
+.fc svg{display:block;width:100%;height:84px}
+.l{display:flex;justify-content:space-between;align-items:center;padding:var(--space-3) 0;border-top:1px solid var(--line)}
+.l strong{display:block;font-weight:600}
+.l span{font-size:var(--step-n1);color:var(--ink-2)}
+.l em{font-style:normal;font-family:var(--font-mono);font-weight:700;font-size:var(--step-1)}
+.book{margin-top:auto;display:block;text-align:center;background:var(--accent);color:var(--on-accent);border-radius:999px;padding:var(--space-4);font-weight:600;font-family:var(--font-display);text-decoration:none;font-size:var(--step-1)}
+</style></head><body>
+<div class="wm">Tidepool <small>ERICEIRA</small></div>
+<h1>When are you arriving?</h1>
+<div class="days">
+<div class="d">THU<b>29</b><i class="on"></i><i class="on"></i><i></i></div>
+<div class="d sel">FRI<b>30</b><i class="on"></i><i class="on"></i><i class="on"></i></div>
+<div class="d">SAT<b>31</b><i class="on"></i><i></i><i></i></div>
+<div class="d">SUN<b>1</b><i class="on"></i><i class="on"></i><i></i></div>
+<div class="d">MON<b>2</b><i class="on"></i><i class="on"></i><i class="on"></i></div>
+</div>
+<div class="fc">
+<p><span>Fri 30 · waves 0.8–1.0 m</span><b>Good for beginners</b></p>
+<svg viewBox="0 0 300 84" preserveAspectRatio="none" aria-hidden="true"><g fill="var(--accent)" opacity=".85"><rect x="10" y="50" width="22" height="34"/><rect x="50" y="42" width="22" height="42"/><rect x="90" y="36" width="22" height="48"/><rect x="130" y="40" width="22" height="44"/><rect x="170" y="46" width="22" height="38"/><rect x="210" y="52" width="22" height="32"/><rect x="250" y="58" width="22" height="26"/></g><path d="M0 60 C50 6 100 6 150 44 S250 82 300 30" fill="none" stroke="var(--ink)" stroke-width="2"/></svg>
+</div>
+<div>
+<div class="l"><div><strong>Group lesson</strong><span>2 h · up to 6 surfers</span></div><em>€45</em></div>
+<div class="l"><div><strong>Private lesson</strong><span>2 h · just you and an instructor</span></div><em>€90</em></div>
+<div class="l"><div><strong>5-day course</strong><span>5 mornings · beginner to improver</span></div><em>€190</em></div>
+</div>
+<a class="book" href="#">Book Friday 30</a>
+</body></html>

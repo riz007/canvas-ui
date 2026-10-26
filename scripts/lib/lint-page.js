@@ -84,7 +84,9 @@ export function lintPage() {
     return base;
   }
 
-  const vw = innerWidth, vh = innerHeight;
+  // On mobile emulation an overflowing page widens the layout viewport (the phone "zooms out"),
+  // so innerWidth grows with the overflow. Measure against the device width instead.
+  const vw = Math.min(innerWidth, screen.width || innerWidth), vh = innerHeight;
   const visible = (el) => {
     const r = el.getBoundingClientRect();
     if (r.width < 1 || r.height < 1) return false;
@@ -107,7 +109,9 @@ export function lintPage() {
 
   // ---- fix-level ----
   for (const el of texty) {
-    const s = getComputedStyle(el), fs = parseFloat(s.fontSize), r = el.getBoundingClientRect();
+    const s = getComputedStyle(el), r = el.getBoundingClientRect();
+    // SVG text is drawn in user units; scale by the SVG's on-screen transform to get the real size.
+    const fs = parseFloat(s.fontSize) * (el instanceof SVGElement && el.getScreenCTM ? Math.hypot(el.getScreenCTM().a, el.getScreenCTM().b) || 1 : 1);
     if (el.closest("[aria-hidden='true']")) continue;
     // contrast
     const fg = parse(s.color), bg = bgOf(el);
@@ -119,7 +123,7 @@ export function lintPage() {
       // gray text on a colored surface
       if (sat(bg) > 0.35 && sat(eff) < 0.08 && lum(eff) > 0.08 && lum(eff) < 0.6) add("grayOnColor", el);
     }
-    if (fs < 12 && !["SUP", "SUB"].includes(el.tagName) && ownText(el).length > 1) add("tinyText", el, fs + "px");
+    if (fs < 12 && !["SUP", "SUB"].includes(el.tagName) && ownText(el).length > 1) add("tinyText", el, Math.round(fs * 10) / 10 + "px");
     const lh = s.lineHeight === "normal" ? fs * 1.2 : parseFloat(s.lineHeight);
     const lines = lineCount(el);
     if (fs < 28 && lines >= 2 && lh / fs < 1.25) add("tightLeading", el, (lh / fs).toFixed(2));

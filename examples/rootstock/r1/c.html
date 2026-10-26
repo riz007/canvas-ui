@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sack Stencil</title>
+<link rel="stylesheet" href="c.tokens.css">
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); height: 100vh; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+header { display: flex; align-items: center; gap: var(--space-5); padding: var(--space-4) var(--space-6); border-bottom: 2px solid var(--jute); }
+.mark { font: 800 var(--step-3)/1 var(--font-display); letter-spacing: 0.02em; }
+header .day { font: var(--step-n1) var(--font-mono); color: var(--ink-2); }
+header nav { margin-left: auto; display: flex; gap: 0; }
+header nav a { color: var(--ink); text-decoration: none; padding: 8px 14px; border: 2px solid var(--jute); margin-left: -2px; font: 600 var(--step-n1) var(--font-body); }
+header nav a[aria-current] { background: var(--jute); color: var(--bg); }
+
+.sacks { display: grid; grid-template-columns: repeat(6, 1fr); border-bottom: 2px solid var(--jute); min-height: 0; }
+.sack { position: relative; padding: var(--space-5) var(--space-5) var(--space-4); border-right: 2px solid var(--jute); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
+.sack:last-child { border-right: 0; }
+.sack .lot { font: var(--step-n1) var(--font-mono); color: var(--ink-2); }
+.sack .days { font: 800 clamp(6rem, 3rem + 7vw, 11rem)/0.8 var(--font-display); letter-spacing: -0.01em; margin: var(--space-4) 0 var(--space-2); }
+.sack .unit { font: 700 var(--step-1)/1 var(--font-display); letter-spacing: 0.04em; }
+.sack .name { font: 600 var(--step-1)/1.25 var(--font-body); margin-top: var(--space-4); }
+.sack .kg { font: var(--step-n1) var(--font-mono); color: var(--ink-2); margin-top: 4px; }
+.sack.low { background: var(--accent); color: var(--on-accent); }
+.sack.low .lot, .sack.low .kg { color: var(--on-accent); }
+.sack .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sack.low .flag { font: 800 var(--step-0) var(--font-display); letter-spacing: 0.06em; border: 2px solid currentColor; padding: 2px 8px; transform: rotate(4deg); }
+
+.belt { padding: var(--space-5) var(--space-6) var(--space-6); }
+.belt h2 { font: 800 var(--step-2)/1 var(--font-display); letter-spacing: 0.03em; margin: 0 0 var(--space-4); display: flex; gap: var(--space-4); align-items: baseline; }
+.belt h2 span { font: 400 var(--step-n1) var(--font-mono); color: var(--ink-2); letter-spacing: 0; }
+.chips { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-3); }
+.chip { border: 2px solid var(--jute); padding: var(--space-3) var(--space-4) var(--space-7); position: relative; }
+.chip .n { font: 800 var(--step-2)/1 var(--font-display); }
+.chip .c { font-weight: 600; margin-top: var(--space-2); line-height: 1.25; }
+.chip .p { font: var(--step-n1)/1.35 var(--font-mono); color: var(--ink-2); margin-top: 4px; }
+.chip.done { opacity: 1; border-style: dashed; color: var(--ink-2); }
+.chip.done .c { text-decoration: line-through; }
+.chip.roasting { border-color: var(--ink); box-shadow: 5px 5px 0 var(--accent); }
+.chip.roasting::after { content: "IN THE DRUM"; position: absolute; top: var(--space-3); right: var(--space-3); font: 700 var(--step-n2) var(--font-mono); color: var(--accent); }
+.chip .o { position: absolute; right: var(--space-3); bottom: var(--space-3); font: 600 var(--step-n1) var(--font-mono); }
+</style>
+</head>
+<body>
+<header><span class="mark">ROOTSTOCK</span><span class="day" id="day"></span>
+  <nav><a href="#" aria-current="page">Stock</a><a href="#">Roast</a><a href="#">Orders</a></nav></header>
+<section class="sacks" id="sacks" aria-label="Green coffee, days left"></section>
+<section class="belt" aria-label="Today's roasts"><h2>TODAY'S DRUM <span id="beltmeta"></span></h2><div class="chips" id="chips"></div></section>
+<script src="content.js"></script>
+<script>
+document.getElementById("day").textContent = RS.day + " · roast day 2 of 3";
+const stock = RS.stock.map((s, i) => ({ ...s, days: Math.round((s.kg / s.perWeek) * 7), lot: `LOT ${["BR-24", "CO-17", "GT-09", "KE-31", "ET-02", "ID-11"][i]}` })).sort((a, b) => a.days - b.days);
+document.getElementById("sacks").innerHTML = stock.map((s) => `<div class="sack${s.days < 10 ? " low" : ""}">
+  <div class="top"><span class="lot">${s.lot}</span>${s.days < 10 ? '<span class="flag">REORDER</span>' : ""}</div>
+  <div><div class="days">${s.days}</div><span class="unit">DAYS LEFT</span></div>
+  <div><div class="name">${s.coffee}</div><div class="kg">${s.kg} kg · uses ${s.perWeek} kg/wk</div></div></div>`).join("");
+const done = RS.roasts.filter((r) => r.status === "done").length;
+document.getElementById("beltmeta").textContent = `${done}/${RS.roasts.length} roasted · light → dark · ${RS.roasts.reduce((a, r) => a + r.orders, 0)} orders ride on these`;
+document.getElementById("chips").innerHTML = RS.roasts.map((r) => `<div class="chip ${r.status}"><div class="n">${String(r.n).padStart(2, "0")}</div><div class="c">${r.coffee}</div><div class="p">${r.profile} · ${r.kg} kg · ${r.start}</div><span class="o">${r.orders} ord</span></div>`).join("");
+</script>
+</body>
+</html>

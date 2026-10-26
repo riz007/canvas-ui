@@ -1,0 +1,17 @@
+{
+  "title": "Proof \u2014 launch page",
+  "round": "r1",
+  "question": "One job: get home bakers onto the January list. Which first screen does it best?",
+  "viewport": "desktop",
+  "candidates": [
+    {
+      "source": "a.html"
+    },
+    {
+      "source": "b.html"
+    },
+    {
+      "source": "c.html"
+    }
+  ]
+}

@@ -107,3 +107,21 @@ test(
     );
   },
 );
+
+test(
+  "shoot.mjs catches horizontal overflow on mobile, where the viewport widens to fit it",
+  { skip: !chrome && "no Chrome found", timeout: 120000 },
+  () => {
+    const dir = mkdtempSync(join(tmpdir(), "canvas-ui-test-"));
+    const page = join(dir, "wide.html");
+    writeFileSync(
+      page,
+      `<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><body style="margin:0;font:16px/1.5 Georgia">
+      <div style="display:flex"><code style="white-space:nowrap;font-size:20px">npx a-very-long-command-that-will-not-wrap/anywhere</code></div></body>`,
+    );
+    const out = join(dir, "shots");
+    node("shoot.mjs", [page, "--out", out, "--size", "mobile"]);
+    const report = JSON.parse(readFileSync(join(out, "report.json"), "utf8"));
+    assert.ok(report[0].lint.some((l) => l.rule === "hScroll"), JSON.stringify(report[0].lint));
+  },
+);

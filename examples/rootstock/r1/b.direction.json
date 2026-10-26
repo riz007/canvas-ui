@@ -1,0 +1,65 @@
+{
+  "id": "b",
+  "name": "Drum Clock",
+  "northStar": "The roasting day is a clock: see where you are in it and what's next, at a glance from across the room.",
+  "engine": {
+    "kind": "material-setting",
+    "source": "The roaster's analogue dials \u2014 brass bezels on an enamel face \u2014 in a bright, warm roastery.",
+    "evidence": "The roaster watches dials all day; time and temperature are the language."
+  },
+  "tone": {
+    "energy": 60,
+    "finish": 70,
+    "density": 45,
+    "weight": 70,
+    "formality": 45,
+    "_why": "Seen from 2 metres away: big, warm, legible."
+  },
+  "skeleton": "Hero ring: the day's 6 roasts as arcs around a 07:30\u201310:00 clock, current arc glowing with elapsed time and temperature in the centre. Right: next roast card. Bottom strip: stock days-left as numbers.",
+  "type": {
+    "display": {
+      "family": "Fraunces",
+      "weight": 600,
+      "weights": [
+        400,
+        600,
+        800
+      ],
+      "fallback": "serif"
+    },
+    "body": {
+      "family": "Work Sans",
+      "weight": 400,
+      "weights": [
+        400,
+        500,
+        600
+      ]
+    },
+    "mono": {
+      "family": "DM Mono",
+      "weights": [
+        400,
+        500
+      ]
+    },
+    "ratio": 1.33
+  },
+  "color": {
+    "bg": "#f3e9da",
+    "ink": "#2a1d14",
+    "accent": "#c96a1b",
+    "extra": {
+      "enamel": "#fffaf1"
+    },
+    "from": "Toasted-bean brown on cream enamel; roast orange marks heat and the active roast."
+  },
+  "hero": "The clock ring of roasts.",
+  "icons": "Phosphor duotone at 20px.",
+  "controls": "Fully round controls, 2px ink outlines, soft press shadow.",
+  "traits": [
+    "Day as a dial",
+    "Readable from 2 m",
+    "Warm enamel"
+  ]
+}

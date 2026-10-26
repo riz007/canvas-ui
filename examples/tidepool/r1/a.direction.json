@@ -1,0 +1,9 @@
+{"id":"a","name":"Tide Table","northStar":"Answer \"will the waves be OK for me?\" before anything else, in the plain grammar of a tide table.",
+"engine":{"kind":"medium","source":"Printed tide tables and harbour-office notice boards: ruled rows, tabular numerals, one stamped verdict.","evidence":"The biggest question from visitors is conditions for a beginner; the school already posts a daily report at 7:30."},
+"tone":{"energy":35,"finish":75,"density":65,"weight":55,"formality":65,"_why":"Calm and factual so the report is trusted; dense enough to show wave, wind, tide in one glance."},
+"benchmark":{"category":"Surf school / surf camp booking","peers":["Surf-camp sites (from memory — unverified)"],"keep":["Prices visible without scrolling","Book button reachable by thumb"],"change":["Peers lead with action-photo hero and a booking widget; we lead with today's conditions"]},
+"skeleton":"Stack: slim header; report table (3 ruled rows) with stamped verdict; three lesson rows with prices; sticky Book bar.",
+"type":{"display":{"family":"Fraunces","weight":600,"weights":[500,600],"fallback":"serif"},"body":{"family":"Instrument Sans","weight":400,"weights":[400,500,600],"fallback":"sans"},"mono":{"family":"JetBrains Mono","weights":[400,500],"fallback":"mono"}},
+"color":{"bg":"#e9efe6","ink":"#12302a","accent":"#c93a18","from":"Sea-glass paper and harbour green ink; buoy red-orange reserved for the verdict stamp and Book."},
+"hero":"The report table itself, with a tide curve drawn in ink; no photography.","icons":"None; numerals and arrows in mono.",
+"controls":"2px radius, 1px ruled borders, pressed = ink fill.","traits":["Report-first","Ruled rows","One buoy red"],"tokens":{}}

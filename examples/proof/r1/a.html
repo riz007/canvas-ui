@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Glass Jar</title>
+<link rel="stylesheet" href="a.tokens.css">
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); height: 100vh; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+header { display: flex; justify-content: space-between; align-items: center; padding: var(--space-5) var(--space-8); }
+.mark { font: 400 var(--step-2)/1 var(--font-display); }
+header a { color: var(--ink); text-underline-offset: 5px; text-decoration-thickness: 1px; font-size: var(--step-n1); }
+main { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-8); padding: 0 var(--space-8) var(--space-7); }
+h1 { font: 400 var(--step-6)/0.98 var(--font-display); letter-spacing: -0.02em; margin: 0; max-width: 9ch; }
+.lede { color: var(--ink-2); font-size: var(--step-1); line-height: 1.45; max-width: 30ch; margin: var(--space-5) 0 0; }
+.stage { position: relative; display: grid; justify-items: center; gap: var(--space-5); }
+.stage svg { height: min(64vh, 600px); width: auto; overflow: visible; }
+.cta { height: 56px; padding: 0 30px; border-radius: 99px; border: 0; background: var(--accent); color: var(--on-accent); font: 600 var(--step-0) var(--font-body); }
+.price { font-size: var(--step-n1); color: var(--ink-2); }
+.notice { justify-self: start; width: 330px; background: #fff; border-radius: 22px; padding: var(--space-4) var(--space-5); box-shadow: var(--shadow-2); }
+.notice .app { display: flex; align-items: center; gap: 8px; font-size: var(--step-n1); color: var(--ink-2); }
+.notice .app i { width: 20px; height: 20px; border-radius: 6px; background: var(--ink); }
+.notice .app span:last-child { margin-left: auto; }
+.notice b { display: block; margin-top: var(--space-2); font-weight: 600; }
+.notice p { margin: 2px 0 0; color: var(--ink-2); font-size: var(--step-n1); line-height: 1.4; }
+.specs { margin-top: var(--space-6); display: grid; grid-template-columns: auto 1fr; gap: 6px var(--space-5); font-size: var(--step-n1); max-width: 330px; }
+.specs dt { color: var(--ink-2); } .specs dd { margin: 0; font-family: var(--font-mono); }
+</style>
+</head>
+<body>
+<header><span class="mark">Proof</span><a href="#">How it works</a></header>
+<main>
+  <div><h1 id="h"></h1><p class="lede" id="sub"></p></div>
+  <div class="stage">
+    <svg viewBox="0 0 300 420" aria-label="A jar of sourdough starter under the Proof lid, risen to its peak">
+      <defs><clipPath id="jar"><path d="M40 70 Q40 52 58 52 H242 Q260 52 260 70 V380 Q260 404 236 404 H64 Q40 404 40 380 Z"/></clipPath></defs>
+      <rect x="62" y="6" width="176" height="44" rx="10" fill="var(--ink)"/>
+      <circle cx="150" cy="28" r="5" fill="var(--accent)"/>
+      <g clip-path="url(#jar)">
+        <rect x="0" y="0" width="300" height="420" fill="var(--glass)"/>
+        <path id="dough" fill="var(--starter)"/>
+        <g id="bubbles" fill="var(--bg)" opacity=".7"></g>
+      </g>
+      <path d="M40 70 Q40 52 58 52 H242 Q260 52 260 70 V380 Q260 404 236 404 H64 Q40 404 40 380 Z" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+      <line x1="40" x2="20" y1="300" y2="300" stroke="var(--ink-2)" stroke-dasharray="3 3"/>
+      <text x="14" y="296" text-anchor="end" font-family="var(--font-mono)" font-size="11" fill="var(--ink-2)">fed 9:40</text>
+      <line x1="260" x2="286" y1="118" y2="118" stroke="var(--accent)" stroke-width="2"/>
+      <text x="292" y="114" font-family="var(--font-mono)" font-size="11" fill="var(--accent-text)">peak</text>
+      <text x="292" y="128" font-family="var(--font-mono)" font-size="11" fill="var(--accent-text)">+118%</text>
+    </svg>
+    <button class="cta" id="cta"></button>
+    <span class="price" id="price"></span>
+  </div>
+  <div>
+    <div class="notice" role="img" aria-label="Phone notification from Proof">
+      <div class="app"><i></i><span>Proof</span><span>now</span></div>
+      <b>Rye starter peaked</b>
+      <p>Doubled and a bit, 6 h 58 m after feeding at 24 °C. Bake in the next hour, or feed now.</p>
+    </div>
+    <dl class="specs" id="specs"></dl>
+  </div>
+</main>
+<script src="content.js"></script>
+<script>
+document.getElementById("h").textContent = PF.line;
+document.getElementById("sub").textContent = PF.sub;
+document.getElementById("cta").textContent = PF.cta;
+document.getElementById("price").textContent = `${PF.price} · ships in ${PF.ships} · no card needed to join`;
+document.getElementById("specs").innerHTML = PF.specs.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+// Domed surface of risen starter, with a ring on the glass where it peaked.
+let d = "M0 420 L0 132 ";
+for (let x = 0; x <= 300; x += 10) d += `L${x} ${126 - Math.sin((x / 300) * Math.PI) * 14 + Math.sin(x / 7) * 1.5} `;
+d += "L300 420 Z";
+document.getElementById("dough").setAttribute("d", d);
+let s = 3, b = "";
+const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+for (let i = 0; i < 46; i++) b += `<circle cx="${50 + rnd() * 200}" cy="${150 + rnd() * 240}" r="${1 + rnd() * 4.5}"/>`;
+document.getElementById("bubbles").innerHTML = b;
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "id": "c",
+  "name": "Sack Stencil",
+  "northStar": "Green coffee is the business: lead with how many days of each bean are left, stamped as loud as a jute sack.",
+  "engine": {
+    "kind": "medium",
+    "source": "Stencilled export markings on jute coffee sacks: lot numbers, origins, huge numerals.",
+    "evidence": "Running out of a single-origin is the costliest mistake; the brief names it as a daily question."
+  },
+  "tone": {
+    "energy": 80,
+    "finish": 30,
+    "density": 55,
+    "weight": 85,
+    "formality": 35,
+    "_why": "Loud and raw on purpose: the warnings must not be missable."
+  },
+  "skeleton": "Top half: six stock 'sacks' as huge stencil numerals of days left, the lowest one flipped to the accent. Bottom half: today's queue as a single horizontal conveyor of roast chips; orders as a count per chip.",
+  "type": {
+    "display": {
+      "family": "Big Shoulders Stencil Display",
+      "weight": 800,
+      "weights": [
+        700,
+        800
+      ],
+      "fallback": "sans"
+    },
+    "body": {
+      "family": "IBM Plex Sans",
+      "weight": 400,
+      "weights": [
+        400,
+        600
+      ]
+    },
+    "mono": {
+      "family": "IBM Plex Mono",
+      "weights": [
+        400,
+        500
+      ]
+    },
+    "ratio": 1.5
+  },
+  "color": {
+    "bg": "#1d2b22",
+    "ink": "#eee6d3",
+    "accent": "#ffcf3f",
+    "extra": {
+      "jute": "#b89a6a"
+    },
+    "from": "Bottle-green warehouse paint and jute; a hazard yellow for the bean that's about to run out."
+  },
+  "hero": "The stencilled days-left numerals.",
+  "icons": "None: stencil arrows and numerals.",
+  "controls": "Square, 2px borders, hard offset shadow on press.",
+  "traits": [
+    "Stock first",
+    "Stencil numerals",
+    "One hazard color"
+  ]
+}

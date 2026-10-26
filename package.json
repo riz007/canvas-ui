@@ -8,6 +8,7 @@
   "engines": { "node": ">=20" },
   "scripts": {
     "test": "node --test tests/*.test.mjs",
+    "site": "node site/build.mjs",
     "example": "node scripts/tokens.mjs examples/fieldnote/r1 && node scripts/canvas.mjs examples/fieldnote/r1 --open"
   },
   "keywords": ["agent-skill", "claude-code", "codex", "gemini-cli", "ui-design", "design-tokens"]

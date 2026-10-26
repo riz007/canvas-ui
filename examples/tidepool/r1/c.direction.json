@@ -1,0 +1,9 @@
+{"id":"c","name":"Pick Your Day","northStar":"Visitors book by the day they arrive: choose a date, see that day's forecast, book.",
+"engine":{"kind":"rule-breaking","source":"A booking flow turned into a forecast calendar: the date strip is the navigation, the lessons are the answer.","evidence":"Bookings come 1–3 days before arrival, so the arrival date is the first thing a visitor knows."},
+"tone":{"energy":60,"finish":80,"density":55,"weight":60,"formality":45,"_why":"Product-like and precise, with a hot accent on the one decision."},
+"benchmark":{"category":"Surf school / surf camp booking","peers":["Surf-camp sites (from memory — unverified)"],"keep":["Prices","Instant Book"],"change":["Date-first instead of lesson-first; the forecast is part of the date"]},
+"skeleton":"Tool: wordmark line; 5-day strip with beginner-rating dots; selected day's conditions as a tide curve; lesson rows with prices; Book button.",
+"type":{"display":{"family":"Space Grotesk","weight":600,"weights":[500,600],"fallback":"sans"},"body":{"family":"Inter Tight","weight":400,"weights":[400,500,600],"fallback":"sans"},"mono":{"family":"Space Mono","weights":[400,700],"fallback":"mono"}},
+"color":{"bg":"#1d1b3a","ink":"#f1efff","accent":"#c5f03c","from":"Deep night-indigo of the ocean before the report; electric lime for the chosen day and Book."},
+"hero":"The selected day's tide curve with wave height bars.","icons":"Dots for beginner rating; no icon set.",
+"controls":"12px radius day chips, selected = lime fill; Book = lime pill.","traits":["Date-first","Tide curve","Electric lime"],"tokens":{}}

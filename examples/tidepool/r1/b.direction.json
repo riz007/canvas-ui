@@ -1,0 +1,9 @@
+{"id":"b","name":"First Light","northStar":"Make it feel like 7:30 on an Ericeira morning and put a thumb on Book within one scroll.",
+"engine":{"kind":"scene","source":"Sunrise over a whitewashed Portuguese fishing town: warm low light, hard white walls, deep blue shadows.","evidence":"The report goes out at 7:30 each morning; most visitors browse on phones before arriving."},
+"tone":{"energy":70,"finish":55,"density":35,"weight":80,"formality":25,"_why":"Loud, friendly, big type: a tourist deciding on a phone should feel the place and the price at once."},
+"benchmark":{"category":"Surf school / surf camp booking","peers":["Surf-camp sites (from memory — unverified)"],"keep":["Three lesson prices","Large Book action"],"change":["Replace stock photo hero with a typographic poster in solid colour"]},
+"skeleton":"Persuasion poster: full-bleed colour field, giant headline top, one-line conditions pill, three price tickets stacked full-width at the bottom as the primary action.",
+"type":{"display":{"family":"Bricolage Grotesque","weight":800,"weights":[700,800],"fallback":"sans"},"body":{"family":"DM Sans","weight":400,"weights":[400,500,700],"fallback":"sans"},"mono":{"family":"DM Mono","weights":[400,500],"fallback":"mono"}},
+"color":{"bg":"#f4a58a","ink":"#14213d","accent":"#14213d","from":"Dawn coral on whitewash; Atlantic navy for type and tickets."},
+"hero":"Typographic: the headline 'Small waves. Big start.' at full width.","icons":"None; big numerals for prices.",
+"controls":"Full-width tickets, 16px radius, pressed = translate 2px.","traits":["Typographic poster","Price tickets","Dawn coral"],"tokens":{}}

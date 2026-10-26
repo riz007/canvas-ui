@@ -1,0 +1,17 @@
+{
+  "title": "Rootstock \u2014 roast-day dashboard",
+  "round": "r1",
+  "question": "Three ways to answer 'what do I roast today, and what's about to run out?'. Which should we build?",
+  "viewport": "desktop",
+  "candidates": [
+    {
+      "source": "a.html"
+    },
+    {
+      "source": "b.html"
+    },
+    {
+      "source": "c.html"
+    }
+  ]
+}

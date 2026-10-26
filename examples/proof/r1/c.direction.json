@@ -1,0 +1,61 @@
+{
+  "id": "c",
+  "name": "Rise Line",
+  "northStar": "Show the data bakers have been guessing at: one honest curve of a starter rising and falling.",
+  "engine": {
+    "kind": "medium",
+    "source": "Scientific lab notebook plots: a single measured curve, annotations in the margin.",
+    "evidence": "Home bakers obsess over timing; nobody has ever shown them the curve."
+  },
+  "tone": {
+    "energy": 55,
+    "finish": 85,
+    "density": 50,
+    "weight": 40,
+    "formality": 70,
+    "_why": "Precise and credible; a gadget for nerds that respects them."
+  },
+  "skeleton": "Full-width stack: a one-line headline across the top, then a full-bleed chart of 14 hours of rise with the peak annotated; specs and CTA in a single row underneath.",
+  "type": {
+    "display": {
+      "family": "Instrument Sans",
+      "weight": 600,
+      "weights": [
+        500,
+        600,
+        700
+      ],
+      "fallback": "sans"
+    },
+    "body": {
+      "family": "Instrument Sans",
+      "weight": 400,
+      "weights": [
+        400,
+        500
+      ]
+    },
+    "mono": {
+      "family": "Geist Mono",
+      "weights": [
+        400,
+        500
+      ]
+    },
+    "ratio": 1.35
+  },
+  "color": {
+    "bg": "#eef1f4",
+    "ink": "#13233a",
+    "accent": "#e0446a",
+    "from": "Lab-paper blue-gray and a marker pink for the peak."
+  },
+  "hero": "The 14-hour rise curve.",
+  "icons": "None.",
+  "controls": "6px radius, 1px lines.",
+  "traits": [
+    "One honest curve",
+    "Lab notebook",
+    "Peak in pink"
+  ]
+}

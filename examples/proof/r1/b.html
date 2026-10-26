@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Feed Me</title>
+<link rel="stylesheet" href="b.tokens.css">
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font: var(--weight-body) var(--step-0)/var(--leading-body) var(--font-body); height: 100vh; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; }
+header { display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); font-weight: 700; }
+header .mark { font: 400 var(--step-2)/1 var(--font-display); letter-spacing: 0.02em; }
+header span:last-child { font: var(--step-n1) var(--font-mono); }
+.shout { position: relative; overflow: hidden; display: grid; align-content: center; }
+.shout p { margin: 0; font: 400 21vw/0.8 var(--font-display); letter-spacing: -0.01em; white-space: nowrap; text-transform: uppercase; margin-left: -1vw; }
+.shout p:nth-child(2) { color: var(--accent); margin-left: 12vw; }
+.shout .bubble { position: absolute; right: var(--space-7); top: 18%; background: var(--ink); color: var(--bg); padding: var(--space-3) var(--space-4); font: 700 var(--step-1)/1.25 var(--font-body); max-width: 300px; transform: rotate(-3deg); border: 3px solid var(--bg); box-shadow: 6px 6px 0 var(--accent); }
+.band { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: var(--space-6); padding: var(--space-5) var(--space-6); background: var(--ink); color: var(--bg); }
+.band p { margin: 0; font-size: var(--step-1); line-height: 1.4; max-width: 56ch; font-weight: 500; }
+.band .price { font: var(--step-n1) var(--font-mono); text-align: right; line-height: 1.4; }
+.cta { height: 60px; padding: 0 30px; border: 3px solid var(--bg); background: var(--accent); color: var(--on-accent); font: 700 var(--step-1) var(--font-body); box-shadow: 5px 5px 0 var(--bg); }
+</style>
+</head>
+<body>
+<header><span class="mark">PROOF</span><span>Pre-order list · January</span></header>
+<section class="shout" aria-label="Your starter peaked at 4:52">
+  <p>Peaked at</p><p>4:52 a.m.</p>
+  <div class="bubble">“You were asleep. Again. I've been collapsing since five.”<br>— your starter</div>
+</section>
+<section class="band">
+  <p id="sub"></p>
+  <span class="price" id="price"></span>
+  <button class="cta" id="cta"></button>
+</section>
+<script src="content.js"></script>
+<script>
+document.getElementById("sub").textContent = "Proof is a lid that watches your starter rise and pings you at the peak, so it never happens without you.";
+document.getElementById("price").innerHTML = `${PF.price}<br>ships ${PF.ships}`;
+document.getElementById("cta").textContent = PF.cta;
+</script>
+</body>
+</html>

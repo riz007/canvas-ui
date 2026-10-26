@@ -6,6 +6,15 @@
 
 <sub>One brief (a field-recording library), three directions from different engines: a tape-log workspace, a single recording as hero, a place-first atlas. Built, linted and captured by the bundled tools. Source in [examples/fieldnote](examples/fieldnote/r1).</sub>
 
+**[Live demo →](https://riz007.github.io/canvas-ui/)** Four example rounds you can open on the real canvas: squint, go blind, tune the dials, and pick.
+
+| Example | Kind | Notes |
+| --- | --- | --- |
+| [Tidepool](examples/tidepool) | Mobile homepage | **Generated end to end by Claude Code** with the skill installed, from a one-paragraph brief and no human input |
+| [Rootstock](examples/rootstock/r1) | Desktop dashboard | A coffee roaster's roast day: ruled log vs day dial vs stencilled stock |
+| [Proof](examples/proof/r1) | Launch page | Three persuasion skeletons: product as the page, type as image, one full-width curve |
+| [Fieldnote](examples/fieldnote/r1) | Product UI | Search-first workspace vs a single recording as hero vs a map |
+
 ## Why it's different
 
 Most "design skills" are a long style guide. canvas-ui is a **workflow plus tools**, and every step produces something you can check:
@@ -106,15 +115,17 @@ scripts/                    tokens.mjs · canvas.mjs · shoot.mjs · lib/ (token
 assets/canvas.html          the canvas template
 templates/direction.json    the direction card schema, annotated
 adapters/                   Codex · Gemini CLI · Cursor · portable prompt
-examples/fieldnote/r1       a complete direction round, with shots
+examples/                   four complete direction rounds, with shots (tidepool is agent-generated)
+site/                       the demo site (index.html + build.mjs → _site/)
 tests/                      node --test (token guarantees, canvas build, lint on a real browser)
 ```
 
 ## Develop
 
 ```bash
-npm test            # 10 tests; the browser test is skipped if no Chrome is found
+npm test            # 11 tests; the browser test is skipped if no Chrome is found
 npm run example     # regenerate the example's tokens and open its canvas
+npm run site        # build the demo site into _site/ (deployed to GitHub Pages from main)
 ```
 
 Pro features are planned; see [ROADMAP.md](ROADMAP.md). The core skill will stay MIT and complete on its own.

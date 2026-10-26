@@ -1,0 +1,1590 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Canvas</title>
+    <style>
+      :root {
+        --c-bg: #f4f4f5;
+        --c-panel: #ffffff;
+        --c-raise: #fafafa;
+        --c-line: #e4e4e7;
+        --c-line-2: #d4d4d8;
+        --c-ink: #18181b;
+        --c-ink-2: #52525b;
+        --c-ink-3: #8a8a93;
+        --c-hot: #2563eb;
+        --c-hot-ink: #fff;
+        --c-hot-soft: #dbe6fe;
+        --c-good: #15803d;
+        --c-shadow:
+          0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px -12px rgb(0 0 0 / 0.18);
+        --r: 10px;
+        --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        --mono: ui-monospace, "SF Mono", Menlo, monospace;
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --c-bg: #0f0f12;
+          --c-panel: #18181c;
+          --c-raise: #1f1f24;
+          --c-line: #2a2a31;
+          --c-line-2: #3a3a42;
+          --c-ink: #ececef;
+          --c-ink-2: #a8a8b2;
+          --c-ink-3: #74747e;
+          --c-hot: #6d9cff;
+          --c-hot-ink: #0b1020;
+          --c-hot-soft: #1d2a48;
+          --c-good: #4ade80;
+          --c-shadow:
+            0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -12px rgb(0 0 0 / 0.6);
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --c-bg: #0f0f12;
+        --c-panel: #18181c;
+        --c-raise: #1f1f24;
+        --c-line: #2a2a31;
+        --c-line-2: #3a3a42;
+        --c-ink: #ececef;
+        --c-ink-2: #a8a8b2;
+        --c-ink-3: #74747e;
+        --c-hot: #6d9cff;
+        --c-hot-ink: #0b1020;
+        --c-hot-soft: #1d2a48;
+        --c-good: #4ade80;
+        --c-shadow:
+          0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px -12px rgb(0 0 0 / 0.6);
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        background: var(--c-bg);
+        color: var(--c-ink);
+        font: 14px/1.45 var(--font);
+        -webkit-font-smoothing: antialiased;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      :focus-visible {
+        outline: 2px solid var(--c-hot);
+        outline-offset: 2px;
+      }
+
+      /* ---------- top bar ---------- */
+      .bar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        padding: 10px 16px;
+        background: color-mix(in srgb, var(--c-bg) 86%, transparent);
+        backdrop-filter: saturate(1.4) blur(10px);
+        border-bottom: 1px solid var(--c-line);
+      }
+      .title {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        margin-right: auto;
+      }
+      .title b {
+        font-size: 15px;
+        font-weight: 650;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .title span {
+        color: var(--c-ink-3);
+        font-size: 12.5px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .seg {
+        display: inline-flex;
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: 9px;
+        padding: 2px;
+        gap: 2px;
+      }
+      .seg button {
+        border: 0;
+        background: none;
+        padding: 5px 10px;
+        border-radius: 7px;
+        color: var(--c-ink-2);
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--c-ink);
+        color: var(--c-bg);
+      }
+      .tog {
+        border: 1px solid var(--c-line);
+        background: var(--c-panel);
+        border-radius: 9px;
+        padding: 5px 10px;
+        font-size: 13px;
+        color: var(--c-ink-2);
+      }
+      .tog[aria-pressed="true"] {
+        border-color: var(--c-hot);
+        color: var(--c-hot);
+        background: var(--c-hot-soft);
+      }
+      kbd {
+        font: 11px var(--mono);
+        padding: 1px 4px;
+        border: 1px solid var(--c-line-2);
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        color: var(--c-ink-3);
+      }
+
+      /* ---------- brief ---------- */
+      .brief {
+        padding: 14px 16px 0;
+        color: var(--c-ink-2);
+        max-width: 980px;
+      }
+      .brief p {
+        margin: 0;
+      }
+
+      /* ---------- grid ---------- */
+      main {
+        padding: 16px;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(
+          auto-fit,
+          minmax(min(100%, var(--col, 360px)), 1fr)
+        );
+        align-items: stretch;
+      }
+      .card {
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: var(--r);
+        box-shadow: var(--c-shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .card.picked {
+        outline: 2px solid var(--c-good);
+        outline-offset: 2px;
+      }
+      .card header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--c-line);
+      }
+      .num {
+        font: 600 12px/1 var(--mono);
+        color: var(--c-ink-3);
+      }
+      .name {
+        font-weight: 650;
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .badge {
+        font-size: 11.5px;
+        padding: 2px 7px;
+        border-radius: 99px;
+        background: var(--c-raise);
+        border: 1px solid var(--c-line);
+        color: var(--c-ink-2);
+      }
+      .badge.good {
+        color: var(--c-good);
+        border-color: currentColor;
+        background: none;
+      }
+      .icon-btn {
+        border: 1px solid transparent;
+        background: none;
+        border-radius: 7px;
+        padding: 4px 7px;
+        color: var(--c-ink-2);
+        font-size: 12.5px;
+      }
+      .icon-btn:hover {
+        border-color: var(--c-line);
+        background: var(--c-raise);
+      }
+
+      .stage {
+        position: relative;
+        overflow: hidden;
+        background: var(--c-raise);
+        cursor: zoom-in;
+      }
+      .stage .frame {
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform-origin: 0 0;
+        border: 0;
+        background: #fff;
+      }
+      .stage img.frame {
+        object-fit: cover;
+        object-position: top left;
+      }
+      .solo .stage,
+      .compare .stage,
+      .overlay .stage {
+        cursor: default;
+      }
+      body.squint .frame {
+        filter: grayscale(1) blur(var(--squint, 7px)) contrast(1.15);
+      }
+      .grid .stage iframe:not(.live) {
+        pointer-events: none;
+      }
+
+      .meta {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        border-top: 1px solid var(--c-line);
+        flex: 1;
+      }
+      .meta > .row:last-child {
+        margin-top: auto;
+      }
+      .concept {
+        margin: 0;
+        color: var(--c-ink);
+      }
+      .kv {
+        display: grid;
+        grid-template-columns: 76px 1fr;
+        gap: 4px 10px;
+        font-size: 13px;
+      }
+      .kv dt {
+        color: var(--c-ink-3);
+      }
+      .kv dd {
+        margin: 0;
+        color: var(--c-ink-2);
+      }
+      .swatches {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .swatches i {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12);
+      }
+      .traits {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .dials {
+        display: grid;
+        grid-template-columns: 70px 1fr 54px;
+        gap: 3px 8px;
+        font-size: 11.5px;
+        color: var(--c-ink-3);
+        align-items: center;
+      }
+      .dials .track {
+        height: 4px;
+        background: var(--c-line);
+        border-radius: 4px;
+        position: relative;
+      }
+      .dials .track b {
+        position: absolute;
+        top: -3px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--c-ink-2);
+        transform: translateX(-50%);
+      }
+      .dials span:nth-child(3n) {
+        text-align: right;
+      }
+      .notes {
+        display: grid;
+        gap: 6px;
+      }
+      .notes textarea {
+        width: 100%;
+        resize: vertical;
+        min-height: 34px;
+        border: 1px solid var(--c-line);
+        background: var(--c-raise);
+        border-radius: 8px;
+        padding: 7px 9px;
+        font-size: 13px;
+      }
+      .notes textarea::placeholder {
+        color: var(--c-ink-3);
+      }
+      .pick {
+        border: 0;
+        background: var(--c-hot);
+        color: var(--c-hot-ink);
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-weight: 650;
+      }
+      .pick:hover {
+        filter: brightness(1.08);
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .row .pick {
+        flex: 1;
+      }
+
+      body.blind .meta .concept,
+      body.blind .meta .kv,
+      body.blind .meta .swatches,
+      body.blind .meta .traits,
+      body.blind .meta .dials,
+      body.blind .name,
+      body.blind .badge:not(.good) {
+        display: none;
+      }
+
+      /* ---------- focus ---------- */
+      .card.solo {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        grid-template-rows: auto 1fr;
+      }
+      .card.solo > header {
+        grid-column: 1 / -1;
+      }
+      .card.solo > .stage {
+        grid-column: 1;
+        align-self: start;
+      }
+      .card.solo > .meta {
+        grid-column: 2;
+        grid-row: 2;
+        border-top: 0;
+        border-left: 1px solid var(--c-line);
+      }
+      .card.solo > .meta > .row:last-child {
+        margin-top: 0;
+      }
+      .pager {
+        display: flex;
+        gap: 4px;
+      }
+
+      /* ---------- compare / overlay ---------- */
+      .ab {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .ab .slot {
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: var(--r);
+        overflow: hidden;
+      }
+      .ab .slot header {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--c-line);
+      }
+      .ab select {
+        border: 1px solid var(--c-line);
+        background: var(--c-raise);
+        border-radius: 7px;
+        padding: 4px 6px;
+        flex: 1;
+        min-width: 0;
+      }
+      .ov {
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: var(--r);
+        overflow: hidden;
+      }
+      .ov header {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--c-line);
+        flex-wrap: wrap;
+      }
+      .ov .stage {
+        cursor: default;
+      }
+      .ov .stage .top {
+        opacity: var(--mix, 0.5);
+      }
+      .ov input[type="range"] {
+        width: 180px;
+      }
+
+      /* ---------- tune drawer ---------- */
+      .tune {
+        display: none;
+        gap: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--c-line-2);
+      }
+      .tune.open {
+        display: grid;
+      }
+      .tune label {
+        display: grid;
+        grid-template-columns: 76px 1fr 36px;
+        gap: 8px;
+        align-items: center;
+        font-size: 12.5px;
+        color: var(--c-ink-2);
+      }
+      .tune input[type="range"] {
+        width: 100%;
+        accent-color: var(--c-hot);
+      }
+      .tune output {
+        font: 12px var(--mono);
+        color: var(--c-ink-3);
+        text-align: right;
+      }
+      .tune .colors {
+        display: flex;
+        gap: 8px;
+      }
+      .tune .colors label {
+        grid-template-columns: auto auto;
+        gap: 6px;
+      }
+      .tune input[type="color"] {
+        width: 30px;
+        height: 26px;
+        border: 1px solid var(--c-line);
+        border-radius: 6px;
+        padding: 0;
+        background: none;
+      }
+      .tune small {
+        color: var(--c-ink-3);
+      }
+
+      /* ---------- toast ---------- */
+      .toast {
+        position: fixed;
+        z-index: 50;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%) translateY(20px);
+        opacity: 0;
+        pointer-events: none;
+        width: min(640px, calc(100vw - 32px));
+        background: var(--c-ink);
+        color: var(--c-bg);
+        border-radius: 12px;
+        padding: 14px;
+        box-shadow: var(--c-shadow);
+        transition:
+          opacity 0.18s,
+          transform 0.22s cubic-bezier(0.2, 0.7, 0.1, 1);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%);
+        pointer-events: auto;
+      }
+      .toast pre {
+        margin: 8px 0 0;
+        white-space: pre-wrap;
+        font: 12px/1.5 var(--mono);
+        max-height: 220px;
+        overflow: auto;
+        opacity: 0.85;
+      }
+      .toast .row {
+        justify-content: space-between;
+      }
+      .toast button {
+        background: none;
+        border: 1px solid currentColor;
+        border-radius: 7px;
+        padding: 3px 9px;
+        color: inherit;
+        opacity: 0.8;
+      }
+
+      .help {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: none;
+        place-items: center;
+        background: rgb(0 0 0 / 0.4);
+      }
+      .help.show {
+        display: grid;
+      }
+      .help > div {
+        background: var(--c-panel);
+        border: 1px solid var(--c-line);
+        border-radius: 14px;
+        padding: 18px 20px;
+        width: min(440px, calc(100vw - 32px));
+        box-shadow: var(--c-shadow);
+      }
+      .help dl {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        gap: 6px 12px;
+        margin: 10px 0 0;
+        font-size: 13px;
+      }
+      .help dd {
+        margin: 0;
+        color: var(--c-ink-2);
+      }
+
+      @media (max-width: 760px) {
+        .ab {
+          grid-template-columns: 1fr;
+        }
+        .card.solo {
+          grid-template-columns: 1fr;
+        }
+        .card.solo > .meta {
+          grid-column: 1;
+          grid-row: auto;
+          border-left: 0;
+          border-top: 1px solid var(--c-line);
+        }
+        .hide-sm {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar">
+      <div class="title"><b id="title"></b><span id="sub"></span></div>
+      <div class="seg" id="views" role="group" aria-label="Layout">
+        <button data-v="grid" title="Grid (G)">Grid</button>
+        <button data-v="focus" title="Focus (F)">Focus</button>
+        <button data-v="compare" title="A / B (C)">A / B</button>
+        <button data-v="overlay" title="Overlay (O)">Overlay</button>
+      </div>
+      <div class="seg" id="vps" role="group" aria-label="Viewport"></div>
+      <button
+        class="tog"
+        id="squint"
+        aria-pressed="false"
+        title="Squint test (S)"
+      >
+        Squint
+      </button>
+      <button
+        class="tog"
+        id="blind"
+        aria-pressed="false"
+        title="Blind mode (B)"
+      >
+        Blind
+      </button>
+      <button
+        class="tog hide-sm"
+        id="sync"
+        aria-pressed="true"
+        title="Sync scroll across frames"
+      >
+        Sync
+      </button>
+      <button class="tog hide-sm" id="theme" title="Shell theme">◐</button>
+      <button class="tog" id="helpBtn" title="Shortcuts (?)">?</button>
+    </div>
+    <div class="brief" id="brief" hidden><p id="question"></p></div>
+    <main id="main"></main>
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <div class="row">
+        <b id="toastTitle">Copied</b
+        ><span class="row"
+          ><button id="dl">Save .json</button
+          ><button id="toastClose">Close</button></span
+        >
+      </div>
+      <pre id="toastText"></pre>
+    </div>
+    <div class="help" id="help">
+      <div>
+        <b>Keyboard</b>
+        <dl>
+          <dt><kbd>←</kbd> <kbd>→</kbd></dt>
+          <dd>Previous / next candidate</dd>
+          <dt><kbd>1</kbd>–<kbd>9</kbd></dt>
+          <dd>Focus candidate</dd>
+          <dt><kbd>G</kbd> <kbd>F</kbd> <kbd>C</kbd> <kbd>O</kbd></dt>
+          <dd>Grid · Focus · A/B · Overlay</dd>
+          <dt><kbd>D</kbd> <kbd>T</kbd> <kbd>M</kbd> <kbd>N</kbd></dt>
+          <dd>Desktop · Tablet · Mobile · Native</dd>
+          <dt><kbd>S</kbd> / <kbd>B</kbd></dt>
+          <dd>Squint test / Blind mode</dd>
+          <dt><kbd>U</kbd></dt>
+          <dd>Tune panel (focus view)</dd>
+          <dt><kbd>Enter</kbd></dt>
+          <dd>Pick the focused candidate</dd>
+          <dt><kbd>Esc</kbd></dt>
+          <dd>Back to grid / close</dd>
+        </dl>
+      </div>
+    </div>
+
+    <script id="canvas-data" type="application/json">
+      {"title":"Tidepool Surf School — homepage","round":"r1","question":"Which direction should we build out? Note what to keep from the others.","note":"","viewport":"mobile","candidates":[{"kind":"html","source":"a.html","name":"Tide Table","concept":"Answer \"will the waves be OK for me?\" before anything else, in the plain grammar of a tide table.","typography":"Fraunces 600 (display) · Instrument Sans 400 (body) · JetBrains Mono (mono)","skeleton":"Stack: slim header; report table (3 ruled rows) with stamped verdict; three lesson rows with prices; sticky Book bar.","hero":"The report table itself, with a tide curve drawn in ink; no photography.","palette":["#e9efe6","#12302a","#c93a18"],"traits":["Report-first","Ruled rows","One buoy red"],"baseline":false,"interactive":false,"direction":{"id":"a","name":"Tide Table","northStar":"Answer \"will the waves be OK for me?\" before anything else, in the plain grammar of a tide table.","engine":{"kind":"medium","source":"Printed tide tables and harbour-office notice boards: ruled rows, tabular numerals, one stamped verdict.","evidence":"The biggest question from visitors is conditions for a beginner; the school already posts a daily report at 7:30."},"tone":{"energy":35,"finish":75,"density":65,"weight":55,"formality":65,"_why":"Calm and factual so the report is trusted; dense enough to show wave, wind, tide in one glance."},"benchmark":{"category":"Surf school / surf camp booking","peers":["Surf-camp sites (from memory — unverified)"],"keep":["Prices visible without scrolling","Book button reachable by thumb"],"change":["Peers lead with action-photo hero and a booking widget; we lead with today's conditions"]},"skeleton":"Stack: slim header; report table (3 ruled rows) with stamped verdict; three lesson rows with prices; sticky Book bar.","type":{"display":{"family":"Fraunces","weight":600,"weights":[500,600],"fallback":"serif"},"body":{"family":"Instrument Sans","weight":400,"weights":[400,500,600],"fallback":"sans"},"mono":{"family":"JetBrains Mono","weights":[400,500],"fallback":"mono"}},"color":{"bg":"#e9efe6","ink":"#12302a","accent":"#c93a18","from":"Sea-glass paper and harbour green ink; buoy red-orange reserved for the verdict stamp and Book."},"hero":"The report table itself, with a tide curve drawn in ink; no photography.","icons":"None; numerals and arrows in mono.","controls":"2px radius, 1px ruled borders, pressed = ink fill.","traits":["Report-first","Ruled rows","One buoy red"],"tokens":{}},"html":"\u003c!doctype html>\n\u003chtml lang=\"en\">\u003chead>\u003cmeta charset=\"utf-8\">\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\u003ctitle>Tidepool — Tide Table\u003c/title>\n\u003clink rel=\"stylesheet\" href=\"a.tokens.css\">\n\u003cstyle>\n*{box-sizing:border-box}\nbody{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--step-0);line-height:var(--leading-body);min-height:100vh;display:flex;flex-direction:column}\nheader{display:flex;justify-content:space-between;align-items:baseline;padding:var(--space-4) var(--space-5);border-bottom:var(--border) solid var(--line-strong)}\n.wm{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-1)}\n.loc{font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2)}\nmain{padding:var(--space-5);flex:1}\n.stamp{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}\n.q{font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2);margin:0 0 var(--space-2)}\nh1{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-4);line-height:var(--leading-tight);letter-spacing:var(--tracking-display);margin:0}\n.badge{flex:none;border:2px solid var(--accent-text);color:var(--accent-text);border-radius:var(--radius-sm);padding:var(--space-1) var(--space-3);font-family:var(--font-mono);font-size:var(--step-n1);font-weight:500;transform:rotate(-4deg);text-transform:uppercase;letter-spacing:.06em}\ntable{width:100%;border-collapse:collapse;margin:var(--space-5) 0 var(--space-3)}\ntd{padding:var(--space-3) 0;border-top:1px solid var(--line-strong)}\ntr:last-child td{border-bottom:1px solid var(--line-strong)}\ntd:first-child{font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2);width:5.5em}\ntd:last-child{font-weight:500}\ntd b{font-family:var(--font-mono);font-weight:500;font-size:var(--step-1)}\nsvg{display:block;width:100%;height:56px;margin-bottom:var(--space-6)}\nh2{font-family:var(--font-mono);font-size:var(--step-n1);font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);margin:0 0 var(--space-2)}\n.l{display:flex;justify-content:space-between;align-items:baseline;padding:var(--space-3) 0;border-top:1px solid var(--line-strong)}\n.l span{display:block;font-size:var(--step-n1);color:var(--ink-2)}\n.l strong{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-1)}\n.l em{font-style:normal;font-family:var(--font-mono);font-size:var(--step-2)}\n.bar{position:sticky;bottom:0;display:flex;gap:var(--space-4);align-items:center;padding:var(--space-4) var(--space-5);background:var(--surface);border-top:var(--border) solid var(--line-strong)}\n.bar small{flex:1;color:var(--ink-2);font-size:var(--step-n1)}\n.bar a{background:var(--accent);color:var(--on-accent);padding:var(--space-3) var(--space-6);border-radius:var(--radius-sm);font-weight:600;text-decoration:none}\n\u003c/style>\u003c/head>\u003cbody>\n\u003cheader>\u003cspan class=\"wm\">Tidepool\u003c/span>\u003cspan class=\"loc\">ERICEIRA · REPORT 7:30\u003c/span>\u003c/header>\n\u003cmain>\n\u003cp class=\"q\">Today, for a first-timer\u003c/p>\n\u003cdiv class=\"stamp\">\u003ch1>Good for beginners\u003c/h1>\u003cspan class=\"badge\">Go\u003c/span>\u003c/div>\n\u003ctable>\n\u003ctr>\u003ctd>Waves\u003c/td>\u003ctd>\u003cb>0.8–1.0 m\u003c/b>\u003c/td>\u003c/tr>\n\u003ctr>\u003ctd>Wind\u003c/td>\u003ctd>Light offshore, 8 km/h\u003c/td>\u003c/tr>\n\u003ctr>\u003ctd>Tide\u003c/td>\u003ctd>Low 09:42, rising\u003c/td>\u003c/tr>\n\u003c/table>\n\u003csvg viewBox=\"0 0 300 56\" preserveAspectRatio=\"none\" aria-hidden=\"true\">\u003cpath d=\"M0 40 C40 4 90 4 125 28 S210 54 250 22 S290 8 300 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"/>\u003cline x1=\"0\" y1=\"55\" x2=\"300\" y2=\"55\" stroke=\"currentColor\" stroke-opacity=\".3\"/>\u003c/svg>\n\u003ch2>Lessons · board and wetsuit included\u003c/h2>\n\u003cdiv class=\"l\">\u003cdiv>\u003cstrong>Group lesson\u003c/strong>\u003cspan>2 h · up to 6 surfers\u003c/span>\u003c/div>\u003cem>€45\u003c/em>\u003c/div>\n\u003cdiv class=\"l\">\u003cdiv>\u003cstrong>Private lesson\u003c/strong>\u003cspan>2 h · just you and an instructor\u003c/span>\u003c/div>\u003cem>€90\u003c/em>\u003c/div>\n\u003cdiv class=\"l\">\u003cdiv>\u003cstrong>5-day course\u003c/strong>\u003cspan>5 mornings · beginner to improver\u003c/span>\u003c/div>\u003cem>€190\u003c/em>\u003c/div>\n\u003c/main>\n\u003cdiv class=\"bar\">\u003csmall>From €45 · board and wetsuit included\u003c/small>\u003ca href=\"#\">Book a lesson\u003c/a>\u003c/div>\n\u003c/body>\u003c/html>\n","open":"a.html"},{"kind":"html","source":"b.html","name":"First Light","concept":"Make it feel like 7:30 on an Ericeira morning and put a thumb on Book within one scroll.","typography":"Bricolage Grotesque 800 (display) · DM Sans 400 (body) · DM Mono (mono)","skeleton":"Persuasion poster: full-bleed colour field, giant headline top, one-line conditions pill, three price tickets stacked full-width at the bottom as the primary action.","hero":"Typographic: the headline 'Small waves. Big start.' at full width.","palette":["#f4a58a","#14213d","#14213d"],"traits":["Typographic poster","Price tickets","Dawn coral"],"baseline":false,"interactive":false,"direction":{"id":"b","name":"First Light","northStar":"Make it feel like 7:30 on an Ericeira morning and put a thumb on Book within one scroll.","engine":{"kind":"scene","source":"Sunrise over a whitewashed Portuguese fishing town: warm low light, hard white walls, deep blue shadows.","evidence":"The report goes out at 7:30 each morning; most visitors browse on phones before arriving."},"tone":{"energy":70,"finish":55,"density":35,"weight":80,"formality":25,"_why":"Loud, friendly, big type: a tourist deciding on a phone should feel the place and the price at once."},"benchmark":{"category":"Surf school / surf camp booking","peers":["Surf-camp sites (from memory — unverified)"],"keep":["Three lesson prices","Large Book action"],"change":["Replace stock photo hero with a typographic poster in solid colour"]},"skeleton":"Persuasion poster: full-bleed colour field, giant headline top, one-line conditions pill, three price tickets stacked full-width at the bottom as the primary action.","type":{"display":{"family":"Bricolage Grotesque","weight":800,"weights":[700,800],"fallback":"sans"},"body":{"family":"DM Sans","weight":400,"weights":[400,500,700],"fallback":"sans"},"mono":{"family":"DM Mono","weights":[400,500],"fallback":"mono"}},"color":{"bg":"#f4a58a","ink":"#14213d","accent":"#14213d","from":"Dawn coral on whitewash; Atlantic navy for type and tickets."},"hero":"Typographic: the headline 'Small waves. Big start.' at full width.","icons":"None; big numerals for prices.","controls":"Full-width tickets, 16px radius, pressed = translate 2px.","traits":["Typographic poster","Price tickets","Dawn coral"],"tokens":{}},"html":"\u003c!doctype html>\n\u003chtml lang=\"en\">\u003chead>\u003cmeta charset=\"utf-8\">\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\u003ctitle>Tidepool — First Light\u003c/title>\n\u003clink rel=\"stylesheet\" href=\"b.tokens.css\">\n\u003cstyle>\n*{box-sizing:border-box}\nbody{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;padding:var(--space-5)}\n.top{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:var(--step-n1);font-weight:500;text-transform:uppercase;letter-spacing:.06em}\nh1{font-family:var(--font-display);font-weight:800;font-size:clamp(64px,22vw,92px);line-height:.88;letter-spacing:-.04em;margin:var(--space-6) 0 var(--space-5)}\n.t span,.pill{line-height:1.35}\n.pill{align-self:flex-start;background:#fff;color:var(--ink);border-radius:999px;padding:var(--space-2) var(--space-4);font-size:var(--step-n1);font-weight:700}\n.pill i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#1f9d55;margin-right:var(--space-2)}\n.sp{flex:1}\n.t{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:#fff;border-radius:var(--radius-lg);padding:var(--space-4) var(--space-5);margin-top:var(--space-3);text-decoration:none}\n.t:active{transform:translateY(2px)}\n.t strong{display:block;font-family:var(--font-display);font-weight:700;font-size:var(--step-1)}\n.t span{font-size:var(--step-n1);opacity:.8}\n.t em{font-style:normal;font-family:var(--font-display);font-weight:800;font-size:var(--step-4);line-height:1}\n.t.main{background:#fff;color:var(--ink)}\n.inc{text-align:center;font-size:var(--step-n1);font-weight:500;margin:var(--space-4) 0 0}\n\u003c/style>\u003c/head>\u003cbody>\n\u003cdiv class=\"top\">\u003cspan>Tidepool\u003c/span>\u003cspan>Ericeira, PT\u003c/span>\u003c/div>\n\u003ch1>Small waves. Big start.\u003c/h1>\n\u003cdiv class=\"pill\">\u003ci>\u003c/i>Today 0.8–1.0 m · light offshore · good for beginners\u003c/div>\n\u003cdiv class=\"sp\">\u003c/div>\n\u003ca class=\"t main\" href=\"#\">\u003cdiv>\u003cstrong>Group lesson\u003c/strong>\u003cspan>2 h · up to 6 surfers\u003c/span>\u003c/div>\u003cem>€45\u003c/em>\u003c/a>\n\u003ca class=\"t\" href=\"#\">\u003cdiv>\u003cstrong>Private lesson\u003c/strong>\u003cspan>2 h · just you and an instructor\u003c/span>\u003c/div>\u003cem>€90\u003c/em>\u003c/a>\n\u003ca class=\"t\" href=\"#\">\u003cdiv>\u003cstrong>5-day course\u003c/strong>\u003cspan>5 mornings · beginner to improver\u003c/span>\u003c/div>\u003cem>€190\u003c/em>\u003c/a>\n\u003cp class=\"inc\">Board and wetsuit included\u003c/p>\n\u003c/body>\u003c/html>\n","open":"b.html"},{"kind":"html","source":"c.html","name":"Pick Your Day","concept":"Visitors book by the day they arrive: choose a date, see that day's forecast, book.","typography":"Space Grotesk 600 (display) · Inter Tight 400 (body) · Space Mono (mono)","skeleton":"Tool: wordmark line; 5-day strip with beginner-rating dots; selected day's conditions as a tide curve; lesson rows with prices; Book button.","hero":"The selected day's tide curve with wave height bars.","palette":["#1d1b3a","#f1efff","#c5f03c"],"traits":["Date-first","Tide curve","Electric lime"],"baseline":false,"interactive":false,"direction":{"id":"c","name":"Pick Your Day","northStar":"Visitors book by the day they arrive: choose a date, see that day's forecast, book.","engine":{"kind":"rule-breaking","source":"A booking flow turned into a forecast calendar: the date strip is the navigation, the lessons are the answer.","evidence":"Bookings come 1–3 days before arrival, so the arrival date is the first thing a visitor knows."},"tone":{"energy":60,"finish":80,"density":55,"weight":60,"formality":45,"_why":"Product-like and precise, with a hot accent on the one decision."},"benchmark":{"category":"Surf school / surf camp booking","peers":["Surf-camp sites (from memory — unverified)"],"keep":["Prices","Instant Book"],"change":["Date-first instead of lesson-first; the forecast is part of the date"]},"skeleton":"Tool: wordmark line; 5-day strip with beginner-rating dots; selected day's conditions as a tide curve; lesson rows with prices; Book button.","type":{"display":{"family":"Space Grotesk","weight":600,"weights":[500,600],"fallback":"sans"},"body":{"family":"Inter Tight","weight":400,"weights":[400,500,600],"fallback":"sans"},"mono":{"family":"Space Mono","weights":[400,700],"fallback":"mono"}},"color":{"bg":"#1d1b3a","ink":"#f1efff","accent":"#c5f03c","from":"Deep night-indigo of the ocean before the report; electric lime for the chosen day and Book."},"hero":"The selected day's tide curve with wave height bars.","icons":"Dots for beginner rating; no icon set.","controls":"12px radius day chips, selected = lime fill; Book = lime pill.","traits":["Date-first","Tide curve","Electric lime"],"tokens":{}},"html":"\u003c!doctype html>\n\u003chtml lang=\"en\">\u003chead>\u003cmeta charset=\"utf-8\">\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\u003ctitle>Tidepool — Pick Your Day\u003c/title>\n\u003clink rel=\"stylesheet\" href=\"c.tokens.css\">\n\u003cstyle>\n*{box-sizing:border-box}\nbody{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--step-0);min-height:100vh;padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-5)}\n.wm{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-1);display:flex;justify-content:space-between}\n.wm small{font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2);font-weight:400}\nh1{font-family:var(--font-display);font-weight:var(--weight-display);font-size:var(--step-2);margin:0;letter-spacing:var(--tracking-display)}\n.days{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-2)}\n.d{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-3) 0;text-align:center;font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2)}\n.d b{display:block;font-family:var(--font-display);font-size:var(--step-2);color:var(--ink);margin:2px 0 var(--space-2)}\n.d i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ink-faint);margin:0 1px}\n.d i.on{background:var(--accent)}\n.d.sel{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}\n.d.sel b{color:var(--on-accent)}\n.d.sel i{background:color-mix(in oklab,var(--on-accent) 30%,transparent)}\n.d.sel i.on{background:var(--on-accent)}\n.fc{background:var(--surface);border-radius:var(--radius-lg);padding:var(--space-4)}\n.fc p{margin:0 0 var(--space-3);display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:var(--step-n1);color:var(--ink-2)}\n.fc p{line-height:1.4;gap:var(--space-3)}\n.fc p b{color:var(--accent-text);font-weight:700}\n.fc svg{display:block;width:100%;height:84px}\n.l{display:flex;justify-content:space-between;align-items:center;padding:var(--space-3) 0;border-top:1px solid var(--line)}\n.l strong{display:block;font-weight:600}\n.l span{font-size:var(--step-n1);color:var(--ink-2)}\n.l em{font-style:normal;font-family:var(--font-mono);font-weight:700;font-size:var(--step-1)}\n.book{margin-top:auto;display:block;text-align:center;background:var(--accent);color:var(--on-accent);border-radius:999px;padding:var(--space-4);font-weight:600;font-family:var(--font-display);text-decoration:none;font-size:var(--step-1)}\n\u003c/style>\u003c/head>\u003cbody>\n\u003cdiv class=\"wm\">Tidepool \u003csmall>ERICEIRA\u003c/small>\u003c/div>\n\u003ch1>When are you arriving?\u003c/h1>\n\u003cdiv class=\"days\">\n\u003cdiv class=\"d\">THU\u003cb>29\u003c/b>\u003ci class=\"on\">\u003c/i>\u003ci class=\"on\">\u003c/i>\u003ci>\u003c/i>\u003c/div>\n\u003cdiv class=\"d sel\">FRI\u003cb>30\u003c/b>\u003ci class=\"on\">\u003c/i>\u003ci class=\"on\">\u003c/i>\u003ci class=\"on\">\u003c/i>\u003c/div>\n\u003cdiv class=\"d\">SAT\u003cb>31\u003c/b>\u003ci class=\"on\">\u003c/i>\u003ci>\u003c/i>\u003ci>\u003c/i>\u003c/div>\n\u003cdiv class=\"d\">SUN\u003cb>1\u003c/b>\u003ci class=\"on\">\u003c/i>\u003ci class=\"on\">\u003c/i>\u003ci>\u003c/i>\u003c/div>\n\u003cdiv class=\"d\">MON\u003cb>2\u003c/b>\u003ci class=\"on\">\u003c/i>\u003ci class=\"on\">\u003c/i>\u003ci class=\"on\">\u003c/i>\u003c/div>\n\u003c/div>\n\u003cdiv class=\"fc\">\n\u003cp>\u003cspan>Fri 30 · waves 0.8–1.0 m\u003c/span>\u003cb>Good for beginners\u003c/b>\u003c/p>\n\u003csvg viewBox=\"0 0 300 84\" preserveAspectRatio=\"none\" aria-hidden=\"true\">\u003cg fill=\"var(--accent)\" opacity=\".85\">\u003crect x=\"10\" y=\"50\" width=\"22\" height=\"34\"/>\u003crect x=\"50\" y=\"42\" width=\"22\" height=\"42\"/>\u003crect x=\"90\" y=\"36\" width=\"22\" height=\"48\"/>\u003crect x=\"130\" y=\"40\" width=\"22\" height=\"44\"/>\u003crect x=\"170\" y=\"46\" width=\"22\" height=\"38\"/>\u003crect x=\"210\" y=\"52\" width=\"22\" height=\"32\"/>\u003crect x=\"250\" y=\"58\" width=\"22\" height=\"26\"/>\u003c/g>\u003cpath d=\"M0 60 C50 6 100 6 150 44 S250 82 300 30\" fill=\"none\" stroke=\"var(--ink)\" stroke-width=\"2\"/>\u003c/svg>\n\u003c/div>\n\u003cdiv>\n\u003cdiv class=\"l\">\u003cdiv>\u003cstrong>Group lesson\u003c/strong>\u003cspan>2 h · up to 6 surfers\u003c/span>\u003c/div>\u003cem>€45\u003c/em>\u003c/div>\n\u003cdiv class=\"l\">\u003cdiv>\u003cstrong>Private lesson\u003c/strong>\u003cspan>2 h · just you and an instructor\u003c/span>\u003c/div>\u003cem>€90\u003c/em>\u003c/div>\n\u003cdiv class=\"l\">\u003cdiv>\u003cstrong>5-day course\u003c/strong>\u003cspan>5 mornings · beginner to improver\u003c/span>\u003c/div>\u003cem>€190\u003c/em>\u003c/div>\n\u003c/div>\n\u003ca class=\"book\" href=\"#\">Book Friday 30\u003c/a>\n\u003c/body>\u003c/html>\n","open":"c.html"}]}
+    </script>
+    <script>
+      // Pure token engine: direction card -> design tokens.
+// Shared by scripts/tokens.mjs (Node) and the canvas Tune panel (inlined into the page),
+// so it must stay dependency-free and DOM-free.
+
+// ---------- color math (sRGB <-> OKLab/OKLCH, WCAG contrast) ----------
+
+const clamp = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
+const toLin = (c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+const toGam = (c) => (c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055);
+
+function parseHex(hex) {
+  let h = String(hex).trim().replace(/^#/, "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  if (!/^[0-9a-f]{6}$/i.test(h)) throw new Error(`Not a hex color: ${hex}`);
+  return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+}
+
+function toHex([r, g, b]) {
+  return "#" + [r, g, b].map((c) => Math.round(clamp(c) * 255).toString(16).padStart(2, "0")).join("");
+}
+
+function rgbToOklab([r, g, b]) {
+  [r, g, b] = [r, g, b].map(toLin);
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [
+    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+  ];
+}
+
+function oklabToRgbLinear([L, a, b]) {
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+  const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+  const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  return [
+    4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
+  ];
+}
+
+function hexToOklch(hex) {
+  const [L, a, b] = rgbToOklab(parseHex(hex));
+  const C = Math.hypot(a, b);
+  let H = (Math.atan2(b, a) * 180) / Math.PI;
+  if (H < 0) H += 360;
+  return { l: L, c: C, h: C < 1e-4 ? 0 : H };
+}
+
+// Gamut-map by reducing chroma until the color fits sRGB.
+function oklchToHex({ l, c, h }) {
+  l = clamp(l);
+  let lo = 0, hi = Math.max(0, c), best = null;
+  const at = (cc) => {
+    const rad = (h * Math.PI) / 180;
+    return oklabToRgbLinear([l, cc * Math.cos(rad), cc * Math.sin(rad)]);
+  };
+  const fits = (rgb) => rgb.every((v) => v >= -1e-4 && v <= 1 + 1e-4);
+  if (fits(at(hi))) best = at(hi);
+  else {
+    for (let i = 0; i < 24; i++) {
+      const mid = (lo + hi) / 2, rgb = at(mid);
+      if (fits(rgb)) { lo = mid; best = rgb; } else hi = mid;
+    }
+    best = best || at(0);
+  }
+  return toHex(best.map((v) => toGam(clamp(v))));
+}
+
+function mix(hexA, hexB, t) {
+  const A = rgbToOklab(parseHex(hexA)), B = rgbToOklab(parseHex(hexB));
+  const lab = A.map((v, i) => v + (B[i] - v) * t);
+  return toHex(oklabToRgbLinear(lab).map((v) => toGam(clamp(v))));
+}
+
+function luminance(hex) {
+  const [r, g, b] = parseHex(hex).map(toLin);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function contrast(a, b) {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
+// Nudge `fg` lightness until it reaches `target` contrast on `bg` (keeps hue).
+function ensureContrast(fg, bg, target) {
+  if (contrast(fg, bg) >= target) return fg;
+  const o = hexToOklch(fg), darker = luminance(bg) > 0.18;
+  for (let i = 1; i <= 50; i++) {
+    const cand = oklchToHex({ ...o, l: clamp(o.l + (darker ? -0.02 : 0.02) * i) });
+    if (contrast(cand, bg) >= target) return cand;
+  }
+  return darker ? "#000000" : "#ffffff";
+}
+
+// ---------- dials -> scales ----------
+
+// Dials are 0..100. Missing dials sit at 50.
+const DIALS = {
+  energy: ["quiet", "loud"],
+  finish: ["raw", "refined"],
+  density: ["airy", "dense"],
+  weight: ["light", "heavy"],
+  formality: ["playful", "formal"],
+};
+
+const lerp = (a, b, t) => a + (b - a) * t;
+const round = (v, p = 3) => Math.round(v * 10 ** p) / 10 ** p;
+const dial = (tone, k) => clamp((tone?.[k] ?? 50) / 100);
+
+const DEFAULT_STACKS = {
+  serif: 'ui-serif, Georgia, "Times New Roman", serif',
+  sans: 'ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif',
+  mono: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace',
+};
+
+function fontStack(spec, fallback) {
+  if (!spec) return DEFAULT_STACKS[fallback];
+  if (typeof spec === "string") spec = { family: spec };
+  const fb = DEFAULT_STACKS[spec.fallback || fallback] || DEFAULT_STACKS.sans;
+  return spec.family ? `"${spec.family}", ${fb}` : fb;
+}
+
+/**
+ * Build tokens from a direction card.
+ * Returns { vars: {"--name": value}, report: {contrast, warnings} }.
+ * Explicit `tokens` overrides on the card win over anything derived.
+ */
+function buildTokens(direction) {
+  const d = direction || {};
+  const tone = d.tone || {};
+  const energy = dial(tone, "energy"), finish = dial(tone, "finish"), density = dial(tone, "density");
+  const weight = dial(tone, "weight"), formality = dial(tone, "formality");
+  const color = d.color || {};
+  const type = d.type || {};
+  const warnings = [];
+
+  // Color: bg, ink, accent are the only inputs; everything else is derived in OKLab.
+  const bg = color.bg || "#f7f6f2";
+  const ink = color.ink || (luminance(bg) > 0.18 ? "#141414" : "#f2f2ee");
+  const accent = color.accent || "#2f5bea";
+  const dark = luminance(bg) < 0.18;
+  // Every text token passes WCAG AA by construction: ink-2 >= 6:1, ink-3 >= 4.5:1.
+  const ink2 = ensureContrast(mix(ink, bg, 0.3), bg, 6);
+  const ink3 = ensureContrast(mix(ink, bg, 0.48), bg, 4.5);
+  const accentText = ensureContrast(accent, bg, 4.5);
+  const onAccent = contrast("#ffffff", accent) >= contrast("#111111", accent) ? "#ffffff" : "#111111";
+  const a = hexToOklch(accent);
+
+  const vars = {
+    "--bg": bg,
+    "--surface": mix(bg, ink, dark ? 0.06 : 0.035),
+    "--surface-2": mix(bg, ink, dark ? 0.11 : 0.07),
+    "--line": mix(bg, ink, dark ? 0.18 : 0.12),
+    "--line-strong": mix(bg, ink, dark ? 0.34 : 0.26),
+    "--ink": ink,
+    "--ink-2": ink2,
+    "--ink-3": ink3,
+    "--ink-faint": mix(ink, bg, 0.62), // non-text only: rules, disabled glyphs, decoration
+    "--accent": accent,
+    "--accent-text": accentText,
+    "--on-accent": onAccent,
+    "--accent-hover": oklchToHex({ ...a, l: clamp(a.l + (dark ? 0.06 : -0.06)) }),
+    "--accent-soft": mix(bg, accent, dark ? 0.22 : 0.12),
+    "--focus": oklchToHex({ ...a, l: dark ? 0.78 : 0.55, c: Math.max(a.c, 0.12) }),
+  };
+  for (const [k, v] of Object.entries(color.extra || {})) vars[`--${k}`] = v;
+
+  // Type: ratio grows with energy and weight unless pinned.
+  const base = type.base || Math.round(lerp(17, 15, density));
+  const ratio = type.ratio || round(lerp(1.16, 1.42, energy * 0.6 + weight * 0.4), 3);
+  vars["--font-display"] = fontStack(type.display, "serif");
+  vars["--font-body"] = fontStack(type.body, "sans");
+  vars["--font-mono"] = fontStack(type.mono, "mono");
+  vars["--weight-display"] = String(type.display?.weight ?? Math.round(lerp(400, 800, weight) / 100) * 100);
+  vars["--weight-body"] = String(type.body?.weight ?? 400);
+  // Small steps never drop below 12px / 13px, whatever the ratio.
+  const floor = { "-2": 12, "-1": 13 };
+  for (let s = -2; s <= 6; s++) {
+    const px = Math.max(floor[s] || 0, base * ratio ** s);
+    const name = `--step-${s < 0 ? "n" + -s : s}`;
+    // Fluid above step 2: shrink to ~72% on small screens.
+    vars[name] = s >= 3
+      ? `clamp(${round((px * 0.72) / 16)}rem, ${round((px * 0.72) / 16)}rem + ${round(((px * 0.28) / 1280) * 100, 2)}vw, ${round(px / 16)}rem)`
+      : `${round(px / 16)}rem`;
+  }
+  vars["--leading-body"] = String(round(lerp(1.65, 1.45, density), 2));
+  vars["--leading-tight"] = String(round(lerp(1.12, 0.96, energy * 0.5 + weight * 0.5), 2));
+  vars["--tracking-display"] = `${round(lerp(0, -0.035, weight * 0.5 + energy * 0.5), 3)}em`;
+  vars["--measure"] = `${Math.round(lerp(68, 60, density))}ch`;
+
+  // Space: 4px grid, scaled by density (airy = bigger steps).
+  const unit = lerp(5, 3.5, density);
+  // Snap to a 2px grid so spacing stays crisp.
+  [1, 2, 3, 4, 6, 8, 12, 16, 24].forEach((m, i) => (vars[`--space-${i + 1}`] = `${round(Math.max(2, Math.round((unit * m) / 2) * 2) / 16, 4)}rem`));
+
+  // Shape: formal -> tight radius; playful -> round. Raw finish -> heavier lines, harder shadows.
+  const r = lerp(14, 2, formality);
+  vars["--radius-sm"] = `${Math.round(r * 0.5)}px`;
+  vars["--radius"] = `${Math.round(r)}px`;
+  vars["--radius-lg"] = `${Math.round(r * 1.8)}px`;
+  vars["--border"] = `${Math.round(lerp(2, 1, finish * 0.6 + (1 - weight) * 0.4))}px`;
+  const sh = dark ? "0 0 0" : hexRgb(mix(ink, bg, 0.1));
+  const hard = 1 - finish;
+  vars["--shadow-1"] = weight < 0.25
+    ? "none"
+    : `0 1px ${Math.round(lerp(3, 0, hard))}px rgb(${sh} / ${round(lerp(0.06, 0.16, weight), 2)})`;
+  vars["--shadow-2"] = hard > 0.6
+    ? `${Math.round(lerp(2, 6, weight))}px ${Math.round(lerp(2, 6, weight))}px 0 rgb(${sh} / ${round(lerp(0.5, 0.9, weight), 2)})`
+    : `0 ${Math.round(lerp(8, 18, weight))}px ${Math.round(lerp(24, 40, finish))}px -${Math.round(lerp(8, 14, finish))}px rgb(${sh} / ${round(lerp(0.12, 0.28, weight), 2)})`;
+
+  // Motion: energy sets speed and overshoot.
+  vars["--dur-1"] = `${Math.round(lerp(160, 110, energy))}ms`;
+  vars["--dur-2"] = `${Math.round(lerp(280, 200, energy))}ms`;
+  vars["--dur-3"] = `${Math.round(lerp(520, 380, energy))}ms`;
+  vars["--ease-out"] = "cubic-bezier(.2,.7,.1,1)";
+  vars["--ease-spring"] = `cubic-bezier(.3,${round(lerp(1.1, 1.6, energy), 2)},.5,1)`;
+
+  Object.assign(vars, d.tokens || {});
+
+  const report = {
+    contrast: {
+      "ink/bg": round(contrast(vars["--ink"], vars["--bg"]), 2),
+      "ink-2/bg": round(contrast(vars["--ink-2"], vars["--bg"]), 2),
+      "ink-3/bg": round(contrast(vars["--ink-3"], vars["--bg"]), 2),
+      "accent-text/bg": round(contrast(vars["--accent-text"], vars["--bg"]), 2),
+      "on-accent/accent": round(contrast(vars["--on-accent"], vars["--accent"]), 2),
+    },
+    warnings,
+  };
+  if (report.contrast["ink/bg"] < 7) warnings.push(`ink/bg contrast ${report.contrast["ink/bg"]} < 7 — body text will feel washed out`);
+  if (report.contrast["on-accent/accent"] < 4.5) warnings.push(`on-accent/accent contrast ${report.contrast["on-accent/accent"]} < 4.5 — button labels fail AA; darken or lighten the accent`);
+  if (accentText !== accent) warnings.push(`accent fails 4.5:1 as text on bg; use --accent-text (${accentText}) for links and small accent text`);
+  return { vars, report };
+}
+
+function hexRgb(hex) {
+  return parseHex(hex).map((v) => Math.round(v * 255)).join(" ");
+}
+
+function toCss(vars, selector = ":root") {
+  return `${selector} {\n${Object.entries(vars).map(([k, v]) => `  ${k}: ${v};`).join("\n")}\n}\n`;
+}
+
+// Google Fonts URL for the families named on a card (skips system stacks).
+function googleFontsHref(direction) {
+  const fams = [];
+  for (const key of ["display", "body", "mono"]) {
+    let spec = direction?.type?.[key];
+    if (!spec) continue;
+    if (typeof spec === "string") spec = { family: spec };
+    if (!spec.family || spec.google === false) continue;
+    const w = [...new Set(spec.weights || [spec.weight || 400])].sort((x, y) => x - y);
+    const axis = spec.italic
+      ? `ital,wght@${[...w.map((x) => `0,${x}`), ...w.map((x) => `1,${x}`)].join(";")}`
+      : `wght@${w.join(";")}`;
+    const name = spec.family.replace(/ /g, "+");
+    if (!fams.some((f) => f.startsWith(name + ":"))) fams.push(`${name}:${axis}`);
+  }
+  return fams.length ? `https://fonts.googleapis.com/css2?${fams.map((f) => `family=${f}`).join("&")}&display=swap` : null;
+}
+
+    </script>
+    <script>
+      (() => {
+        const DATA = JSON.parse(
+          document.getElementById("canvas-data").textContent,
+        );
+        const C = DATA.candidates;
+        const KEY = `canvas-ui:${DATA.title}:${DATA.round}`;
+        const VPS = {
+          desktop: [1440, 900, "Desktop", "D"],
+          tablet: [820, 1180, "Tablet", "T"],
+          mobile: [390, 844, "Mobile", "M"],
+        };
+        const DIAL_NAMES =
+          typeof DIALS !== "undefined"
+            ? DIALS
+            : {
+                energy: ["quiet", "loud"],
+                finish: ["raw", "refined"],
+                density: ["airy", "dense"],
+                weight: ["light", "heavy"],
+                formality: ["playful", "formal"],
+              };
+
+        const load = () => {
+          try {
+            return JSON.parse(localStorage.getItem(KEY)) || {};
+          } catch {
+            return {};
+          }
+        };
+        const saved = load();
+        const S = Object.assign(
+          {
+            view: "grid",
+            vp: DATA.viewport || "desktop",
+            active: 0,
+            a: 0,
+            b: Math.min(1, C.length - 1),
+            mix: 0.5,
+            squint: false,
+            blind: false,
+            sync: true,
+            notes: {},
+            tune: {},
+            picked: null,
+            tuneOpen: false,
+          },
+          saved,
+        );
+        if (!VPS[S.vp] && S.vp !== "native") S.vp = "desktop";
+        const save = () => {
+          try {
+            localStorage.setItem(KEY, JSON.stringify(S));
+          } catch {}
+        };
+        const $ = (s, r = document) => r.querySelector(s);
+        const esc = (s) =>
+          String(s ?? "").replace(
+            /[&<>"]/g,
+            (c) =>
+              ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+          );
+        const num = (i) => String(i + 1).padStart(2, "0");
+
+        $("#title").textContent = DATA.title;
+        $("#sub").textContent = [
+          DATA.round && `Round ${DATA.round}`,
+          `${C.length} candidates`,
+          DATA.note,
+        ]
+          .filter(Boolean)
+          .join(" · ");
+        document.title = `${DATA.title} — canvas`;
+        if (DATA.question) {
+          $("#brief").hidden = false;
+          $("#question").textContent = DATA.question;
+        }
+
+        // viewport buttons
+        const vpBar = $("#vps");
+        for (const [k, v] of Object.entries(VPS))
+          vpBar.insertAdjacentHTML(
+            "beforeend",
+            `<button data-vp="${k}" title="${v[2]} ${v[0]}×${v[1]} (${v[3]})">${v[2]}</button>`,
+          );
+        if (C.some((c) => c.nativeViewport))
+          vpBar.insertAdjacentHTML(
+            "beforeend",
+            `<button data-vp="native" title="Each candidate's own size (N)">Native</button>`,
+          );
+
+        function vpOf(c) {
+          if (S.vp === "native" && c.nativeViewport)
+            return c.nativeViewport.split("x").map(Number);
+          const v = VPS[S.vp] || VPS.desktop;
+          return [v[0], v[1]];
+        }
+
+        // ---------- frames ----------
+        const docs = new Map(); // iframe -> candidate index
+        function frameFor(c, i, extraClass = "") {
+          const [w, h] = vpOf(c);
+          let el;
+          if (c.kind === "image") {
+            el = document.createElement("img");
+            el.src = c.image;
+            el.alt = c.name || "";
+          } else {
+            el = document.createElement("iframe");
+            el.title = c.name || `Candidate ${i + 1}`;
+            el.setAttribute("loading", "eager");
+            if (c.kind === "url") el.src = c.url;
+            else el.srcdoc = c.html;
+            if (c.interactive) el.classList.add("live");
+            el.addEventListener("load", () => {
+              docs.set(el, i);
+              applyTune(i, el);
+              hookScroll(el);
+            });
+          }
+          el.className += ` frame ${extraClass}`;
+          el.style.width = w + "px";
+          el.style.height = h + "px";
+          el.dataset.w = w;
+          el.dataset.h = h;
+          return el;
+        }
+        function fit(stage) {
+          const f = stage.querySelectorAll(".frame");
+          if (!f.length) return;
+          const w = +f[0].dataset.w,
+            h = +f[0].dataset.h;
+          const max = stage.dataset.max === "1" ? 1 : Infinity;
+          const s = Math.min(max, stage.clientWidth / w);
+          stage.style.height = Math.round(h * s) + "px";
+          f.forEach((x) => (x.style.transform = `scale(${s})`));
+        }
+        const ro = new ResizeObserver((entries) =>
+          entries.forEach((e) => fit(e.target)),
+        );
+
+        let syncing = false;
+        function hookScroll(iframe) {
+          let d;
+          try {
+            d = iframe.contentDocument;
+          } catch {
+            return;
+          }
+          if (!d) return;
+          d.addEventListener(
+            "scroll",
+            () => {
+              if (!S.sync || syncing) return;
+              const se = d.scrollingElement,
+                frac =
+                  se.scrollTop / Math.max(1, se.scrollHeight - se.clientHeight);
+              syncing = true;
+              for (const other of docs.keys()) {
+                if (other === iframe || !other.isConnected) continue;
+                try {
+                  const o = other.contentDocument.scrollingElement;
+                  o.scrollTop = frac * (o.scrollHeight - o.clientHeight);
+                } catch {}
+              }
+              requestAnimationFrame(() => (syncing = false));
+            },
+            { passive: true },
+          );
+        }
+
+        // ---------- tune ----------
+        function tunedDirection(i) {
+          const base = C[i].direction;
+          if (!base) return null;
+          const t = S.tune[i];
+          if (!t) return base;
+          const d = JSON.parse(JSON.stringify(base));
+          d.tone = { ...(d.tone || {}), ...(t.tone || {}) };
+          d.color = { ...(d.color || {}), ...(t.color || {}) };
+          d.type = { ...(d.type || {}), ...(t.type || {}) };
+          return d;
+        }
+        function applyTune(i, iframe) {
+          if (typeof buildTokens === "undefined" || !C[i].direction) return;
+          const targets = iframe
+            ? [iframe]
+            : [...docs.keys()].filter(
+                (f) => docs.get(f) === i && f.isConnected,
+              );
+          const t = S.tune[i];
+          for (const f of targets) {
+            let d;
+            try {
+              d = f.contentDocument;
+            } catch {
+              continue;
+            }
+            if (!d || !d.documentElement) continue;
+            let st = d.getElementById("canvas-tune");
+            if (!t) {
+              st?.remove();
+              continue;
+            }
+            const { vars } = buildTokens(tunedDirection(i));
+            if (!st) {
+              st = d.createElement("style");
+              st.id = "canvas-tune";
+            }
+            st.textContent = `:root{${Object.entries(vars)
+              .filter(([k]) => !k.startsWith("--font"))
+              .map(([k, v]) => `${k}:${v} !important`)
+              .join(";")}}`;
+            d.documentElement.appendChild(st);
+          }
+        }
+        function tuneDiff(i) {
+          const t = S.tune[i],
+            base = C[i].direction;
+          if (!t || !base) return [];
+          const out = [];
+          for (const k of Object.keys(t.tone || {}))
+            if (t.tone[k] !== (base.tone?.[k] ?? 50))
+              out.push(`tone.${k} ${base.tone?.[k] ?? 50}→${t.tone[k]}`);
+          for (const k of Object.keys(t.color || {}))
+            if (t.color[k] !== base.color?.[k])
+              out.push(`color.${k} ${base.color?.[k] ?? "auto"}→${t.color[k]}`);
+          for (const k of Object.keys(t.type || {}))
+            if (t.type[k] !== base.type?.[k])
+              out.push(`type.${k} ${base.type?.[k] ?? "auto"}→${t.type[k]}`);
+          return out;
+        }
+        function tunePanel(i) {
+          const c = C[i];
+          if (!c.direction || c.kind !== "html")
+            return `<p class="tune" style="display:block"><small>Tune needs an HTML candidate with a direction card that uses canvas-ui tokens.</small></p>`;
+          const d = tunedDirection(i);
+          const dial = (k) =>
+            `<label>${k}<input type="range" min="0" max="100" step="1" data-tone="${k}" value="${d.tone?.[k] ?? 50}"><output>${d.tone?.[k] ?? 50}</output></label>`;
+          const col = (k) =>
+            `<label><input type="color" data-color="${k}" value="${d.color?.[k] || "#888888"}">${k}</label>`;
+          const ratio =
+            d.type?.ratio || buildTokens(d).vars["--step-1"].replace("rem", "");
+          return `<div class="tune ${S.tuneOpen ? "open" : ""}" data-i="${i}">
+    ${Object.keys(DIAL_NAMES).map(dial).join("")}
+    <label>type ratio<input type="range" min="1.1" max="1.6" step="0.01" data-ratio value="${(+ratio).toFixed(2)}"><output>${(+ratio).toFixed(2)}</output></label>
+    <div class="colors">${["bg", "ink", "accent"].map(col).join("")}</div>
+    <div class="row"><small style="flex:1">Live preview of token changes. Picks include them.</small><button class="icon-btn" data-reset>Reset</button></div>
+  </div>`;
+        }
+        function wireTune(root, i) {
+          const panel = root.querySelector(".tune[data-i]");
+          if (!panel) return;
+          panel.addEventListener("input", (e) => {
+            const t = (S.tune[i] ||= {});
+            const el = e.target;
+            if (el.dataset.tone) {
+              (t.tone ||= {})[el.dataset.tone] = +el.value;
+              el.nextElementSibling.value = el.value;
+            }
+            if (el.dataset.color) (t.color ||= {})[el.dataset.color] = el.value;
+            if ("ratio" in el.dataset) {
+              (t.type ||= {}).ratio = +el.value;
+              el.nextElementSibling.value = (+el.value).toFixed(2);
+            }
+            applyTune(i);
+            save();
+            markTuned();
+          });
+          panel.querySelector("[data-reset]").addEventListener("click", () => {
+            delete S.tune[i];
+            applyTune(i);
+            save();
+            render();
+          });
+        }
+        function markTuned() {
+          document.querySelectorAll(".card").forEach((card) => {
+            const i = +card.dataset.i;
+            const b = card.querySelector(".tuned");
+            if (b) b.hidden = !tuneDiff(i).length;
+          });
+        }
+
+        // ---------- pick ----------
+        function pickText(i) {
+          const c = C[i],
+            n = (k) => S.notes[k] || {};
+          const lines = [
+            `[canvas-ui] ${DATA.title}${DATA.round ? ` · round ${DATA.round}` : ""}`,
+            `Pick: ${num(i)} "${c.name}"${c.source ? ` (${c.source})` : ""}`,
+          ];
+          if (n(i).keep) lines.push(`Keep: ${n(i).keep}`);
+          if (n(i).change) lines.push(`Change: ${n(i).change}`);
+          C.forEach((o, k) => {
+            if (k !== i && n(k).keep)
+              lines.push(`Borrow from ${num(k)} "${o.name}": ${n(k).keep}`);
+          });
+          C.forEach((o, k) => {
+            if (k !== i && n(k).change)
+              lines.push(`Avoid (seen in ${num(k)}): ${n(k).change}`);
+          });
+          const td = tuneDiff(i);
+          if (td.length)
+            lines.push(`Token overrides for ${num(i)}: ${td.join("; ")}`);
+          return lines.join("\n");
+        }
+        function decision(i) {
+          return {
+            tool: "canvas-ui",
+            title: DATA.title,
+            round: DATA.round,
+            pick: { n: i + 1, name: C[i].name, source: C[i].source },
+            notes: Object.fromEntries(
+              C.map((c, k) => [num(k), S.notes[k] || {}]).filter(
+                ([, v]) => v.keep || v.change,
+              ),
+            ),
+            tune:
+              tunedDirection(i) && tuneDiff(i).length
+                ? { changes: tuneDiff(i), direction: tunedDirection(i) }
+                : null,
+            at: new Date().toISOString(),
+          };
+        }
+        async function pick(i) {
+          S.picked = i;
+          save();
+          const text = pickText(i);
+          let ok = false;
+          try {
+            await navigator.clipboard.writeText(text);
+            ok = true;
+          } catch {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+              ok = document.execCommand("copy");
+            } catch {}
+            ta.remove();
+          }
+          $("#toastTitle").textContent = ok
+            ? "Copied — paste this to your agent"
+            : "Copy this to your agent";
+          $("#toastText").textContent = text;
+          $("#toast").classList.add("show");
+          $("#dl").onclick = () => {
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(
+              new Blob([JSON.stringify(decision(i), null, 2)], {
+                type: "application/json",
+              }),
+            );
+            a.download = `decision-${DATA.round || "round"}.json`;
+            a.click();
+          };
+          render();
+        }
+        $("#toastClose").onclick = () => $("#toast").classList.remove("show");
+
+        // ---------- render ----------
+        const order = () => {
+          if (!S.blind) return C.map((_, i) => i);
+          const seed = [...(DATA.title + DATA.round)].reduce(
+            (a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0,
+            7,
+          );
+          return C.map((_, i) => i).sort(
+            (a, b) => (((a + 1) * seed) % 97) - (((b + 1) * seed) % 97),
+          );
+        };
+        function meta(c, i) {
+          const n = S.notes[i] || {};
+          const tone = c.direction?.tone;
+          const dials = tone
+            ? `<div class="dials">${Object.entries(DIAL_NAMES)
+                .map(
+                  ([k, [lo, hi]]) =>
+                    `<span>${k}</span><span class="track"><b style="left:${tone[k] ?? 50}%"></b></span><span>${(tone[k] ?? 50) < 50 ? lo : hi}</span>`,
+                )
+                .join("")}</div>`
+            : "";
+          return `<div class="meta">
+    ${c.concept ? `<p class="concept">${esc(c.concept)}</p>` : ""}
+    ${c.typography || c.hero || c.skeleton ? `<dl class="kv">${c.typography ? `<dt>Type</dt><dd>${esc(c.typography)}</dd>` : ""}${c.skeleton ? `<dt>Skeleton</dt><dd>${esc(c.skeleton)}</dd>` : ""}${c.hero ? `<dt>Hero</dt><dd>${esc(c.hero)}</dd>` : ""}</dl>` : ""}
+    ${c.palette?.length ? `<div class="swatches">${c.palette.map((p) => `<i style="background:${esc(p)}" title="${esc(p)}"></i>`).join("")}</div>` : ""}
+    ${c.traits?.length ? `<div class="traits">${c.traits.map((t) => `<span class="badge">${esc(t)}</span>`).join("")}</div>` : ""}
+    ${dials}
+    <div class="notes">
+      <textarea data-note="keep" data-i="${i}" rows="1" placeholder="Keep / like…">${esc(n.keep)}</textarea>
+      <textarea data-note="change" data-i="${i}" rows="1" placeholder="Change / dislike…">${esc(n.change)}</textarea>
+    </div>
+    ${S.view === "focus" ? tunePanel(i) : ""}
+    <div class="row"><button class="pick" data-pick="${i}">${S.picked === i ? "Picked ✓ — copy again" : "Pick this"}</button>${S.view === "focus" && c.direction ? `<button class="icon-btn" data-tune-toggle title="Tune (U)">Tune</button>` : ""}</div>
+  </div>`;
+        }
+        function card(i, label) {
+          const c = C[i];
+          const el = document.createElement("article");
+          el.className = `card${S.picked === i ? " picked" : ""}${S.view === "focus" ? " solo" : ""}`;
+          el.dataset.i = i;
+          el.innerHTML = `<header><span class="num">${label}</span><span class="name">${esc(c.name)}</span>
+    ${c.baseline ? `<span class="badge">current</span>` : ""}<span class="badge tuned" hidden>tuned</span>${S.picked === i ? `<span class="badge good">picked</span>` : ""}
+    ${c.open ? `<a class="icon-btn" href="${esc(c.open)}" target="_blank" rel="noopener" title="Open at 100%">↗</a>` : ""}
+    ${S.view === "focus" ? `<span class="pager"><button class="icon-btn" data-move="-1" title="Previous (←)">←</button><button class="icon-btn" data-move="1" title="Next (→)">→</button></span>` : ""}</header>
+    <div class="stage"></div>${meta(c, i)}`;
+          const stage = el.querySelector(".stage");
+          stage.appendChild(frameFor(c, i));
+          if (S.view === "focus") stage.dataset.max = "1";
+          stage.addEventListener("click", () => {
+            if (S.view === "grid") {
+              S.active = i;
+              setView("focus");
+            }
+          });
+          ro.observe(stage);
+          wireTune(el, i);
+          return el;
+        }
+        function slot(which) {
+          const i = S[which];
+          const el = document.createElement("div");
+          el.className = "slot";
+          el.innerHTML = `<header><b class="num">${which.toUpperCase()}</b><select aria-label="Candidate ${which}">${C.map((c, k) => `<option value="${k}" ${k === i ? "selected" : ""}>${S.blind ? "Candidate " + String.fromCharCode(65 + order().indexOf(k)) : num(k) + " " + esc(c.name)}</option>`).join("")}</select>
+    <button class="icon-btn" data-pick="${i}">Pick</button></header><div class="stage"></div>`;
+          el.querySelector(".stage").appendChild(frameFor(C[i], i));
+          el.querySelector("select").onchange = (e) => {
+            S[which] = +e.target.value;
+            save();
+            render();
+          };
+          ro.observe(el.querySelector(".stage"));
+          return el;
+        }
+        function render() {
+          docs.clear();
+          ro.disconnect();
+          const main = $("#main");
+          main.innerHTML = "";
+          document
+            .querySelectorAll("#views button")
+            .forEach((b) =>
+              b.setAttribute("aria-pressed", b.dataset.v === S.view),
+            );
+          document
+            .querySelectorAll("#vps button")
+            .forEach((b) =>
+              b.setAttribute("aria-pressed", b.dataset.vp === S.vp),
+            );
+          $("#squint").setAttribute("aria-pressed", S.squint);
+          $("#blind").setAttribute("aria-pressed", S.blind);
+          $("#sync").setAttribute("aria-pressed", S.sync);
+          document.body.classList.toggle("squint", S.squint);
+          document.body.classList.toggle("blind", S.blind);
+
+          if (S.view === "compare") {
+            const ab = document.createElement("div");
+            ab.className = "ab compare";
+            ab.append(slot("a"), slot("b"));
+            main.appendChild(ab);
+          } else if (S.view === "overlay") {
+            const ov = document.createElement("div");
+            ov.className = "ov overlay";
+            ov.innerHTML = `<header><b>Overlay</b>
+      <select data-w="a">${C.map((c, k) => `<option value="${k}" ${k === S.a ? "selected" : ""}>${num(k)} ${esc(c.name)}</option>`).join("")}</select>
+      <input type="range" min="0" max="1" step="0.01" value="${S.mix}" aria-label="Blend">
+      <select data-w="b">${C.map((c, k) => `<option value="${k}" ${k === S.b ? "selected" : ""}>${num(k)} ${esc(c.name)}</option>`).join("")}</select>
+      <small style="color:var(--c-ink-3)">Onion-skin: drag to blend. Best for baseline vs. redesign or reference vs. recreation.</small></header><div class="stage"></div>`;
+            const st = ov.querySelector(".stage");
+            st.append(frameFor(C[S.a], S.a), frameFor(C[S.b], S.b, "top"));
+            st.style.setProperty("--mix", S.mix);
+            ov.querySelector("input").oninput = (e) => {
+              S.mix = +e.target.value;
+              st.style.setProperty("--mix", S.mix);
+              save();
+            };
+            ov.querySelectorAll("select").forEach(
+              (s) =>
+                (s.onchange = (e) => {
+                  S[s.dataset.w] = +e.target.value;
+                  save();
+                  render();
+                }),
+            );
+            main.appendChild(ov);
+            ro.observe(st);
+          } else {
+            const ord = order();
+            const label = (i) =>
+              S.blind ? String.fromCharCode(65 + ord.indexOf(i)) : num(i);
+            if (S.view === "focus") {
+              S.active = Math.min(S.active, C.length - 1);
+              main.appendChild(card(S.active, label(S.active)));
+            } else {
+              const g = document.createElement("div");
+              g.className = "grid";
+              const [w] = vpOf(C[0]);
+              g.style.setProperty(
+                "--col",
+                w < 600 ? "240px" : w < 1000 ? "300px" : "360px",
+              );
+              ord.forEach((i) => g.appendChild(card(i, label(i))));
+              main.appendChild(g);
+            }
+          }
+          main
+            .querySelectorAll("[data-move]")
+            .forEach((b) => (b.onclick = () => move(+b.dataset.move)));
+          main
+            .querySelectorAll("[data-pick]")
+            .forEach((b) => (b.onclick = () => pick(+b.dataset.pick)));
+          main.querySelectorAll("textarea[data-note]").forEach(
+            (t) =>
+              (t.oninput = () => {
+                (S.notes[t.dataset.i] ||= {})[t.dataset.note] = t.value;
+                save();
+              }),
+          );
+          main.querySelectorAll("[data-tune-toggle]").forEach(
+            (b) =>
+              (b.onclick = () => {
+                S.tuneOpen = !S.tuneOpen;
+                save();
+                main
+                  .querySelector(".tune")
+                  ?.classList.toggle("open", S.tuneOpen);
+              }),
+          );
+          markTuned();
+        }
+        function setView(v) {
+          S.view = v;
+          save();
+          render();
+          scrollTo({ top: 0 });
+        }
+        const move = (d) => {
+          const o = order();
+          S.active = o[(o.indexOf(S.active) + d + o.length) % o.length];
+          if (S.view !== "focus") S.view = "focus";
+          save();
+          render();
+        };
+
+        $("#views").onclick = (e) => {
+          const v = e.target.closest("button")?.dataset.v;
+          if (v) setView(v);
+        };
+        $("#vps").onclick = (e) => {
+          const v = e.target.closest("button")?.dataset.vp;
+          if (v) {
+            S.vp = v;
+            save();
+            render();
+          }
+        };
+        $("#squint").onclick = () => {
+          S.squint = !S.squint;
+          save();
+          render();
+        };
+        $("#blind").onclick = () => {
+          S.blind = !S.blind;
+          save();
+          render();
+        };
+        $("#sync").onclick = () => {
+          S.sync = !S.sync;
+          save();
+          render();
+        };
+        $("#theme").onclick = () => {
+          const r = document.documentElement;
+          const cur =
+            r.dataset.theme ||
+            (matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light");
+          r.dataset.theme = cur === "dark" ? "light" : "dark";
+        };
+        $("#helpBtn").onclick = () => $("#help").classList.add("show");
+        $("#help").onclick = () => $("#help").classList.remove("show");
+
+        addEventListener("keydown", (e) => {
+          if (
+            e.target.matches("textarea,input,select") ||
+            e.metaKey ||
+            e.ctrlKey ||
+            e.altKey
+          )
+            return;
+          const k = e.key;
+          if (k === "ArrowRight") move(1);
+          else if (k === "ArrowLeft") move(-1);
+          else if (/^[1-9]$/.test(k) && +k <= C.length) {
+            S.active = +k - 1;
+            setView("focus");
+          } else if (k === "g") setView("grid");
+          else if (k === "f") setView("focus");
+          else if (k === "c") setView("compare");
+          else if (k === "o") setView("overlay");
+          else if ({ d: "desktop", t: "tablet", m: "mobile", n: "native" }[k]) {
+            const v = { d: "desktop", t: "tablet", m: "mobile", n: "native" }[
+              k
+            ];
+            if (v !== "native" || C.some((c) => c.nativeViewport)) {
+              S.vp = v;
+              save();
+              render();
+            }
+          } else if (k === "s") $("#squint").click();
+          else if (k === "b") $("#blind").click();
+          else if (k === "u" && S.view === "focus") {
+            S.tuneOpen = !S.tuneOpen;
+            save();
+            $(".tune")?.classList.toggle("open", S.tuneOpen);
+          } else if (k === "Enter" && S.view === "focus") pick(S.active);
+          else if (k === "?") $("#help").classList.toggle("show");
+          else if (k === "Escape") {
+            $("#help").classList.remove("show");
+            $("#toast").classList.remove("show");
+            if (S.view !== "grid") setView("grid");
+          } else return;
+          e.preventDefault();
+        });
+        render();
+      })();
+    </script>
+  </body>
+</html>
