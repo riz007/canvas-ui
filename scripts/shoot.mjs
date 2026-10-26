@@ -50,6 +50,7 @@ const flags = new Set(["full", "dark", "sheet", "squint", "json"]);
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
   if (a === "--no-lint") opt.lint = false;
+  else if (a === "--lint") opt.lint = true; // default; accepted because agents guess it
   else if (a.startsWith("--")) {
     const k = a.slice(2);
     if (flags.has(k)) opt[k] = true;

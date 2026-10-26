@@ -8,19 +8,24 @@ Usage: ./install.sh <target...> [--project DIR] [--link] [--dry-run]
 
 Targets:
   claude     ~/.claude/skills/canvas-ui            (project: DIR/.claude/skills/canvas-ui)
-  codex      ~/.codex/skills/canvas-ui             (+ prints an AGENTS.md snippet)
-  gemini     ~/.gemini/extensions/canvas-ui        (project: DIR/.gemini/extensions/canvas-ui)
+  agents     ~/.agents/skills/canvas-ui            (project: DIR/.agents/skills/canvas-ui)
+             the shared folder read by Codex and Gemini CLI: one install covers both
+  codex      ~/.codex/skills/canvas-ui             (project: DIR/.agents/skills/canvas-ui)
+  gemini     ~/.gemini/skills/canvas-ui            (project: DIR/.gemini/skills/canvas-ui)
+  gemini-extension  ~/.gemini/extensions/canvas-ui (for Gemini CLI builds without skills support)
   cursor     DIR/.cursor/rules/canvas-ui.mdc + DIR/.cursor/skills/canvas-ui   (needs --project)
   opencode   ~/.config/opencode/skills/canvas-ui   (project: DIR/.opencode/skills/canvas-ui)
-  agents     ~/.agents/skills/canvas-ui            (shared folder some agents read)
-  all        claude codex gemini opencode agents
+  all        claude agents opencode
+
+Install a skill into only one folder per agent: Codex and Gemini CLI also read
+~/.agents/skills, so "agents" plus "codex" would list it twice.
 
 Options:
   --project DIR   Install into a project instead of your home folder
   --link          Symlink instead of copy (for developing the skill)
   --dry-run       Print what would happen
 
-Alternatively: npx skills add <owner>/canvas-ui
+Alternatively: npx skills add riz007/canvas-ui
 EOF
 }
 
@@ -32,8 +37,8 @@ while [ $# -gt 0 ]; do
     --link) LINK=1; shift ;;
     --dry-run) DRY=1; shift ;;
     -h|--help) usage; exit 0 ;;
-    all) TARGETS="$TARGETS claude codex gemini opencode agents"; shift ;;
-    claude|codex|gemini|cursor|opencode|agents) TARGETS="$TARGETS $1"; shift ;;
+    all) TARGETS="$TARGETS claude agents opencode"; shift ;;
+    claude|codex|gemini|gemini-extension|cursor|opencode|agents) TARGETS="$TARGETS $1"; shift ;;
     *) echo "Unknown argument: $1" >&2; usage; exit 2 ;;
   esac
 done
@@ -72,13 +77,9 @@ for t in $TARGETS; do
     claude)   place "$(base .claude/skills/canvas-ui .claude/skills/canvas-ui)" ;;
     opencode) place "$(base .opencode/skills/canvas-ui .config/opencode/skills/canvas-ui)" ;;
     agents)   place "$(base .agents/skills/canvas-ui .agents/skills/canvas-ui)" ;;
-    codex)
-      d=$(base .codex/skills/canvas-ui .codex/skills/canvas-ui)
-      place "$d"
-      echo "  Codex picks up skills from this folder. If your Codex build doesn't, add this to AGENTS.md:"
-      sed "s#{{SKILL_DIR}}#$d#g" "$SRC/adapters/codex/AGENTS.md" | sed 's/^/    /'
-      ;;
-    gemini)
+    codex)    place "$(base .agents/skills/canvas-ui .codex/skills/canvas-ui)" ;;
+    gemini)   place "$(base .gemini/skills/canvas-ui .gemini/skills/canvas-ui)" ;;
+    gemini-extension)
       d=$(base .gemini/extensions/canvas-ui .gemini/extensions/canvas-ui)
       place "$d"
       [ "$LINK" = 1 ] && { echo "  (--link: GEMINI.md and gemini-extension.json are not generated for linked installs)"; continue; }

@@ -11,7 +11,9 @@ metadata:
 
 Pick one sentence the design must serve (the **north star**), then make layout, type, color, imagery and motion all pull toward it. Taste is choosing the strongest few things and deleting the rest — not sanding every direction down to the same safe beige. Judge _does it look right_ and _does the task work_ separately, and judge both on real screenshots, never on the code you just wrote.
 
-Everything you need is in this folder. Relative links resolve from this file. `<skill>` below means this folder's absolute path. Tool usage: [tools](references/tools.md). Follow the project's own frontend conventions for implementation.
+Everything you need is in this folder. Relative links resolve from this file. `<skill>` below means this folder's absolute path. Follow the project's own frontend conventions for implementation.
+
+**Load references lazily.** Each step names the files it needs; read those when you reach that step and no others. Don't `cat` the `references/` folder or skim ahead — a words-only direction answer needs `direction.md` and nothing else. The scripts answer `--help`; you don't need to read their source or [tools](references/tools.md) unless a command fails.
 
 ## 0. Scope the request
 
@@ -74,7 +76,7 @@ Once a direction is chosen, read by page type: **persuasion pages** (landing, br
 
 - Finish the most representative screen or the main flow first, check it, then spread.
 - Real-looking content. Mock data, generated images and unwired actions go in the delivery notes — never on screen ("sample", "placeholder", "not connected"). Never fake testimonials, customer logos or metrics.
-- Look at the target viewport. While iterating: one screenshot of the current screen after a _batch_ of changes. Before review and before delivery: full evidence — `node <skill>/scripts/shoot.mjs <target> --size desktop,mobile --full --lint`.
+- Look at the target viewport. While iterating: one screenshot of the current screen after a _batch_ of changes. Before review and before delivery: full evidence — `node <skill>/scripts/shoot.mjs <target> --size desktop,mobile --full` (the lint runs on every capture).
 - Every shot runs the **design lint** ([slop](references/slop.md)). `fix` items are mandatory (contrast, tiny text, tight leading, overflow, clipped text). `tell` items (AI-default tells) must be removed or justified in the delivery notes.
 - Check long headings and body copy wrapping at the narrowest width. Fix overflow with content and layout, never by shrinking text. A saved screenshot is not a viewed screenshot.
 

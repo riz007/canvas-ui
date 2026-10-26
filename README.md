@@ -35,19 +35,21 @@ npx skills add riz007/canvas-ui
 ```bash
 git clone https://github.com/riz007/canvas-ui && cd canvas-ui
 ./install.sh claude            # ~/.claude/skills/canvas-ui
-./install.sh codex gemini      # ~/.codex/skills, ~/.gemini/extensions
+./install.sh agents            # ~/.agents/skills (Codex + Gemini CLI)
 ./install.sh cursor --project ~/code/my-app
 ./install.sh all --link        # symlink everything (for hacking on the skill)
 ```
 
-| Agent                                  | How it loads                                                                                            |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| Claude Code                            | Skill in `~/.claude/skills/canvas-ui` (or `.claude/skills` in a project)                                |
-| Codex                                  | Skill in `~/.codex/skills/canvas-ui`; the installer also prints an `AGENTS.md` snippet for older builds |
-| Gemini CLI                             | Extension in `~/.gemini/extensions/canvas-ui` with `GEMINI.md` context                                  |
-| Cursor                                 | Project rule `.cursor/rules/canvas-ui.mdc` pointing at the skill                                        |
-| OpenCode / others                      | Skill folder, or point your `AGENTS.md` at `SKILL.md`                                                   |
-| DeepSeek, ChatGPT, Gemini web, raw API | Paste [adapters/generic/PROMPT.md](adapters/generic/PROMPT.md) as the system prompt                     |
+| Agent | How it loads | Tested |
+| --- | --- | --- |
+| Claude Code | Skill in `~/.claude/skills/canvas-ui` (project: `.claude/skills`) | ✅ 2.1 — triggers on design requests, stays out of bug fixes, runs a full canvas round unattended |
+| Codex | Skill in `~/.codex/skills` or `~/.agents/skills` (project: `.agents/skills`) | Paths confirmed in Codex 0.164; end-to-end run pending |
+| Gemini CLI | Native skill in `~/.gemini/skills` or `~/.agents/skills` (project: `.gemini/skills`). Older builds: `./install.sh gemini-extension` | Paths confirmed in Gemini CLI 0.62; end-to-end run pending |
+| Cursor | Project rule `.cursor/rules/canvas-ui.mdc` pointing at the skill | Not yet |
+| OpenCode / others | Skill folder, or point your `AGENTS.md` at `SKILL.md` | Not yet |
+| DeepSeek, ChatGPT, Gemini web, raw API | Paste [adapters/generic/PROMPT.md](adapters/generic/PROMPT.md) as the system prompt | Not yet |
+
+`./install.sh agents` installs once into `~/.agents/skills`, which both Codex and Gemini CLI read. Don't also install `codex` or `gemini` on top, or the skill is listed twice.
 
 Requirements for the tools: Node 20+ (22+ recommended) and Chrome, Chromium, Edge or Brave. The workflow itself needs nothing.
 
